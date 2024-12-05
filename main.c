@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h> //para windows
+#include <locale.h> // para Windows
 
-typedef struct
-{
+#define MAX_INSERIR_CARTAS 10
+
+typedef struct{
     char nome[21];
     char letra;
     int num;
@@ -16,37 +17,48 @@ typedef struct
     int atributo_5;
 }Cartas;
 
+/**
+ * @brief Tratamento de dados pra receber string
+ * 
+ * @param nome 
+ * @param tamanho 
+ */
 void burocracia(char nome[], int tamanho){
-    fgets(nome,tamanho,stdin);
-    nome[strcspn(nome, "\n")] = 0;
-    setbuf(stdin,NULL);
+    fgets(nome, tamanho, stdin);
+    nome[strcspn(nome, "\n")] = '\0';
+    setbuf(stdin, NULL);
 }
+
+/**
+ * @brief Pega os dados das cartas dados pelo usuário e insere no arquivo .csv
+ * 
+ * @param arq_carta 
+ * @param carta 
+ */
 void inserir_cartas(FILE* arq_carta, Cartas carta[]){
     int cartas_add;
-    do
-    {
-        printf("quantas cartas desejar inserir: ");
-        scanf("%i",&cartas_add);
-        setbuf(stdin, NULL);
-        if (cartas_add<0){
-            printf("Número inválido. Digite um número positivo.\n");
+    
+    printf("\nInsira quantas cartas desejar inserir: ");
+    do{
+        scanf("%i", &cartas_add);
+        if (cartas_add < 0){
+            printf("\n\033[1mNúmero inválido. Digite um número positivo:\033[m ");
+        }else if (cartas_add > MAX_INSERIR_CARTAS){
+            printf("\n\033[1mNúmero máximo de cartas excedido. Digite um número menor ou igual a %i:\033[m ", MAX_INSERIR_CARTAS);
         }
-    } while (cartas_add<0);
+    } while(cartas_add<0);
     
-    
-    
-    for (int i = 0; i < cartas_add; i++)
-    {
-        printf("Nome da carta: ");
-        burocracia(carta[i].nome,21);
-        printf("Letra da carta: ");
-
-
+    for (int i = 0; i < cartas_add; i++){
+        printf("\nNome da carta: ");
+        burocracia(carta[i].nome, sizeof(carta[i].nome));
+        
+        printf("\nLetra da carta: ");
         scanf("%c",&carta[i].letra);
         setbuf(stdin, NULL);
-        printf("Numero da carta: ");
+        
+        printf("\nNº da carta: ");
         scanf("%i",&carta[i].num);
-        printf("Super Trunfo:\n1 - sim\n2 - não\n");
+        printf("Super Trunfo?\n1 - sim\n2 - não\n");
         
 
         // VERIFICAR MAIS PRA FRENTE SE JÁ TEM UM SUPER TRUNFO, O MESMO COM A LETRA E NÚMERO
@@ -65,42 +77,42 @@ void inserir_cartas(FILE* arq_carta, Cartas carta[]){
         setbuf(stdin, NULL);
         fprintf(arq_carta,"%s,%c,%i,%i,%i,%i,%i,%i\n",carta[i].nome,carta[i].letra,carta[i].num,carta[i].super_trunfo,carta[i].atributo_1,carta[i].atributo_2,carta[i].atributo_3,carta[i].atributo_4,carta[i].atributo_5);
     }
-    
-
 };
 
 int main(){
-    setlocale(LC_ALL, "portuguese"); //para windows
+    setlocale(LC_ALL, "portuguese");
+
     // abrir, passar pro vetor, fechar
     // inserir: abrir em "w" adicionar 
+    
     FILE* arq_cartas = fopen("cartas.csv","w+");
-    if(arq_cartas == NULL)
-    {
-        printf("Não foi possivel abrir o arquivo!\n");
+    if(arq_cartas == NULL){
+        printf("\n\033[1;91mNão foi possivel abrir o arquivo!\033[m\n");
         return 1;
     }
-    Cartas carta[32]; //provalvelmente isso vai ser mudado
 
-    int sair=0;
+    Cartas carta[32]; // provalvelmente isso vai ser mudado
+
+    int sair = 0;
     int escolha;
-    do
-    {
-        do
-        {
-            printf("qual ação deseja fazer:\n1 - inserir cartas\n2 - listar as cartas\n3 - pesquisar uma carta\n4 - alterar uma carta\n5 - excluir carta\n6 - sair\n");
-            scanf("%i",&escolha);
-            if (escolha>5 || escolha<1)
-            {
-                printf("Escolha inválida!\n");
-            }
-            setbuf(stdin, NULL);
-            
-        } while (escolha>5 || escolha<1);
 
-        switch (escolha)
-        {
+    do{ // loop Menu
+        
+        printf("\n\nEscolha uma opção:\n1 - Inserir cartas\n2 - Listar as cartas\n3 - Pesquisar uma carta\n4 - Alterar uma carta\n5 - Excluir carta\n6 - Sair\n: ");
+        do{
+            //system("CLS"); // se for Windows
+            //system("clear") // se for Linux
+            scanf("%i", &escolha);
+            if ((escolha > 5) || (escolha < 1)){
+                setbuf(stdin, NULL);
+                printf("\n\033[1;91mEscolha inválida! Insira um nº de 1 a 6:\033[m ");
+            }else break;
+            
+        } while (1);
+
+        switch (escolha){
         case 1:
-            inserir_cartas(arq_cartas,carta);
+            inserir_cartas(arq_cartas, carta);
             break;
         case 2:
             
@@ -116,11 +128,11 @@ int main(){
             break;
         case 6:
             sair=1;
-        break;
+            break;
+        default:
+            break;
         }
-    } while (sair!=1);
-    
-    
+    } while (sair != 1);
     
     fclose(arq_cartas);
     return 0;
