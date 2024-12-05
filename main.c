@@ -45,8 +45,8 @@ void inserir_cartas(FILE* arq_carta, Cartas carta[]){
             printf("\n\033[1mNúmero inválido. Digite um número positivo:\033[m ");
         }else if (cartas_add > MAX_INSERIR_CARTAS){
             printf("\n\033[1mNúmero máximo de cartas excedido. Digite um número menor ou igual a %i:\033[m ", MAX_INSERIR_CARTAS);
-        }
-    } while(cartas_add<0);
+        }else break;
+    } while(1);
     
     for (int i = 0; i < cartas_add; i++){
         printf("\nNome da carta: ");
