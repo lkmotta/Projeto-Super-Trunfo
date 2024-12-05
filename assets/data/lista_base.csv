@@ -1,32 +1,32 @@
-Charada;A;1;0;10;60;5;5;10
-Crocodilo;A;2;0;20;60;3;25;60
-Pinguim;A;3;0;5;50;3;5;10
-Hera Venenosa;A;4;0;5;60;4;15;25
-Lex Luthor;A;5;0;10;65;5;5;10
-General Zod;A;6;0;45;90;18;45;80
-Aquaman;A;7;0;35;90;17;40;65
-Lanterna Verde;A;8;0;35;70;17;35;50
-Apocalypse;B;1;0;50;55;17;45;75
-Arqueiro Verde;B;2;0;10;80;8;10;30
-Super Man;B;3;1;50;95;20;45;80
-Coringa;B;4;0;10;75;5;5;10
-Batgirl;B;5;0;5;65;6;5;10
-Mulher Maravilha;B;6;0;45;90;18;45;80
-Shazam;B;7;0;45;70;19;40;75
-Cyborg;B;8;0;25;70;10;35;65
-Gavião Negro;C;1;0;20;70;17;30;65
-Katana;C;2;0;10;80;7;10;25
-Batman;C;3;0;15;85;8;10;30
-Robin;C;4;0;10;70;7;5;10
-Duas Caras;C;5;0;10;55;5;5;10
-Supergirl;C;6;0;45;85;18;40;80
-Caçador De Marte;C;7;0;40;65;15;40;70
-Bane;C;8;0;25;65;3;25;65
-Capitão Átomo;D;1;0;25;65;14;25;30
-Pistoleiro;D;2;0;10;80;6;10;20
-Mulher Gato;D;3;0;10;85;7;5;15
-Arlequina;D;4;0;5;75;6;5;10
-Espantalho;D;5;0;10;50;5;5;10
-Flash;D;6;0;20;100;20;40;80
-Sinestro;D;7;0;35;70;17;35;50
-Exterminador;D;8;0;20;85;8;10;35
+Charada,A,1,0,10,60,5,5,10
+Crocodilo,A,2,0,20,60,3,25,60
+Pinguim,A,3,0,5,50,3,5,10
+Hera Venenosa,A,4,0,5,60,4,15,25
+Lex Luthor,A,5,0,10,65,5,5,10
+General Zod,A,6,0,45,90,18,45,80
+Aquaman,A,7,0,35,90,17,40,65
+Lanterna Verde,A,8,0,35,70,17,35,50
+Apocalypse,B,1,0,50,55,17,45,75
+Arqueiro Verde,B,2,0,10,80,8,10,30
+Super Man,B,3,1,50,95,20,45,80
+Coringa,B,4,0,10,75,5,5,10
+Batgirl,B,5,0,5,65,6,5,10
+Mulher Maravilha,B,6,0,45,90,18,45,80
+Shazam,B,7,0,45,70,19,40,75
+Cyborg,B,8,0,25,70,10,35,65
+Gaviï¿½o Negro,C,1,0,20,70,17,30,65
+Katana,C,2,0,10,80,7,10,25
+Batman,C,3,0,15,85,8,10,30
+Robin,C,4,0,10,70,7,5,10
+Duas Caras,C,5,0,10,55,5,5,10
+Supergirl,C,6,0,45,85,18,40,80
+Caï¿½ador De Marte,C,7,0,40,65,15,40,70
+Bane,C,8,0,25,65,3,25,65
+Capitï¿½o ï¿½tomo,D,1,0,25,65,14,25,30
+Pistoleiro,D,2,0,10,80,6,10,20
+Mulher Gato,D,3,0,10,85,7,5,15
+Arlequina,D,4,0,5,75,6,5,10
+Espantalho,D,5,0,10,50,5,5,10
+Flash,D,6,0,20,100,20,40,80
+Sinestro,D,7,0,35,70,17,35,50
+Exterminador,D,8,0,20,85,8,10,35
