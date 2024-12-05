@@ -13,11 +13,3 @@
 
 ![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)
 [![RayLib](https://img.shields.io/badge/RAYLIB-FFFFFF?style=for-the-badge&logo=raylib&logoColor=black)](https://www.raylib.com/)
-
-<hr>
-
-
-### DESENVOLVEDORES
-<a href="https://github.com/lkmotta/Projeto-Super-Trunfo/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=lkmotta/Projeto-Super-Trunfo" />
-</a>
