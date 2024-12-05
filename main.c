@@ -13,9 +13,10 @@ typedef struct
     int atributo_2;
     int atributo_3;
     int atributo_4;
+    int atributo_5;
 }Cartas;
 
-void buracracia(char nome[], int tamanho){
+void burocracia(char nome[], int tamanho){
     fgets(nome,tamanho,stdin);
     nome[strcspn(nome, "\n")] = 0;
     setbuf(stdin,NULL);
@@ -27,22 +28,26 @@ void inserir_cartas(FILE* arq_carta, Cartas carta[]){
         printf("quantas cartas desejar inserir: ");
         scanf("%i",&cartas_add);
         setbuf(stdin, NULL);
-        if (cartas_add<0)
-        {
+        if (cartas_add<0){
             printf("Número inválido. Digite um número positivo.\n");
         }
-        
     } while (cartas_add<0);
+    
+    
+    
     for (int i = 0; i < cartas_add; i++)
     {
         printf("Nome da carta: ");
-        buracracia(carta[i].nome,21);
+        burocracia(carta[i].nome,21);
         printf("Letra da carta: ");
+
+
         scanf("%c",&carta[i].letra);
         setbuf(stdin, NULL);
         printf("Numero da carta: ");
         scanf("%i",&carta[i].num);
         printf("Super Trunfo:\n1 - sim\n2 - não\n");
+        
 
         // VERIFICAR MAIS PRA FRENTE SE JÁ TEM UM SUPER TRUNFO, O MESMO COM A LETRA E NÚMERO
 
@@ -55,8 +60,10 @@ void inserir_cartas(FILE* arq_carta, Cartas carta[]){
         scanf("%i",&carta[i].atributo_3);
         printf("Atributo 4: ");
         scanf("%i",&carta[i].atributo_4);
+        printf("Atributo 5: ");
+        scanf("%i",&carta[i].atributo_5);
         setbuf(stdin, NULL);
-        fprintf(arq_carta,"%s,%c,%i,%i,%i,%i,%i,%i\n",carta[i].nome,carta[i].letra,carta[i].num,carta[i].super_trunfo,carta[i].atributo_1,carta[i].atributo_2,carta[i].atributo_3,carta[i].atributo_4);
+        fprintf(arq_carta,"%s,%c,%i,%i,%i,%i,%i,%i\n",carta[i].nome,carta[i].letra,carta[i].num,carta[i].super_trunfo,carta[i].atributo_1,carta[i].atributo_2,carta[i].atributo_3,carta[i].atributo_4,carta[i].atributo_5);
     }
     
 
@@ -64,7 +71,9 @@ void inserir_cartas(FILE* arq_carta, Cartas carta[]){
 
 int main(){
     setlocale(LC_ALL, "portuguese"); //para windows
-    FILE* arq_cartas = fopen("cartas.csv","w");
+    // abrir, passar pro vetor, fechar
+    // inserir: abrir em "w" adicionar 
+    FILE* arq_cartas = fopen("cartas.csv","w+");
     if(arq_cartas == NULL)
     {
         printf("Não foi possivel abrir o arquivo!\n");
@@ -78,7 +87,7 @@ int main(){
     {
         do
         {
-            printf("qual ação deseja \afazer:\n1 - inserir cartas\n2 - listar as cartas\n3 - pesquisar uma carta\n4 - alterar uma carta\n5 - excluir carta\n6 - sair\n");
+            printf("qual ação deseja fazer:\n1 - inserir cartas\n2 - listar as cartas\n3 - pesquisar uma carta\n4 - alterar uma carta\n5 - excluir carta\n6 - sair\n");
             scanf("%i",&escolha);
             if (escolha>5 || escolha<1)
             {
@@ -113,6 +122,6 @@ int main(){
     
     
     
-    
+    fclose(arq_cartas);
     return 0;
 }
