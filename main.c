@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h> // para Windows
-
+// teste
 #define MAX_INSERIR_CARTAS 10
 
 typedef struct{
@@ -42,9 +42,9 @@ void inserir_cartas(FILE* arq_carta, Cartas carta[]){
     do{
         scanf("%i", &cartas_add);
         if (cartas_add < 0){
-            printf("\n\033[1mNÃºmero invÃ¡lido. Digite um nÃºmero positivo:\033[m ");
+            printf("\n\033[1mNúmero inválido. Digite um número positivo:\033[m ");
         }else if (cartas_add > MAX_INSERIR_CARTAS){
-            printf("\n\033[1mNÃºmero mÃ¡ximo de cartas excedido. Digite um nÃºmero menor ou igual a %i:\033[m ", MAX_INSERIR_CARTAS);
+            printf("\n\033[1mNúmero máximo de cartas excedido. Digite um número menor ou igual a %i:\033[m ", MAX_INSERIR_CARTAS);
         }else break;
     } while(1);
     
@@ -87,7 +87,7 @@ int main(){
     
     FILE* arq_cartas = fopen("cartas.csv","w+");
     if(arq_cartas == NULL){
-        printf("\n\033[1;91mNÃ£o foi possivel abrir o arquivo!\033[m\n");
+        printf("\n\033[1;91mNão foi possivel abrir o arquivo!\033[m\n");
         return 1;
     }
 
@@ -98,14 +98,14 @@ int main(){
 
     do{ // loop Menu
         
-        printf("\n\nEscolha uma opÃ§Ã£o:\n1 - Inserir cartas\n2 - Listar as cartas\n3 - Pesquisar uma carta\n4 - Alterar uma carta\n5 - Excluir carta\n6 - Sair\n: ");
+        printf("\n\nEscolha uma opção:\n1 - Inserir cartas\n2 - Listar as cartas\n3 - Pesquisar uma carta\n4 - Alterar uma carta\n5 - Excluir carta\n6 - Sair\n: ");
         do{
             //system("CLS"); // se for Windows
             //system("clear") // se for Linux
             scanf("%i", &escolha);
             if ((escolha > 5) || (escolha < 1)){
                 setbuf(stdin, NULL);
-                printf("\n\033[1;91mEscolha invÃ¡lida! Insira um nÂº de 1 a 6:\033[m ");
+                printf("\n\033[1;91mEscolha inválida! Insira um nº de 1 a 6:\033[m ");
             }else break;
             
         } while (1);
