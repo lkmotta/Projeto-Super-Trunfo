@@ -22,5 +22,8 @@ int sistema();
 void burocracia(char nome[], int tamanho);
 FILE* abrir_arquivo(const char nome_arq[], const char mode[]);
 int quant_cartas(FILE* arquivo);
+int get_int();
+int get_pos_carta(Cartas** cartas, int quantid_cartas, const char nome_carta[]);
+int verify_int_in_vetor(int* vetor, int size_vetor, int valor);
 
 #endif

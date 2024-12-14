@@ -49,14 +49,57 @@ void burocracia(char *nome, int tamanho) {
  * @return int 
  */
 int quant_cartas(FILE* arquivo) {
-    rewind(arquivo);
     int count = 0;
     char c;
 
+    rewind(arquivo); // voltando o ponteiro para o início
     while ((c = fgetc(arquivo)) != EOF) {
         if(c == '\n') count++;
     }
 
     rewind(arquivo);
     return count;
+}
+
+int get_int(){
+    int num;
+    do{
+        if(!(scanf("%d", &num)) || num < 0){
+            setbuf(stdin, NULL);
+            printf("\n\033[1;91mInsira um valor inteiro >= 0:\033[m ");
+        }else break;
+    } while (1);
+    
+    return num;
+}
+
+/**
+ * @brief Retorna a posicao da carta no vetor de cartas com nome 'nome_carta'.
+ * 
+ * @param cartas 
+ * @param quantid_cartas // quantidade de cartas no vetor
+ * @param nome_carta // nome da carta a ser procurada
+ * @return int 
+ */
+int get_pos_carta(Cartas** cartas, int quantid_cartas, const char nome_carta[]){
+    for (int i = 0; i < quantid_cartas; i++){
+        if(strcasecmp((*cartas)[i].nome, nome_carta) == 0){
+            return i;
+        }
+    }
+    return -1; // carta não encontrada
+}
+
+/**
+ * @brief Verifica se valor esta no vetor. Retorna 1 se encontrado, 0 se não encontrado.
+ * 
+ * @param vetor 
+ * @param valor 
+ * @return int 
+ */
+int verify_int_in_vetor(int* vetor, int size_vetor, int valor){
+    for (int i = 0; i < size_vetor; i++){
+        if(vetor[i] == valor) return 1;
+    }
+    return 0; // valor não encontrado
 }

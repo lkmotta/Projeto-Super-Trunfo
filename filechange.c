@@ -3,11 +3,14 @@
 #include "filechange.h"
 
 /**
- * @brief faz a insercao da quantidade que o usuario quiser no vetor de cartas e no arq csv
+ * @brief faz a insercao da quantidade de cartas que o usuario quiser no vetor de cartas e no arq csv
  * 
  * @param arq_cartaCOPIA 
  * @param carta 
- * @param ptr_posicao
+ * @param ptr_posicoesA 
+ * @param ptr_posicoesB 
+ * @param ptr_posicoesC 
+ * @param ptr_posicoesD 
  */
 void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, int **ptr_posicoesC, int **ptr_posicoesD) {
     if (sistema()) setlocale(LC_ALL, "pt-BR.UTF-8");
@@ -20,7 +23,7 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
     do {
         scanf("%2d", &cartas_add);
         if (cartas_add < 1) {
-            printf("\n\033[1mN�mero invalido. Digite um numero positivo > 0:\033[m ");
+            printf("\n\033[1mNúmero invalido. Digite um numero positivo > 0:\033[m ");
         } else break;
         setbuf(stdin, NULL);
     } while (1);
@@ -115,8 +118,6 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
 
         printf("\ntemos a posicao %i disponivel em %c\n\n", posi_procurada, TentaLetra);
 
-        
-
         int escolhaTrunfo;
         do {
             printf("Super Trunfo?\n1 - sim\n2 - nao\n: ");
@@ -125,27 +126,25 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
         } while ((*carta)[contaN + i].super_trunfo != 1 && (*carta)[contaN + i].super_trunfo != 0);
 
         printf("\nForca: ");
-        scanf("%i", &(*carta)[contaN + i].atributo_1);
+        (*carta)[contaN + i].atributo_1 = get_int();
         printf("\nHabilidade: ");
-        scanf("%i", &(*carta)[contaN + i].atributo_2);
+        (*carta)[contaN + i].atributo_2 = get_int();
         printf("\nVelocidade: ");
-        scanf("%i", &(*carta)[contaN + i].atributo_3);
+        (*carta)[contaN + i].atributo_3 = get_int();
         printf("\nPoderes: ");
-        scanf("%i", &(*carta)[contaN + i].atributo_4);
+        (*carta)[contaN + i].atributo_4 = get_int();
         printf("\nPoder cura: ");
-        scanf("%i", &(*carta)[contaN + i].atributo_5);
+        (*carta)[contaN + i].atributo_5 = get_int();
 
         fseek(arq_cartaCOPIA, 0, SEEK_END);
         fprintf(arq_cartaCOPIA, "%s,%c,%i,%i,%i,%i,%i,%i,%i\n",
-                (*carta)[contaN + i].nome, (*carta)[contaN + i].letra, (*carta)[contaN + i].num,
-                (*carta)[contaN + i].super_trunfo, (*carta)[contaN + i].atributo_1, (*carta)[contaN + i].atributo_2,
-                (*carta)[contaN + i].atributo_3, (*carta)[contaN + i].atributo_4, (*carta)[contaN + i].atributo_5);
+            (*carta)[contaN + i].nome, (*carta)[contaN + i].letra, (*carta)[contaN + i].num,
+            (*carta)[contaN + i].super_trunfo, (*carta)[contaN + i].atributo_1, (*carta)[contaN + i].atributo_2,
+            (*carta)[contaN + i].atributo_3, (*carta)[contaN + i].atributo_4, (*carta)[contaN + i].atributo_5);
     }
 
     rewind(arq_cartaCOPIA);
 }
-
-
 
 /**
  * @brief Lista todas as cartas no arquivo csv 'arq_carta'
@@ -153,16 +152,111 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
  * @param arq_carta // ponteiro do arquivo das cartas
  */
 void listar_cartas(Cartas* carta, int num_cartas) {
-    if(sistema()) setlocale(LC_ALL, "portuguese");
+    if(sistema()) setlocale(LC_ALL, "pt-BR.UTF-8");
 
     printf("\nNumero de cartas: %ld\n", sizeof(carta));
 
     printf("\n%-21s | %-6s | %-9s | %-12s | %-6s | %-12s | %-12s | %-9s | %-12s\n", "NOME", "LETRA", "NUMERO", "SUPER-TRUNFO", "FORCA", "HABILIDADE", "VELOCIDADE", "PODERES", "PODER CURA");
 
     for (int i = 0; i < num_cartas; i++) {
-        //fscanf(arq_carta, "%[^,],%c,%d,%d,%d,%d,%d,%d,%d\n", carta[i].nome, &carta[i].letra, &carta[i].num, &carta[i].super_trunfo, &carta[i].atributo_1, &carta[i].atributo_2, &carta[i].atributo_3, &carta[i].atributo_4, &carta[i].atributo_5);
-        printf("%-21s | %-6c | %-9d | %-12d | %-6d | %-12d | %-12d | %-9d | %-12d\n", carta[i].nome, carta[i].letra, carta[i].num, carta[i].super_trunfo, carta[i].atributo_1, carta[i].atributo_2, carta[i].atributo_3, carta[i].atributo_4, carta[i].atributo_5);
+        printf("%-21s | %-6c | %-9d | %-12d | %-6d | %-12d | %-12d | %-9d | %-12d\n",
+            carta[i].nome, carta[i].letra, carta[i].num, carta[i].super_trunfo,
+            carta[i].atributo_1, carta[i].atributo_2, carta[i].atributo_3, carta[i].atributo_4, carta[i].atributo_5);
+    }
+}
+
+/**
+ * @brief Exclui as cartas solicitadas pelo player.
+ * 
+ * @param arq_cartas
+ * @param cartas
+ * @param quantd_cartas
+ */
+void remover_carta(FILE* arq_cartas, Cartas** cartas, int quantd_cartas){
+    int quant_excluir = 0;
+    char nome_excluir[TAM_NOME_CARTA];
+
+    printf("\nInsira quantas cartas deseja excluir: ");
+    quant_excluir = get_int();
+    if(quant_excluir == 0 || quant_excluir >= quantd_cartas){
+        printf("\n\033[1m\033[3mOperacao cancelada.\033[m\n");
+        return;
     }
 
+    int pos_excluir[quant_excluir], posicao;
+
+    setbuf(stdin, NULL);
+
+    // adicionando as posicoes das cartas a excluir corretamente
+    for (int i = 0; i < quant_excluir; i++){
+        printf("\nInsira o nome da %da carta: ", i+1);
+        burocracia(nome_excluir, TAM_NOME_CARTA);
+        posicao = get_pos_carta(cartas, quantd_cartas, nome_excluir);
+        if(posicao == -1){
+            printf("\n\033[1m\033[3mCarta nao encontrada.\033[m\n");
+            i--;
+            continue;
+        }else if(verify_int_in_vetor(pos_excluir, quant_excluir, posicao)){
+            printf("\n\033[1m\033[3mCarta ja inserida.\033[m\n");
+            i--;
+            continue;
+        }else pos_excluir[i] = posicao;
+    }
+
+    int continuar = 0, aux = 0, new_quant_cartas = quantd_cartas-quant_excluir;
+    // alocando vetor para as cartas remanescentes
+    Cartas* cartas_aux = (Cartas*) malloc(new_quant_cartas* sizeof(Cartas));
+    if(!cartas_aux){
+        perror("\nErro ao alocar");
+        exit(1);
+    }
+
+    fclose(arq_cartas);
+    // abrindo outro arquivo para reescrever as cartas remanescentes
+    arq_cartas = fopen("assets/data/temp_file.csv", "w+"); // reaproveitando o mesmo ponteiro
+
+    for (int i = 0; i < quantd_cartas; i++){
+        for (int j = 0; j < quant_excluir; j++){
+            if(i == pos_excluir[j]){
+                continuar = 1;
+                break;
+            }
+        }
+
+        if(continuar){
+            continuar = 0;
+            continue;
+        }
+
+        cartas_aux[aux] = (*cartas)[i];
+
+        fprintf(arq_cartas, "%s,%c,%i,%i,%i,%i,%i,%i,%i\n",
+            cartas_aux[aux].nome, cartas_aux[aux].letra, cartas_aux[aux].num, cartas_aux[aux].super_trunfo,
+            cartas_aux[aux].atributo_1, cartas_aux[aux].atributo_2, cartas_aux[aux].atributo_3,
+            cartas_aux[aux].atributo_4, cartas_aux[aux].atributo_5);
+        aux++;
+    }
+
+    // única maneira de realocar sem erros: criando outro vetor
+    Cartas *temp = realloc(*cartas, new_quant_cartas * sizeof(Cartas));
+    if(!temp){
+        perror("\nErro ao alocar vetor Cartas");
+        free(cartas_aux); // liberando o vetor auxiliar caso erro
+        return;
+    }
+
+    *cartas = temp;
+
+    for (int i = 0; i < new_quant_cartas; i++) {
+        (*cartas)[i] = cartas_aux[i]; // passando as cartas remanescentes para o vetor original
+    }
+    free(cartas_aux);
+
+    // removendo o arquivo antigo e renomeando o arquivo temporario
+    remove("assets/data/cartas_copia.csv");
+    rename("assets/data/temp_file.csv", "assets/data/cartas_copia.csv");
+
+    rewind(arq_cartas);
+    printf("\n\033[3;92mCarta(s) removida(s) com sucesso!\033[m\n");
     return;
 }
