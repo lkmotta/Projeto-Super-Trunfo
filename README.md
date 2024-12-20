@@ -14,17 +14,12 @@
 ### Compilação
 Para compilar o projeto, utilize o comando:
 ```bash
-mingw32-make all
-```
-ou simplesmente:
-```bash
 mingw32-make
 ```
 
-### Execução
-Para executar o projeto, utilize o comando:
+### Executando o jogo
 ```bash
-./trunfo.exe
+mingw32-make run
 ```
 
 ### Limpeza
