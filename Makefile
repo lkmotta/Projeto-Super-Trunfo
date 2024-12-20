@@ -9,11 +9,11 @@ LDFLAGS =
 SRC = main.c funcaux.c filechange.c
 HEADERS = funcaux.h filechange.h
 OBJ = $(SRC:.c=.o)
-TARGET = trunfo.exe
+TARGET = trunfo
 
 # Detectar sistema operacional
 ifeq ($(OS),Windows_NT)
-	RM = del /f /q
+	RM = cmd /C del /f /q
 	TARGET := trunfo.exe
 else
 	RM = rm -f
