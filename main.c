@@ -1,4 +1,5 @@
 // usando chocolatey para instalar o make comandos: make para rodar o makefile e make clean para limpar os arquivos .o
+// mingw32-make para compilar
 
 #include <stdio.h>
 #include <stdlib.h>

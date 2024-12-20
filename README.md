@@ -7,9 +7,40 @@
 
 [![Licença](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<h2 style="color: red;font-weight: bold;">*EM DESENVOLVIMENTO*</h2>
+<h2 style="border:none;color: red;font-weight: bold;">*EM DESENVOLVIMENTO*</h2><br>
 
-<h3> FEITO COM</h3>
+<h2>COMANDOS MAKE</h2>
 
-![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)
-[![RayLib](https://img.shields.io/badge/RAYLIB-FFFFFF?style=for-the-badge&logo=raylib&logoColor=black)](https://www.raylib.com/)
+### Compilação
+Para compilar o projeto, utilize o comando:
+```bash
+mingw32-make all
+```
+ou simplesmente:
+```bash
+mingw32-make
+```
+
+### Execução
+Para executar o projeto, utilize o comando:
+```bash
+./trunfo.exe
+```
+
+### Limpeza
+Para limpar os arquivos objeto gerados durante a compilação, utilize o comando:
+```bash
+mingw32-make clean
+```
+Para limpar todos os arquivos objeto e o executável, utilize o comando:
+```bash
+mingw32-make clean_all
+```
+
+### Alertas
+- Certifique-se de ter o `mingw32-make` instalado no seu sistema. Caso contrário, instale-o utilizando o [Chocolatey](https://chocolatey.org/) com o comando:
+  ```bash
+  choco install make
+  ```
+- Se estiver utilizando um sistema operacional diferente do Windows, utilize `make` ao invés de `mingw32-make`.
+- Verifique se o `gcc` está instalado e configurado corretamente no seu PATH.

@@ -13,8 +13,6 @@
  * @param ptr_posicoesD 
  */
 void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, int **ptr_posicoesC, int **ptr_posicoesD, int *size) {
-    if(sistema()) setlocale(LC_ALL, "Portuguese_Brazil.1252");
-
     int cartas_add;
 
     printf("\nInsira quantas cartas desejar inserir (temos %i cartas): ", *size);
@@ -155,8 +153,6 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
  * @param num_cartas 
  */
 void listar_cartas(Cartas* carta, int num_cartas) {
-    if(sistema()) setlocale(LC_ALL, "Portuguese_Brazil.1252");
-
     printf("\nNúmero de cartas: %d\n", num_cartas);
 
     printf("\n%-21s | %-5s | %-6s | %-12s | %-6s | %-12s | %-12s | %-9s | %-12s\n", "NOME", "LETRA", "NUMERO", "SUPER-TRUNFO", "FORCA", "HABILIDADE", "VELOCIDADE", "PODERES", "PODER CURA");
@@ -175,7 +171,6 @@ void listar_cartas(Cartas* carta, int num_cartas) {
  * @param quantd_cartas quantidade de cartas
  */
 void remover_carta(Cartas** cartas, int* quantd_cartas) {
-    if(sistema()) setlocale(LC_ALL, "Portuguese_Brazil.1252");
     int quant_excluir = 0;
     char nome_excluir[TAM_NOME_CARTA];
 
@@ -244,8 +239,6 @@ void remover_carta(Cartas** cartas, int* quantd_cartas) {
  * @param num_cartas 
  */
 void alterar_carta(Cartas** cartas, int quantd_cartas){
-    if(sistema()) setlocale(LC_ALL, "Portuguese_Brazil.1252");;
-    
     char nome_alterar[TAM_NOME_CARTA];
     int atributo_alterar;
     int novo_valor;
@@ -308,8 +301,6 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
  * @param qnt_cartas Quantidade de cartas disponíveis
  */
 void buscar_carta(Cartas carta[], int qnt_cartas) {
-    if(sistema()) setlocale(LC_ALL, "Portuguese_Brazil.1252");;
-
     int sair = 0;
     do {
         printf("\nOpções de pesquisa:\n");
