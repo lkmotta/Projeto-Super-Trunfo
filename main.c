@@ -23,7 +23,7 @@ int main() {
     int size = 32;
     int criadoBin = 0;
     if (arqbin == NULL) {
-        printf("\033[1;93mBem-vindo!\033[1m Parece que Ã© a primeira vez que vocÃª estÃ¡ rodando o programa.\033[m\n");
+        printf("\033[1;93mBem-vindo!\033[1m Parece que que a primeira vez que você estão rodando o programa.\033[m\n");
         for (int i = 0; i < 32; i++) {
             cartas = (Cartas*) realloc(cartas, (i + 1) * sizeof(Cartas));
             if (cartas == NULL) {
