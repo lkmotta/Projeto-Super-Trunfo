@@ -13,16 +13,17 @@ TARGET = trunfo
 
 # Detectar sistema operacional
 ifeq ($(OS),Windows_NT)
-	RM = cmd /C del /f /q
-	TARGET := trunfo.exe
+    RM = cmd /C del /f /q
+    TARGET := trunfo.exe
+    RUN_CMD = $(TARGET)
 else
-	RM = rm -f
-	TARGET := trunfo
+    RM = rm -f
+    TARGET := trunfo
+    RUN_CMD = ./$(TARGET)
 endif
 
 # Regra padrao: compilar o executavel e abrir
 all: $(TARGET)
-	$(TARGET)
 
 # Regra para criar o executavel
 $(TARGET): $(OBJ)
@@ -31,6 +32,10 @@ $(TARGET): $(OBJ)
 # Regra para compilar arquivos .c em .o
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Regra para executar o programa
+run: $(TARGET)
+	$(RUN_CMD)
 
 # Limpeza dos arquivos .o e do executavel
 clean:
