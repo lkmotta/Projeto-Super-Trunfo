@@ -210,3 +210,30 @@ void buscar_por_numero(Cartas carta[], int qnt_cartas, int numero) {
         printf("\n---> Nenhuma carta encontrada com o número %d!\n", numero);
     }
 }
+
+/**
+ * @brief Função para exportar as cartas para um arquivo CSV
+ * 
+ * @param cartas Vetor de cartas
+ * @param quantd_cartas Quantidade de cartas disponíveis
+ */
+void exportar_csv(Cartas* cartas, int quantd_cartas){
+    FILE* arq_exportar = fopen("assets/data/cartas_exportadas.csv", "w+");
+    if(!arq_exportar){
+        perror("\nErro ao abrir/criar arquivo");
+        return;
+    }
+
+    // escrevendo cabeçalho do CSV
+    fprintf(arq_exportar, "NOME,LETRA,NUMERO,SUPER-TRUNFO,FORCA,HABILIDADE,VELOCIDADE,PODERES,PODER CURA\n");
+
+    for (int i = 0; i < quantd_cartas; i++) {
+        fprintf(arq_exportar, "%s,%c,%i,%i,%i,%i,%i,%i,%i\n",
+            cartas[i].nome, cartas[i].letra, cartas[i].num, cartas[i].super_trunfo,
+            cartas[i].atributo_1, cartas[i].atributo_2, cartas[i].atributo_3,
+            cartas[i].atributo_4, cartas[i].atributo_5);
+    }
+    fclose(arq_exportar);
+    printf("\n\033[3;92mCartas exportadas com sucesso!\033[m\n");
+    return;
+}

@@ -35,4 +35,5 @@ int validar_entrada(int min, int max, const char *mensagem);
 void buscar_por_atributo(Cartas carta[], int qnt_cartas, int atributo, int comparacao, int valor);
 void buscar_por_letra(Cartas carta[], int qnt_cartas, char letra);
 void buscar_por_numero(Cartas carta[], int qnt_cartas, int numero);
+void exportar_csv(Cartas* cartas, int quantd_cartas);
 #endif

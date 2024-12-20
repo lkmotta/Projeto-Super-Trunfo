@@ -12,14 +12,12 @@
  * @param ptr_posicoesC 
  * @param ptr_posicoesD 
  */
-void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, int **ptr_posicoesC, int **ptr_posicoesD) {
+void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, int **ptr_posicoesC, int **ptr_posicoesD,int *size) {
     if (sistema()) setlocale(LC_ALL, "pt-BR.UTF-8");
 
     int cartas_add;
-    int contaN = quant_cartas(arq_cartaCOPIA);
-    rewind(arq_cartaCOPIA);
 
-    printf("\nInsira quantas cartas desejar inserir (temos %i cartas): ", contaN);
+    printf("\nInsira quantas cartas desejar inserir (temos %i cartas): ", *size);
     do {
         scanf("%2d", &cartas_add);
         if (cartas_add < 1) {
@@ -31,7 +29,7 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
     setbuf(stdin, NULL);
 
     // Realloc para o vetor de cartas
-    *carta = realloc(*carta, (contaN + cartas_add) * sizeof(Cartas));
+    *carta = realloc(*carta, ((*size) + cartas_add) * sizeof(Cartas));
     if (*carta == NULL) {
         perror("Erro ao alocar memoria para cartas");
         return;
@@ -40,7 +38,7 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
     for (int i = 0; i < cartas_add; i++) {
         setbuf(stdin, NULL);
         printf("\nNome da carta: ");
-        burocracia((*carta)[contaN + i].nome, TAM_NOME_CARTA);
+        burocracia((*carta)[(*size) + i].nome, TAM_NOME_CARTA);
 
         char TentaLetra;
         int aux = 1;
@@ -112,15 +110,15 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
             }
         } while (sair);
 
-        (*carta)[contaN + i].letra = TentaLetra;
-        (*carta)[contaN + i].num = posi_procurada;
+        (*carta)[(*size) + i].letra = TentaLetra;
+        (*carta)[(*size) + i].num = posi_procurada;
 
         printf("\ntemos a posicao %i disponivel em %c\n\n", posi_procurada, TentaLetra);
 
         int existenciaDoSuper=0;
         int escolhaTrunfo;
 
-        for (int i = 0; i < contaN; i++)
+        for (int i = 0; i < (*size); i++)
         {
             if ((*carta)[i].super_trunfo==1)
             {
@@ -135,29 +133,23 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
             do {
                 printf("Super Trunfo?\n1 - sim\n2 - nao\n: ");
                 scanf("%i", &escolhaTrunfo);
-                (*carta)[contaN + i].super_trunfo = (escolhaTrunfo == 1) ? 1 : 0;
-            } while ((*carta)[contaN + i].super_trunfo != 1 && (*carta)[contaN + i].super_trunfo != 0);
+                (*carta)[(*size) + i].super_trunfo = (escolhaTrunfo == 1) ? 1 : 0;
+            } while ((*carta)[(*size) + i].super_trunfo != 1 && (*carta)[(*size) + i].super_trunfo != 0);
         }
 
         printf("\nForca: ");
-        (*carta)[contaN + i].atributo_1 = get_int();
+        (*carta)[(*size) + i].atributo_1 = get_int();
         printf("\nHabilidade: ");
-        (*carta)[contaN + i].atributo_2 = get_int();
+        (*carta)[(*size) + i].atributo_2 = get_int();
         printf("\nVelocidade: ");
-        (*carta)[contaN + i].atributo_3 = get_int();
+        (*carta)[(*size) + i].atributo_3 = get_int();
         printf("\nPoderes: ");
-        (*carta)[contaN + i].atributo_4 = get_int();
+        (*carta)[(*size) + i].atributo_4 = get_int();
         printf("\nPoder cura: ");
-        (*carta)[contaN + i].atributo_5 = get_int();
+        (*carta)[(*size) + i].atributo_5 = get_int();
 
-        fseek(arq_cartaCOPIA, 0, SEEK_END);
-        fprintf(arq_cartaCOPIA, "%s,%c,%i,%i,%i,%i,%i,%i,%i\n",
-            (*carta)[contaN + i].nome, (*carta)[contaN + i].letra, (*carta)[contaN + i].num,
-            (*carta)[contaN + i].super_trunfo, (*carta)[contaN + i].atributo_1, (*carta)[contaN + i].atributo_2,
-            (*carta)[contaN + i].atributo_3, (*carta)[contaN + i].atributo_4, (*carta)[contaN + i].atributo_5);
     }
-
-    rewind(arq_cartaCOPIA);
+    *size += cartas_add;
 }
 
 /**
@@ -288,7 +280,7 @@ void remover_carta(FILE* arq_cartas, Cartas** cartas, int quantd_cartas){
  * @param carta 
  * @param num_cartas 
  */
-void alterar_carta(FILE* arq_cartas,Cartas** cartas, int quantd_cartas){
+void alterar_carta(Cartas** cartas, int quantd_cartas){
     char nome_alterar[TAM_NOME_CARTA];
     int atributo_alterar;
     int novo_valor;
