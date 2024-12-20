@@ -11,14 +11,15 @@
 
 <h2>COMANDOS MAKE</h2>
 
-### Compilação e Execução
-Para compilar e executar o projeto automaticamente, utilize o comando:
-```bash
-mingw32-make all
-```
-ou simplesmente:
+### Compilação
+Para compilar o projeto, utilize o comando:
 ```bash
 mingw32-make
+```
+
+### Executando o jogo
+```bash
+mingw32-make run
 ```
 
 ### Limpeza
