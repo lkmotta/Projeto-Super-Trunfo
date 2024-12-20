@@ -1,5 +1,8 @@
-// Comando de compila√ß√£o
+// Comando de compilacao
 // gcc *.c -o main.exe
+// makefile atual somente em windows
+// usando chocolatey para instalar o make comandos: make para rodar o makefile e make clean para limpar os arquivos .o
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,35 +14,50 @@
 
 int main() {
     if (sistema()) {
-        setlocale(LC_ALL, "pt-BR.UTF-8");
+        setlocale(LC_ALL, "portuquese");
         system("cls");
     } else {
         system("clear");
     }
 
     // Abrindo arquivos
+    FILE *arqbin = fopen("assets/data/arqbin.bin", "rb+");
     FILE *arq_cartas = abrir_arquivo("assets/data/cartas.csv", "r");
-    FILE *arq_cartasCOPY = abrir_arquivo("assets/data/cartas_copia.csv", "w+");
+    FILE *arq_cartasCOPY = abrir_arquivo("assets/data/cartas_temp.csv", "w+");
 
-    // Copiando as primeiras 32 linhas para a copia
-    char linha_csv[256]; // buffer
-    for (int i = 0; i < 32; i++) {
-        fscanf(arq_cartas, "%[^\n]\n", linha_csv);
-        fprintf(arq_cartasCOPY, "%s\n", linha_csv);
+    if (arqbin == NULL) {
+        printf("Bem-vindo! Parece que È a primeira vez que vocÍ est· rodando o programa.\n");
+        char linha_csv[1024]; // buffer
+        for (int i = 0; i < 32; i++) {
+            fscanf(arq_cartas, "%[^\n]\n", linha_csv);
+            fprintf(arq_cartasCOPY, "%s\n", linha_csv);
+        }
+    } else {
+        printf("Bem-vindo de volta!\n");
+        char buffer[1024];
+        size_t bytesRead;
+        while ((bytesRead = fread(buffer, sizeof(char), sizeof(buffer), arqbin)) > 0) {
+            fwrite(buffer, sizeof(char), bytesRead, arq_cartasCOPY);
+        }
     }
-    rewind(arq_cartas);
+    fclose(arqbin);
+    fclose(arq_cartas);
     rewind(arq_cartasCOPY);
 
+
+    // Copiando as primeiras n_cartas linhas para a copia
+    int n_cartas = quant_cartas(arq_cartasCOPY); // quantidade de cartas no arquivo
+    printf("\nQuantidade de cartas: %i\n", n_cartas);
     // Alocar cartas
-    Cartas *cartas = (Cartas *)malloc(32 * sizeof(Cartas));
+    Cartas *cartas = (Cartas *)malloc( n_cartas* sizeof(Cartas));
     if (cartas == NULL) {
         perror("\nErro ao alocar memoria para cartas");
         exit(1);
     }
 
     // Preenchendo cartas a partir do arquivo base
-    for (int i = 0; i < 32; i++) {
-        fscanf(arq_cartas, "%[^,],%c,%i,%i,%i,%i,%i,%i,%i\n", 
+    for (int i = 0; i < n_cartas; i++) {
+        fscanf(arq_cartasCOPY, "%[^,],%c,%i,%i,%i,%i,%i,%i,%i\n", 
             cartas[i].nome, 
             &cartas[i].letra, 
             &cartas[i].num, 
@@ -50,26 +68,35 @@ int main() {
             &cartas[i].atributo_4, 
             &cartas[i].atributo_5);
     }
-    fclose(arq_cartas);
 
-    int n_cartas = quant_cartas(arq_cartasCOPY); // quantidade de cartas no arquivo
 
     // Inicializar posicoes ocupadas para cada letra
-    int *ptr_posicoesA = (int*) malloc(8 * sizeof(int));
-    int *ptr_posicoesB = (int*) malloc(8 * sizeof(int));
-    int *ptr_posicoesC = (int*) malloc(8 * sizeof(int));
-    int *ptr_posicoesD = (int*) malloc(8 * sizeof(int));
-
-    if (!ptr_posicoesA || !ptr_posicoesB || !ptr_posicoesC || !ptr_posicoesD) {
-        perror("\nErro ao alocar memoria para posicoes");
-        exit(1);
-    }
+    int *ptr_posicoesA = NULL;
+    int *ptr_posicoesB = NULL;
+    int *ptr_posicoesC = NULL;
+    int *ptr_posicoesD = NULL;
+    int sizeA = 0, sizeB = 0, sizeC = 0, sizeD = 0;
 
     for (int i = 0; i < 8; i++) {
-        ptr_posicoesA[i] = i + 1;
-        ptr_posicoesB[i] = i + 1;
-        ptr_posicoesC[i] = i + 1;
-        ptr_posicoesD[i] = i + 1;
+        for (int j = 0; j < n_cartas; j++) {
+            if (cartas[j].letra == 'A' && cartas[j].num == i + 1) {
+                sizeA++;
+                ptr_posicoesA = realloc(ptr_posicoesA, sizeA * sizeof(int));
+                ptr_posicoesA[sizeA - 1] = i + 1;
+            } else if (cartas[j].letra == 'B' && cartas[j].num == i + 1) {
+                sizeB++;
+                ptr_posicoesB = realloc(ptr_posicoesB, sizeB * sizeof(int));
+                ptr_posicoesB[sizeB - 1] = i + 1;
+            } else if (cartas[j].letra == 'C' && cartas[j].num == i + 1) {
+                sizeC++;
+                ptr_posicoesC = realloc(ptr_posicoesC, sizeC * sizeof(int));
+                ptr_posicoesC[sizeC - 1] = i + 1;
+            } else if (cartas[j].letra == 'D' && cartas[j].num == i + 1) {
+                sizeD++;
+                ptr_posicoesD = realloc(ptr_posicoesD, sizeD * sizeof(int));
+                ptr_posicoesD[sizeD - 1] = i + 1;
+            }
+        }
     }
 
     int sair = 0, escolha;
@@ -98,7 +125,7 @@ int main() {
             // Implementar funcao de pesquisa
             break;
         case 4:
-            // Implementar funcao de alteracao
+            alterar_carta(arq_cartasCOPY, &cartas, n_cartas);
             break;
         case 5:
             remover_carta(arq_cartasCOPY, &cartas, n_cartas);
@@ -113,13 +140,26 @@ int main() {
         }
     } while (!sair);
 
+    // Atualizar arquivo binario
+    fseek(arqbin, 0, SEEK_SET);
+    arqbin = fopen("assets/data/arqbin.bin", "wb+");
+    fwrite(cartas, sizeof(Cartas), n_cartas, arqbin);
+
+    fclose(arqbin);
+    fclose(arq_cartasCOPY);
+
+    // Remover o arquivo
+    if (remove("assets/data/cartas_temp.csv") == 0) {
+        printf("Arquivo removido com sucesso.\n");
+    } else {
+        perror("Erro ao remover o arquivo");
+    }
     // Liberar memoria alocada e fechar arquivos
     free(ptr_posicoesA);
     free(ptr_posicoesB);
     free(ptr_posicoesC);
     free(ptr_posicoesD);
     free(cartas);
-    fclose(arq_cartasCOPY);
 
     return 0;
 }

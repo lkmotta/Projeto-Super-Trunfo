@@ -15,7 +15,7 @@
 void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, int **ptr_posicoesC, int **ptr_posicoesD) {
     if (sistema()) setlocale(LC_ALL, "pt-BR.UTF-8");
 
-    int cartas_add, conta_super_trunfo = 0;
+    int cartas_add;
     int contaN = quant_cartas(arq_cartaCOPIA);
     rewind(arq_cartaCOPIA);
 
@@ -43,7 +43,6 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
         burocracia((*carta)[contaN + i].nome, TAM_NOME_CARTA);
 
         char TentaLetra;
-        int colunaLetra;
         int aux = 1;
         int posi_procurada = 0;
         int sair = 1;
@@ -118,12 +117,27 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
 
         printf("\ntemos a posicao %i disponivel em %c\n\n", posi_procurada, TentaLetra);
 
+        int existenciaDoSuper=0;
         int escolhaTrunfo;
-        do {
-            printf("Super Trunfo?\n1 - sim\n2 - nao\n: ");
-            scanf("%i", &escolhaTrunfo);
-            (*carta)[contaN + i].super_trunfo = (escolhaTrunfo == 1) ? 1 : 0;
-        } while ((*carta)[contaN + i].super_trunfo != 1 && (*carta)[contaN + i].super_trunfo != 0);
+
+        for (int i = 0; i < contaN; i++)
+        {
+            if ((*carta)[i].super_trunfo==1)
+            {
+                existenciaDoSuper=1;
+            }
+        }
+
+        if (existenciaDoSuper==1)
+        {
+            printf("já existe um super-Trunfo\n\n");
+        }else{
+            do {
+                printf("Super Trunfo?\n1 - sim\n2 - nao\n: ");
+                scanf("%i", &escolhaTrunfo);
+                (*carta)[contaN + i].super_trunfo = (escolhaTrunfo == 1) ? 1 : 0;
+            } while ((*carta)[contaN + i].super_trunfo != 1 && (*carta)[contaN + i].super_trunfo != 0);
+        }
 
         printf("\nForca: ");
         (*carta)[contaN + i].atributo_1 = get_int();
@@ -154,12 +168,12 @@ void inserir_cartas(FILE *arq_cartaCOPIA, Cartas **carta, int **ptr_posicoesA, i
 void listar_cartas(Cartas* carta, int num_cartas) {
     if(sistema()) setlocale(LC_ALL, "pt-BR.UTF-8");
 
-    printf("\nNumero de cartas: %ld\n", sizeof(carta));
+    printf("\nNumero de cartas: %d\n", num_cartas);
 
-    printf("\n%-21s | %-6s | %-9s | %-12s | %-6s | %-12s | %-12s | %-9s | %-12s\n", "NOME", "LETRA", "NUMERO", "SUPER-TRUNFO", "FORCA", "HABILIDADE", "VELOCIDADE", "PODERES", "PODER CURA");
+    printf("\n%-21s | %-5s | %-6s | %-12s | %-6s | %-12s | %-12s | %-9s | %-12s\n", "NOME", "LETRA", "NUMERO", "SUPER-TRUNFO", "FORCA", "HABILIDADE", "VELOCIDADE", "PODERES", "PODER CURA");
 
     for (int i = 0; i < num_cartas; i++) {
-        printf("%-21s | %-6c | %-9d | %-12d | %-6d | %-12d | %-12d | %-9d | %-12d\n",
+        printf("%-21s | %-5c | %-6d | %-12d | %-6d | %-12d | %-12d | %-9d | %-12d\n",
             carta[i].nome, carta[i].letra, carta[i].num, carta[i].super_trunfo,
             carta[i].atributo_1, carta[i].atributo_2, carta[i].atributo_3, carta[i].atributo_4, carta[i].atributo_5);
     }
@@ -173,6 +187,12 @@ void listar_cartas(Cartas* carta, int num_cartas) {
  * @param quantd_cartas
  */
 void remover_carta(FILE* arq_cartas, Cartas** cartas, int quantd_cartas){
+
+
+    printf("\n\033[1m\033[3mcCom defeito !!!!!!!!!!!!!!!!!\n\033[m\n");
+    return;
+
+
     int quant_excluir = 0;
     char nome_excluir[TAM_NOME_CARTA];
 
@@ -260,3 +280,130 @@ void remover_carta(FILE* arq_cartas, Cartas** cartas, int quantd_cartas){
     printf("\n\033[3;92mCarta(s) removida(s) com sucesso!\033[m\n");
     return;
 }
+
+/**
+ * @brief Função para editar uma carta
+ * 
+ * @param arq_carta 
+ * @param carta 
+ * @param num_cartas 
+ */
+void alterar_carta(FILE* arq_cartas,Cartas** cartas, int quantd_cartas){
+    char nome_alterar[TAM_NOME_CARTA];
+    int atributo_alterar;
+    int novo_valor;
+    int posicao;
+    int achou=0;
+    setbuf(stdin,NULL);
+    printf("qual o nome da carta que deseja alterar: ");
+    burocracia(nome_alterar,TAM_NOME_CARTA);
+    for (int i = 0; i < quantd_cartas; i++)
+    {
+        if (strcasecmp(nome_alterar,(*cartas)[i].nome)==0)
+        {
+            posicao=i;
+            do
+            {
+                printf("\n1 - forca: %i\n2 - Habilidade: %i\n3 - Velocidade: %i\n4 - Poderes: %i\n5 - Poder cura: %i\nqual deseja alterar: ",(*cartas)[posicao].atributo_1, (*cartas)[posicao].atributo_2, (*cartas)[posicao].atributo_3, (*cartas)[posicao].atributo_4, (*cartas)[posicao].atributo_5);
+                atributo_alterar=get_int();
+                if (atributo_alterar>5 || atributo_alterar==0)
+                {
+                    printf("número inválido\n");
+                }
+                
+            } while (atributo_alterar>5 || atributo_alterar==0);
+            printf("qual o novo valor do atributo: ");
+            novo_valor=get_int();
+            
+            switch (atributo_alterar)
+            {
+            case 1:
+                (*cartas)[i].atributo_1=novo_valor;
+                break;
+            case 2:
+                (*cartas)[i].atributo_2=novo_valor;
+                break;
+            case 3:
+                (*cartas)[i].atributo_3=novo_valor;
+                break;
+            case 4:
+                (*cartas)[i].atributo_4=novo_valor;
+                break;
+            case 5:
+                (*cartas)[i].atributo_5=novo_valor;
+                break;
+            }
+            achou=1;
+            printf("\n\ncarta atualizada:\n");
+            printf("\n\nnome: %-21s \nforca: %-6d \nhabilidade: %-12d\nvelocidade:  %-12d\nPoderes: %-9d \npode cura:  %-12d\n",
+            (*cartas)[posicao].nome,(*cartas)[posicao].atributo_1, (*cartas)[posicao].atributo_2, (*cartas)[posicao].atributo_3, (*cartas)[posicao].atributo_4, (*cartas)[posicao].atributo_5);        
+            printf("\n\033[3;92mCarta alterada com sucesso!\033[m\n");
+            break;
+        }
+        
+    }
+    if (achou==0)
+    {
+        printf("não foi achado\n");
+    }
+    
+}
+
+/**
+ * @brief Função principal para gerenciamento de busca de cartas
+ * 
+ * @param carta Vetor de cartas
+ * @param qnt_cartas Quantidade de cartas disponíveis
+ */
+void buscar_carta(Cartas carta[], int qnt_cartas) {
+    setlocale(LC_ALL, "Portuguese");
+
+    int sair = 0;
+    do {
+        printf("\nOpções de pesquisa:\n");
+        printf("1 - Pesquisar por Atributo\n");
+        printf("2 - Pesquisar por Letra\n");
+        printf("3 - Pesquisar por Número\n");
+        printf("4 - Sair\n");
+
+        int escolha = validar_entrada(1, 4, "Escolha uma opção: ");
+
+        switch (escolha) {
+            case PESQ_ATRIBUTO: {
+                printf("\n=== Pesquisar por Atributo ===\n");
+                int escolha_atributo = validar_entrada(1, 6, "Escolha um atributo (1 a 5, ou 6 para sair): ");
+                if (escolha_atributo == 6) break;
+
+                int valor_comparado = validar_entrada(0, 100, "Digite o valor para comparação: ");
+                int comparacao = validar_entrada(1, 2, "1 - Maior que, 2 - Menor que: ");
+                buscar_por_atributo(carta, qnt_cartas, escolha_atributo, comparacao, valor_comparado);
+                break;
+            }
+            case PESQ_LETRA: {
+                printf("\n=== Pesquisar por Letra ===\n");
+                char letra;
+                do {
+                    printf("Digite uma letra: ");
+                    scanf(" %c", &letra);
+                    letra = toupper(letra);
+                    if (letra < 'A' || letra > 'Z') {
+                        printf("\033[1;91mEntrada inválida! Insira uma letra de A a Z.\033[m\n");
+                    }
+                } while (letra < 'A' || letra > 'Z');
+                buscar_por_letra(carta, qnt_cartas, letra);
+                break;
+            }
+            case PESQ_NUMERO: {
+                printf("\n=== Pesquisar por Número ===\n");
+                int numero = validar_entrada(1, 100, "Digite o número: ");
+                buscar_por_numero(carta, qnt_cartas, numero);
+                break;
+            }
+            case SAIR:
+                sair = 1;
+                printf("\nSaindo...\n");
+                break;
+        }
+    } while (!sair);
+}
+    
