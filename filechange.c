@@ -16,8 +16,6 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
     if (sistema()) setlocale(LC_ALL, "pt-BR.UTF-8");
 
     int cartas_add;
-    //int contaN = quant_cartas(arq_cartaCOPIA);
-    //rewind(arq_cartaCOPIA);
 
     printf("\nInsira quantas cartas desejar inserir (temos %i cartas): ", *size);
     do {

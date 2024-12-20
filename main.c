@@ -127,7 +127,6 @@ int main() {
             break;
         case 5:
             //remover_carta(arq_cartasCOPY, &cartas, size);
-            //n_cartas = quant_cartas(arq_cartasCOPY);
             break;
         case 6:
             exportar_csv(cartas, size);
