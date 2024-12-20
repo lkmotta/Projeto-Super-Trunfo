@@ -76,7 +76,7 @@ int main() {
     int *ptr_posicoesD = NULL;
     int sizeA = 0, sizeB = 0, sizeC = 0, sizeD = 0;
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             if (cartas[j].letra == 'A' && cartas[j].num == i + 1) {
                 sizeA++;
