@@ -20,8 +20,9 @@ else
 	TARGET := trunfo
 endif
 
-# Regra padrao: compilar o executavel
+# Regra padrao: compilar o executavel e abrir
 all: $(TARGET)
+	$(TARGET)
 
 # Regra para criar o executavel
 $(TARGET): $(OBJ)

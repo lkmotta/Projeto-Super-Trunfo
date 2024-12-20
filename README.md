@@ -11,20 +11,14 @@
 
 <h2>COMANDOS MAKE</h2>
 
-### Compilação
-Para compilar o projeto, utilize o comando:
+### Compilação e Execução
+Para compilar e executar o projeto automaticamente, utilize o comando:
 ```bash
 mingw32-make all
 ```
 ou simplesmente:
 ```bash
 mingw32-make
-```
-
-### Execução
-Para executar o projeto, utilize o comando:
-```bash
-trunfo
 ```
 
 ### Limpeza
