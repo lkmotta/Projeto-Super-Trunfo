@@ -11,6 +11,15 @@ HEADERS = funcaux.h filechange.h
 OBJ = $(SRC:.c=.o)
 TARGET = trunfo.exe
 
+# Detectar sistema operacional
+ifeq ($(OS),Windows_NT)
+	RM = del /f /q
+	TARGET := trunfo.exe
+else
+	RM = rm -f
+	TARGET := trunfo
+endif
+
 # Regra padrao: compilar o executavel
 all: $(TARGET)
 
@@ -24,7 +33,7 @@ $(TARGET): $(OBJ)
 
 # Limpeza dos arquivos .o e do executavel
 clean:
-	del /f /q *.o
+	$(RM) *.o
 
 clean_all: clean
-	del /f /q $(TARGET)
+	$(RM) $(TARGET)

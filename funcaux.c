@@ -2,7 +2,7 @@
 #include "funcaux.h"
 
 /**
- * @brief Retorna 1(true) se o S.O. ser Windows, retorna 0(false) caso contrario.
+ * @brief Retorna 1(true) se o S.O. Ã© Windows, retorna 0(false) caso contrÃ¡rio.
  * 
  * @return int 
  */
@@ -52,7 +52,7 @@ int quant_cartas(FILE* arquivo) {
     int count = 0;
     char buffer[1024];
 
-    rewind(arquivo); // voltando o ponteiro para o início
+    rewind(arquivo); // voltando o ponteiro para o inÃ­cio
     while (fgets(buffer, sizeof(buffer), arquivo) != NULL) {
         count++;
     }
@@ -109,11 +109,11 @@ int verify_int_in_vetor(int* vetor, int size_vetor, int valor){
     return 0; // valor nÃ£o encontrado
 }
 /**
- * @brief Função para validar entrada inteira
+ * @brief FunÃ§Ã£o para validar entrada inteira
  * 
- * @param min Valor mínimo aceitável
- * @param max Valor máximo aceitável
- * @param mensagem Mensagem exibida ao usuário para entrada
+ * @param min Valor mÃ­nimo aceitÃ¡vel
+ * @param max Valor mÃ¡ximo aceitÃ¡vel
+ * @param mensagem Mensagem exibida ao usuÃ¡rio para entrada
  * 
  * @return int Valor inteiro validado dentro do intervalo especificado
  */
@@ -123,7 +123,7 @@ int validar_entrada(int min, int max, const char *mensagem) {
         printf("%s", mensagem);
         if (scanf("%d", &valor) != 1 || valor < min || valor > max) {
             setbuf(stdin, NULL);
-            printf("\033[1;91mEntrada inválida! Insira um número entre %d e %d.\033[m\n", min, max);
+            printf("\033[1;91mEntrada invÃ¡lida! Insira um nÃºmero entre %d e %d.\033[m\n", min, max);
         } else {
             break;
         }
@@ -131,16 +131,16 @@ int validar_entrada(int min, int max, const char *mensagem) {
     return valor;
 }
 /**
- * @brief Função para buscar cartas com base em um atributo específico
+ * @brief Funï¿½ï¿½o para buscar cartas com base em um atributo especï¿½fico
  * 
  * @param carta Vetor de cartas
- * @param qnt_cartas Quantidade de cartas disponíveis
+ * @param qnt_cartas Quantidade de cartas disponï¿½veis
  * @param atributo Atributo escolhido para pesquisa (1 a 5)
- * @param comparacao Tipo de comparação (1 para maior que, 2 para menor que)
- * @param valor Valor base para comparação
+ * @param comparacao Tipo de comparaï¿½ï¿½o (1 para maior que, 2 para menor que)
+ * @param valor Valor base para comparaï¿½ï¿½o
  */
 void buscar_por_atributo(Cartas carta[], int qnt_cartas, int atributo, int comparacao, int valor) {
-    const char *atributos[] = {"Força", "Habilidade", "Velocidade", "Poderes", "Poder de Cura"};
+    const char *atributos[] = {"Forï¿½a", "Habilidade", "Velocidade", "Poderes", "Poder de Cura"};
     printf("--%s--\n", atributos[atributo - 1]);
 
     int contador = 0;
@@ -161,18 +161,16 @@ void buscar_por_atributo(Cartas carta[], int qnt_cartas, int atributo, int compa
     }
 
     if (contador == 0) {
-        printf("\n---> Nenhuma carta encontrada com esses critérios!\n");
+        printf("\n---> Nenhuma carta encontrada com esses critÃ©rios!\n");
     }
 }
 
-
-
 /**
- * @brief Função para buscar cartas por uma letra específica
+ * @brief FunÃ§Ã£o para buscar cartas por uma letra especï¿½fica
  * 
  * @param carta Vetor de cartas
- * @param qnt_cartas Quantidade de cartas disponíveis
- * @param letra Letra utilizada como critério de busca
+ * @param qnt_cartas Quantidade de cartas disponï¿½veis
+ * @param letra Letra utilizada como critï¿½rio de busca
  */
 void buscar_por_letra(Cartas carta[], int qnt_cartas, char letra) {
     int contador = 0;
@@ -188,14 +186,12 @@ void buscar_por_letra(Cartas carta[], int qnt_cartas, char letra) {
     }
 }
 
-
-
 /**
- * @brief Função para buscar cartas por número
+ * @brief Funï¿½ï¿½o para buscar cartas por nï¿½mero
  * 
  * @param carta Vetor de cartas
- * @param qnt_cartas Quantidade de cartas disponíveis
- * @param numero Número utilizado como critério de busca
+ * @param qnt_cartas Quantidade de cartas disponï¿½veis
+ * @param numero Nï¿½mero utilizado como critï¿½rio de busca
  */
 void buscar_por_numero(Cartas carta[], int qnt_cartas, int numero) {
     int contador = 0;
@@ -207,15 +203,15 @@ void buscar_por_numero(Cartas carta[], int qnt_cartas, int numero) {
     }
 
     if (contador == 0) {
-        printf("\n---> Nenhuma carta encontrada com o número %d!\n", numero);
+        printf("\n---> Nenhuma carta encontrada com o nÃºmero %d!\n", numero);
     }
 }
 
 /**
- * @brief Função para exportar as cartas para um arquivo CSV
+ * @brief Funï¿½ï¿½o para exportar as cartas para um arquivo CSV
  * 
  * @param cartas Vetor de cartas
- * @param quantd_cartas Quantidade de cartas disponíveis
+ * @param quantd_cartas Quantidade de cartas disponï¿½veis
  */
 void exportar_csv(Cartas* cartas, int quantd_cartas){
     FILE* arq_exportar = fopen("assets/data/cartas_exportadas.csv", "w+");
@@ -224,7 +220,7 @@ void exportar_csv(Cartas* cartas, int quantd_cartas){
         return;
     }
 
-    // escrevendo cabeçalho do CSV
+    // escrevendo cabeï¿½alho do CSV
     fprintf(arq_exportar, "NOME,LETRA,NUMERO,SUPER-TRUNFO,FORCA,HABILIDADE,VELOCIDADE,PODERES,PODER CURA\n");
 
     for (int i = 0; i < quantd_cartas; i++) {

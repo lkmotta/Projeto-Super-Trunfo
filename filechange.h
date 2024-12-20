@@ -9,7 +9,7 @@
 
 void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, int **ptr_posicoesC, int **ptr_posicoesD,int *size);
 void listar_cartas(Cartas* carta, int num_cartas);
-void remover_carta(FILE* arq_cartas, Cartas** cartas, int quantd_cartas);
+void remover_carta(Cartas** cartas, int* quantd_cartas);
 void alterar_carta(Cartas** cartas, int quantd_cartas);
 void buscar_carta(Cartas carta[], int qnt_cartas);
 #endif

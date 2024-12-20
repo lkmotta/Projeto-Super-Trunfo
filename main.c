@@ -1,8 +1,4 @@
-// Comando de compilacao
-// gcc *.c -o main.exe
-// makefile atual somente em windows
 // usando chocolatey para instalar o make comandos: make para rodar o makefile e make clean para limpar os arquivos .o
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,29 +7,28 @@
 #include "funcaux.h"
 #include "filechange.h"
 
-
 int main() {
     if (sistema()) {
         setlocale(LC_ALL, "Portuguese_Brazil.1252");
-        system("cls");
+        system("cls"); // limpando o prompt de comando -> Windows
     } else {
-        system("clear");
+        system("clear"); // limpando o terminal -> Linux
     }
 
     // Abrindo arquivos
     FILE *arqbin = fopen("assets/data/arqbin.bin", "rb+");
     FILE *arq_cartas = abrir_arquivo("assets/data/cartas.csv", "r");
     Cartas *cartas = NULL;
-    int size=32;
+    int size = 32;
     int criadoBin = 0;
     if (arqbin == NULL) {
-        printf("Bem-vindo! Parece que é a primeira vez que você está rodando o programa.\n");
+        printf("\033[1;93mBem-vindo!\033[1m Parece que Ã© a primeira vez que vocÃª estÃ¡ rodando o programa.\033[m\n");
         for (int i = 0; i < 32; i++) {
-            cartas = (Cartas *)realloc(cartas, (i + 1) * sizeof(Cartas));
+            cartas = (Cartas*) realloc(cartas, (i + 1) * sizeof(Cartas));
             if (cartas == NULL) {
-                perror("\nErro ao alocar memoria para cartas");
+                perror("\n\033[1;91mErro ao alocar memoria para cartas\033[m");
                 exit(1);
-            } 
+            }
             fscanf(arq_cartas, "%[^,],%c,%i,%i,%i,%i,%i,%i,%i\n", 
                 cartas[i].nome, 
                 &cartas[i].letra, 
@@ -46,25 +41,22 @@ int main() {
                 &cartas[i].atributo_5);
             }
     } else {
-        printf("Bem-vindo de volta!\n");
+        printf("\033[1;93mBem-vindo de volta!\033[m\n");
         fseek(arqbin, 0, SEEK_END);
-        size = ftell(arqbin)/sizeof(Cartas);
+        size = ftell(arqbin) / sizeof(Cartas);
         fseek(arqbin, 0, SEEK_SET);
 
-        cartas = (Cartas *)malloc( size* sizeof(Cartas));
+        cartas = (Cartas*) malloc(size * sizeof(Cartas));
         if (cartas == NULL) {
             perror("\nErro ao alocar memoria para cartas");
             exit(1);
         } else {
             fread(cartas, sizeof(Cartas), size, arqbin);
         }
-        criadoBin=1;
+        criadoBin = 1;
     }
-    if (criadoBin)
-    {
-        fclose(arqbin);
-    }
-    
+    if (criadoBin) fclose(arqbin);
+
     fclose(arq_cartas);
     
     printf("\nQuantidade de cartas: %i\n", size);
@@ -100,9 +92,9 @@ int main() {
 
     int sair = 0, escolha;
 
-    // Loop do Menu Principal
+    // Menu Principal
     do {
-         printf("\nEscolha uma opcao:\n1 - Inserir cartas\n2 - Listar as cartas\n3 - Pesquisar uma carta\n4 - Alterar uma carta\n5 - Excluir carta\n6 - Exportar CSV\n7 - Sair\n: ");
+        printf("\nEscolha uma opcao:\n1 - Inserir cartas\n2 - Listar as cartas\n3 - Pesquisar uma carta\n4 - Alterar uma carta\n5 - Excluir carta\n6 - Exportar CSV\n7 - Sair\n: ");
         fflush(stdout);
 
         do {
@@ -126,7 +118,7 @@ int main() {
             alterar_carta(&cartas, size);
             break;
         case 5:
-            //remover_carta(arq_cartasCOPY, &cartas, size);
+            remover_carta(&cartas, &size);
             break;
         case 6:
             exportar_csv(cartas, size);
