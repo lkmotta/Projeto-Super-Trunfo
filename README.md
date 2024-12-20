@@ -24,7 +24,7 @@ mingw32-make
 ### Execução
 Para executar o projeto, utilize o comando:
 ```bash
-./trunfo.exe
+trunfo
 ```
 
 ### Limpeza
