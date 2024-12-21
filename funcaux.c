@@ -24,7 +24,7 @@ int sistema() {
 FILE* abrir_arquivo(const char nome_arq[], const char mode[]) {
     FILE* arquivo = fopen(nome_arq, mode);
     if (arquivo == NULL) {
-        perror("\n\033[1;91mNÃ£o foi possÃ­vel abrir o arquivo!\033[m");
+        perror("\n\033[1;91mNão foi possível abrir o arquivo!\033[m");
         exit(EXIT_FAILURE);
     }
     return arquivo;
@@ -123,7 +123,7 @@ int validar_entrada(int min, int max, const char *mensagem) {
         printf("%s", mensagem);
         if (scanf("%d", &valor) != 1 || valor < min || valor > max) {
             setbuf(stdin, NULL);
-            printf("\033[1;91mEntrada invÃ¡lida! Insira um nÃºmero entre %d e %d.\033[m\n", min, max);
+            printf("\033[1;91mEntrada inválida! Insira um número entre %d e %d.\033[m\n", min, max);
         } else {
             break;
         }
@@ -140,7 +140,7 @@ int validar_entrada(int min, int max, const char *mensagem) {
  * @param valor Valor base para comparaï¿½ï¿½o
  */
 void buscar_por_atributo(Cartas carta[], int qnt_cartas, int atributo, int comparacao, int valor) {
-    const char *atributos[] = {"Forï¿½a", "Habilidade", "Velocidade", "Poderes", "Poder de Cura"};
+    const char *atributos[] = {"Força", "Habilidade", "Velocidade", "Poderes", "Poder de Cura"};
     printf("--%s--\n", atributos[atributo - 1]);
 
     int contador = 0;
@@ -161,7 +161,7 @@ void buscar_por_atributo(Cartas carta[], int qnt_cartas, int atributo, int compa
     }
 
     if (contador == 0) {
-        printf("\n---> Nenhuma carta encontrada com esses critÃ©rios!\n");
+        printf("\n---> Nenhuma carta encontrada com esses critérios!\n");
     }
 }
 
@@ -203,7 +203,7 @@ void buscar_por_numero(Cartas carta[], int qnt_cartas, int numero) {
     }
 
     if (contador == 0) {
-        printf("\n---> Nenhuma carta encontrada com o nÃºmero %d!\n", numero);
+        printf("\n---> Nenhuma carta encontrada com o número %d!\n", numero);
     }
 }
 

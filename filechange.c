@@ -19,7 +19,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
     do {
         scanf("%2d", &cartas_add);
         if (cartas_add < 1) {
-            printf("\n\033[1;91mNÃºmero invalido.\033[1m Digite um numero positivo > 0:\033[m ");
+            printf("\n\033[1;91mNúmero invalido.\033[1m Digite um numero positivo > 0:\033[m ");
         } else break;
         setbuf(stdin, NULL);
     } while (1);
@@ -111,7 +111,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         (*carta)[(*size) + i].letra = TentaLetra;
         (*carta)[(*size) + i].num = posi_procurada;
 
-        printf("\nTemos a posiÃ§Ã£o %i disponÃ­vel em %c\n\n", posi_procurada, TentaLetra);
+        printf("\nTemos a posição %i disponível em %c\n\n", posi_procurada, TentaLetra);
 
         int existenciaDoSuper=0;
         int escolhaTrunfo;
@@ -123,7 +123,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         }
 
         if (existenciaDoSuper==1){
-            printf("\033[1mJÃ¡ existe um Super-Trunfo\033[m\n");
+            printf("\033[1mJá existe um Super-Trunfo\033[m\n");
         }else{
             do {
                 printf("Super Trunfo?\n1 - Sim\n2 - NÃ£o\n: ");
@@ -132,7 +132,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
             } while ((*carta)[(*size) + i].super_trunfo != 1 && (*carta)[(*size) + i].super_trunfo != 0);
         }
 
-        printf("\nForÃ§a: ");
+        printf("\nForça: ");
         (*carta)[(*size) + i].atributo_1 = get_int();
         printf("\nHabilidade: ");
         (*carta)[(*size) + i].atributo_2 = get_int();
@@ -153,7 +153,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
  * @param num_cartas 
  */
 void listar_cartas(Cartas* carta, int num_cartas) {
-    printf("\nNÃºmero de cartas: %d\n", num_cartas);
+    printf("\nNúmero de cartas: %d\n", num_cartas);
 
     printf("\n%-21s | %-5s | %-6s | %-12s | %-6s | %-12s | %-12s | %-9s | %-12s\n", "NOME", "LETRA", "NUMERO", "SUPER-TRUNFO", "FORCA", "HABILIDADE", "VELOCIDADE", "PODERES", "PODER CURA");
 
@@ -191,11 +191,11 @@ void remover_carta(Cartas** cartas, int* quantd_cartas) {
         burocracia(nome_excluir, TAM_NOME_CARTA);
         posicao = get_pos_carta(cartas, *quantd_cartas, nome_excluir);
         if (posicao == -1) {
-            printf("\n\033[1m\033[3mCarta nÃ£o encontrada.\033[m\n");
+            printf("\n\033[1m\033[3mCarta não encontrada.\033[m\n");
             i--;
             continue;
         } else if (verify_int_in_vetor(pos_excluir, quant_excluir, posicao)) {
-            printf("\n\033[1m\033[3mCarta jÃ¡ inserida.\033[m\n");
+            printf("\n\033[1m\033[3mCarta já inserida.\033[m\n");
             i--;
             continue;
         } else pos_excluir[i] = posicao;
@@ -251,7 +251,7 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
         burocracia(nome_alterar,TAM_NOME_CARTA);
         posicao = get_pos_carta(cartas, quantd_cartas, nome_alterar);
         if (posicao == -1){
-            printf("\n\033[1m\033[3mCarta nÃ£o encontrada.\033[1m Insira um nome vÃ¡lido: \n");
+            printf("\n\033[1m\033[3mCarta não encontrada.\033[1m Insira um nome válido: \n");
         }else break;
     } while (1);
     
@@ -262,7 +262,7 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
     do {
         atributo_alterar = get_int();
         if (atributo_alterar>5 || atributo_alterar==0){
-            printf("\n\033[1;91mNÃºmero invÃ¡lido!\033[1m Insira um valor de 1 a 5:\033[m ");
+            printf("\n\033[1;91mNúmero inválido!\033[1m Insira um valor de 1 a 5:\033[m ");
         }else break;
 
     } while (1);
@@ -289,7 +289,7 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
         break;
     }
     printf("\n\n\033[1;94mCarta atualizada:\033[m\n");
-    printf("Nome: %-21s \nForÃ§a: %-6d \nHabilidade: %-12d\nVelocidade:  %-12d\nPoderes: %-9d \npode cura:  %-12d\n",
+    printf("Nome: %-21s \nForça: %-6d \nHabilidade: %-12d\nVelocidade:  %-12d\nPoderes: %-9d \npode cura:  %-12d\n",
     (*cartas)[posicao].nome,(*cartas)[posicao].atributo_1, (*cartas)[posicao].atributo_2, (*cartas)[posicao].atributo_3, (*cartas)[posicao].atributo_4, (*cartas)[posicao].atributo_5);        
     printf("\n\033[3;92mCarta alterada com sucesso!\033[m\n");
 }
@@ -303,13 +303,13 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
 void buscar_carta(Cartas carta[], int qnt_cartas) {
     int sair = 0;
     do {
-        printf("\nOpÃ§Ãµes de pesquisa:\n");
+        printf("\nOpções de pesquisa:\n");
         printf("1 - Pesquisar por Atributo\n");
         printf("2 - Pesquisar por Letra\n");
-        printf("3 - Pesquisar por NÃºmero\n");
+        printf("3 - Pesquisar por Número\n");
         printf("4 - Sair\n");
 
-        int escolha = validar_entrada(1, 4, "Escolha uma opÃ§Ã£o: ");
+        int escolha = validar_entrada(1, 4, "Escolha uma opção: ");
 
         switch (escolha) {
             case PESQ_ATRIBUTO: {
@@ -317,7 +317,7 @@ void buscar_carta(Cartas carta[], int qnt_cartas) {
                 int escolha_atributo = validar_entrada(1, 6, "Escolha um atributo (1 a 5, ou 6 para sair): ");
                 if (escolha_atributo == 6) break;
 
-                int valor_comparado = validar_entrada(0, 100, "Digite o valor para comparaÃ§Ã£o: ");
+                int valor_comparado = validar_entrada(0, 100, "Digite o valor para comparação: ");
                 int comparacao = validar_entrada(1, 2, "1 - Maior que, 2 - Menor que: ");
                 buscar_por_atributo(carta, qnt_cartas, escolha_atributo, comparacao, valor_comparado);
                 break;
@@ -330,15 +330,15 @@ void buscar_carta(Cartas carta[], int qnt_cartas) {
                     scanf(" %c", &letra);
                     letra = toupper(letra);
                     if (letra < 'A' || letra > 'Z') {
-                        printf("\033[1;91mEntrada invÃ¡lida! Insira uma letra de A a Z.\033[m\n");
+                        printf("\033[1;91mEntrada inválida! Insira uma letra de A a Z.\033[m\n");
                     }
                 } while (letra < 'A' || letra > 'Z');
                 buscar_por_letra(carta, qnt_cartas, letra);
                 break;
             }
             case PESQ_NUMERO: {
-                printf("\n=== Pesquisar por NÃºmero ===\n");
-                int numero = validar_entrada(1, 100, "Digite o nÃºmero: ");
+                printf("\n=== Pesquisar por Número ===\n");
+                int numero = validar_entrada(1, 100, "Digite o número: ");
                 buscar_por_numero(carta, qnt_cartas, numero);
                 break;
             }
