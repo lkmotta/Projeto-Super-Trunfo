@@ -1,3 +1,4 @@
 -Fiz a função histórico (temos uma struct nova), ela esta no final da função partida e na filechange
 -Arrumei a implementação de cadastro, atualizando após a excluir
 !!! notei um bug que está gravado no video no drive !!!
+- TEMOS QUE RESOLVER ESSES CARACTERES BUGADOS
