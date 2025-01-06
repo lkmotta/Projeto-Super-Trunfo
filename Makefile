@@ -2,43 +2,48 @@
 
 # Compilador e flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2
+CFLAGS = -Wall -Wextra -O2 -Iinclude
 LDFLAGS =
 
 # Diretorios e arquivos
-SRC = main.c funcaux.c filechange.c
-HEADERS = funcaux.h filechange.h
+SRC = src/main.c src/funcaux.c src/filechange.c src/game.c
+HEADERS = include/funcaux.h include/filechange.h include/game.h
 OBJ = $(SRC:.c=.o)
 TARGET = trunfo
 
 # Detectar sistema operacional
 ifeq ($(OS),Windows_NT)
-	RM = cmd /C del /f /q
+	ARQBIN = assets\data\arqbin.dat
+	RM = cmd /C "for %%i in (src\*.o) do del /f /q %%i"
+	RM_TARGET = cmd /C del /f /q $(TARGET)
+	RM_ARQBIN = cmd /C del /f /q $(ARQBIN)
 	TARGET := trunfo.exe
+	RUN_CMD = $(TARGET)
 else
-    RM = rm -f
-    TARGET := trunfo
-    RUN_CMD = ./$(TARGET)
+	ARQBIN = assets/data/arqbin.dat
+	RM = rm -f
+	RM_TARGET = rm -f $(TARGET)
+	RM_ARQBIN = rm -f $(ARQBIN)
+	RUN_CMD = ./$(TARGET)
 endif
 
-# Regra padrao: compilar o executavel e abrir
+# Regras
 all: $(TARGET)
 
-# Regra para criar o executavel
 $(TARGET): $(OBJ)
-	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-# Regra para compilar arquivos .c em .o
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Regra para executar o programa
-run: $(TARGET)
-	$(RUN_CMD)
-
-# Limpeza dos arquivos .o e do executavel
 clean:
-	$(RM) *.o
+	$(RM)
 
 clean_all: clean
-	$(RM) $(TARGET)
+	$(RM_TARGET)
+
+reset: clean_all
+	$(RM_ARQBIN)
+
+run: $(TARGET)
+	$(RUN_CMD)
