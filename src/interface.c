@@ -1,7 +1,7 @@
 /**
  * @file interface.c
  * @authors @lkmotta, @Dirceu06, @boonfim
- * @brief Implementa��o das fun��es de interface gr�fica do jogo
+ * @brief Implementacao das funcoes de interface grafica do jogo
  *
  * LICENSE: MIT
  * @copyright Copyright (c) 2025
