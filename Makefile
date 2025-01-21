@@ -1,45 +1,43 @@
-# Makefile para Projeto Super Trunfo
-
-# Compilador e flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2
-LDFLAGS =
+CFLAGS = -Wall -Wextra -O2 -g -Iinclude -Iraylib/include
+LDFLAGS = -Lraylib/lib -lraylib -lgdi32 -lwinmm
 
-# Diretorios e arquivos
-SRC = main.c funcaux.c filechange.c
-HEADERS = funcaux.h filechange.h
-OBJ = $(SRC:.c=.o)
-TARGET = trunfo
-
-# Detectar sistema operacional
+# Definindo para Windows
 ifeq ($(OS),Windows_NT)
-    RM = cmd /C del /f /q
-    TARGET := trunfo.exe
-    RUN_CMD = $(TARGET)
+    EXECUTABLE := trunfo.exe
+    DEL_CMD := del /f /q
+    RUN_CMD := .\\$(EXECUTABLE)
 else
-    RM = rm -f
-    TARGET := trunfo
-    RUN_CMD = ./$(TARGET)
+    EXECUTABLE := trunfo
+    DEL_CMD := rm -f
+    RUN_CMD := ./$(EXECUTABLE)
 endif
 
-# Regra padrao: compilar o executavel e abrir
-all: $(TARGET)
+# Diret�rios e arquivos
+SRC = src/main.c src/funcaux.c src/filechange.c src/game.c src/interface.c
+HEADERS = include/funcaux.h include/filechange.h include/game.h include/interface.h
+OBJ = $(SRC:.c=.o)
 
-# Regra para criar o executavel
-$(TARGET): $(OBJ)
-	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
+# Regras de compila��o
+all: $(EXECUTABLE)
 
-# Regra para compilar arquivos .c em .o
+$(EXECUTABLE): $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Regra para executar o programa
-run: $(TARGET)
+debug: $(EXECUTABLE)
+	gdb $(RUN_CMD)
+
+run: $(EXECUTABLE)
 	$(RUN_CMD)
 
-# Limpeza dos arquivos .o e do executavel
 clean:
-	$(RM) *.o
+	$(DEL_CMD) $(OBJ)
 
 clean_all: clean
-	$(RM) $(TARGET)
+	$(DEL_CMD) $(EXECUTABLE)
+
+reset: clean_all
+	$(DEL_CMD) assets\\data\\arqbin.dat

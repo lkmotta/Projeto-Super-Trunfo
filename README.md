@@ -7,35 +7,31 @@
 
 [![Licença](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<h2 style="border:none;color: red;font-weight: bold;">*EM DESENVOLVIMENTO*</h2><br>
+## Rodando no Linux
+#### Dê permissão ao arquivo `install dependencies.sh` para ser executável:
+
+```bash
+chmod +x install_dependencies.sh
+./install_dependencies.sh
+```
+##### Serão instalados todos os pacotes necessários para rodar o projeto.
+
+## Rodando no Windows
+- Execute o arquivo `verificar_setup_windows.bat`.
+- Caso queira modificar o projeto por conta própria, siga as recomendações que aparecerão.
 
 <h2>COMANDOS MAKE</h2>
 
-### Compilação
-Para compilar o projeto, utilize o comando:
 ```bash
-mingw32-make
-```
-
-### Executando o jogo
-```bash
-mingw32-make run
-```
-
-### Limpeza
-Para limpar os arquivos objeto gerados durante a compilação, utilize o comando:
-```bash
-mingw32-make clean
-```
-Para limpar todos os arquivos objeto e o executável, utilize o comando:
-```bash
-mingw32-make clean_all
+mingw32-make            # compilar
+mingw32-make run        # EXECUTAR
+mingw32-make clean      # limpar arquivos .o
+mingw32-make clean_all  # limpar arquivos .o / executável
+mingw32-make reset      # limpar tudo
 ```
 
 ### Alertas
-- Certifique-se de ter o `mingw32-make` instalado no seu sistema. Caso contrário, instale-o utilizando o [Chocolatey](https://chocolatey.org/) com o comando:
-  ```bash
-  choco install make
-  ```
+- Para compilar NO WINDOWS, siga as orientações do repositório oficial do Raylib: https://github.com/raysan5/raylib/wiki/Working-on-Windows.
 - Se estiver utilizando um sistema operacional diferente do Windows, utilize `make` ao invés de `mingw32-make`.
-- Verifique se o `gcc` está instalado e configurado corretamente no seu PATH.
+- Verifique se o `mingw-w64` está instalado e configurado corretamente no seu PATH.
+- Caso esteja usando o `MinGW` antigo, o projeto não irá compilar.

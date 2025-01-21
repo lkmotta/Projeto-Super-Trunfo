@@ -1,0 +1,340 @@
+/**
+ * @file funcaux.c
+ * @brief Funções auxiliares para o jogo
+ * 
+ * @license MIT
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <time.h>
+#include "funcaux.h"
+
+/**
+ * @brief Retorna 1(true) se o S.O. é Windows, retorna 0(false) caso contrário.
+ * 
+ * @return int 
+ */
+int sistema() {
+    #ifdef _WIN32 // macro do sistema 
+        return 1;
+    #else
+        return 0;
+    #endif
+}
+
+/**
+ * @brief Retorna o ponteiro do arquivo aberto solicitado. Caso erro, exit(1).
+ * 
+ * @param nome_arq // caminho para o arquivo a ser aberto
+ * @param mode    // modo de acordo com o uso necessario. Exemplo: "a+"
+ * @return FILE* 
+ */
+FILE* abrir_arquivo(const char nome_arq[], const char mode[]) {
+    FILE* arquivo = fopen(nome_arq, mode);
+    if (arquivo == NULL) {
+        perror("\n\033[1;91mNão foi possível abrir o arquivo!\033[m");
+        exit(EXIT_FAILURE);
+    }
+    return arquivo;
+}
+
+/**
+ * @brief Retorna uma string do stdin(teclado) tratada.
+ * 
+ * @param nome // ponteiro char onde sera armazenada a string do stdin
+ * @param tamanho // tamanho de 'nome'
+ */
+void burocracia(char *nome, int tamanho) {
+    fgets(nome, tamanho, stdin);
+    nome[strcspn(nome, "\n")] = '\0';
+    setbuf(stdin, NULL);
+}
+
+/**
+ * @brief Retorna quantidade de cartas no arquivo do 'caminho' de acordo com num de '\n'.
+ * 
+ * @param arquivo // caminho do arquivo a ler a quantidade
+ * @return int 
+ */
+int quant_cartas(FILE* arquivo) {
+    int count = 0;
+    char buffer[1024];
+
+    rewind(arquivo); // voltando o ponteiro para o iní­cio
+    while (fgets(buffer, sizeof(buffer), arquivo) != NULL) {
+        count++;
+    }
+
+    rewind(arquivo);
+    return count;
+}
+
+/**
+ * @brief Retorna um inteiro do stdin(teclado) tratado.
+ * 
+ * @param valor_min // valor mí­nimo
+ * @param valor_max // valor máximo
+ * @param mensagem_erro // mensagem exibida se entrada inválida
+ * 
+ * @return int 
+ */
+int get_int(int valor_min, int valor_max, const char mensagem_erro[]) {
+    int num;
+    do{
+        if(!(scanf("%d", &num)) || num < valor_min || num > valor_max){
+            setbuf(stdin, NULL);
+            printf("\n%s", mensagem_erro);
+        }else break;
+    } while (1);
+    
+    return num;
+}
+
+/**
+ * @brief Retorna a posicao da carta no vetor de cartas com nome 'nome_carta'.
+ * 
+ * @param cartas 
+ * @param quantid_cartas // quantidade de cartas no vetor
+ * @param nome_carta // nome da carta a ser procurada
+ * @return int 
+ */
+int get_pos_carta(Cartas** cartas, int quantid_cartas, const char nome_carta[]){
+    for (int i = 0; i < quantid_cartas; i++){
+        if(strcasecmp((*cartas)[i].nome, nome_carta) == 0){
+            return i;
+        }
+    }
+    return -1; // carta não encontrada
+}
+
+/**
+ * @brief Verifica se valor esta no vetor. Retorna 1 se encontrado, 0 se nao encontrado.
+ * 
+ * @param vetor 
+ * @param valor 
+ * @return int 
+ */
+int verify_int_in_vetor(int* vetor, int size_vetor, int valor){
+    for (int i = 0; i < size_vetor; i++){
+        if(vetor[i] == valor) return 1;
+    }
+    return 0; // valor não encontrado
+}
+
+/**
+ * @brief Função para buscar cartas com base em um atributo específico
+ * 
+ * @param carta Vetor de cartas
+ * @param qnt_cartas Quantidade de cartas disponíveis
+ * @param atributo Atributo escolhido para pesquisa (1 a 5)
+ * @param comparacao Tipo de comparação (1 para maior que, 2 para menor que)
+ * @param valor Valor base para comparação
+ */
+void buscar_por_atributo(Cartas carta[], int qnt_cartas, int atributo, int comparacao, int valor) {
+    const char *atributos[] = {"Força", "Habilidade", "Velocidade", "Poderes", "Poder de Cura"};
+    printf("--%s--\n", atributos[atributo - 1]);
+
+    int contador = 0;
+    for (int i = 0; i < qnt_cartas; i++) {
+        int valor_atual = 0;
+        switch (atributo) {
+            case FORCA: valor_atual = carta[i].forca; break;
+            case HABILIDADE: valor_atual = carta[i].habilidade; break;
+            case VELOCIDADE: valor_atual = carta[i].velocidade; break;
+            case PODERES: valor_atual = carta[i].poderes; break;
+            case CURA: valor_atual = carta[i].poder_cura; break;
+        }
+
+        if ((comparacao == 1 && valor_atual > valor) || (comparacao == 2 && valor_atual < valor)) {
+            contador++;
+            printf("%02d - Carta [%d%c]: %s\n", contador, carta[i].num, carta[i].letra, carta[i].nome);
+        }
+    }
+
+    if (contador == 0) {
+        printf("\n---> Nenhuma carta encontrada com esses critérios!\n");
+    }
+}
+
+/**
+ * @brief Função para buscar cartas por uma letra especí­fica
+ * 
+ * @param carta Vetor de cartas
+ * @param qnt_cartas Quantidade de cartas disponí­veis
+ * @param letra Letra utilizada como critério de busca
+ */
+void buscar_por_letra(Cartas carta[], int qnt_cartas, char letra) {
+    int contador = 0;
+    for (int i = 0; i < qnt_cartas; i++) {
+        if (toupper(carta[i].letra) == letra) {
+            contador++;
+            printf("%02d - Carta [%d%c]: %s\n", contador, carta[i].num, carta[i].letra, carta[i].nome);
+        }
+    }
+
+    if (contador == 0) {
+        printf("\n---> Nenhuma carta encontrada com a letra %c!\n", letra);
+    }
+}
+
+/**
+ * @brief Função para buscar cartas por número
+ * 
+ * @param carta Vetor de cartas
+ * @param qnt_cartas Quantidade de cartas disponíveis
+ * @param numero Número utilizado como critério de busca
+ */
+void buscar_por_numero(Cartas carta[], int qnt_cartas, int numero) {
+    int contador = 0;
+    for (int i = 0; i < qnt_cartas; i++) {
+        if (carta[i].num == numero) {
+            contador++;
+            printf("%02d - Carta [%d%c]: %s\n", contador, carta[i].num, carta[i].letra, carta[i].nome);
+        }
+    }
+
+    if (contador == 0) {
+        printf("\n---> Nenhuma carta encontrada com o número %d!\n", numero);
+    }
+}
+
+/**
+ * @brief Função para exportar as cartas para um arquivo CSV
+ * 
+ * @param cartas Vetor de cartas
+ * @param quantd_cartas Quantidade de cartas disponíveis
+ */
+void exportar_csv(Cartas* cartas, int quantd_cartas){
+    FILE* arq_exportar = fopen("assets/data/cartas_exportadas.csv", "w+");
+    if(!arq_exportar){
+        perror("\nErro ao abrir/criar arquivo");
+        return;
+    }
+
+    // escrevendo cabeçalho do CSV
+    fprintf(arq_exportar, "NOME,LETRA,NUMERO,SUPER-TRUNFO,FORCA,HABILIDADE,VELOCIDADE,PODERES,PODER CURA\n");
+
+    for (int i = 0; i < quantd_cartas; i++) {
+        fprintf(arq_exportar, "%s,%c,%i,%i,%i,%i,%i,%i,%i\n",
+            cartas[i].nome, cartas[i].letra, cartas[i].num, cartas[i].super_trunfo,
+            cartas[i].forca, cartas[i].habilidade, cartas[i].velocidade,
+            cartas[i].poderes, cartas[i].poder_cura);
+    }
+    fclose(arq_exportar);
+    printf("\n\033[3;92mCartas exportadas com sucesso!\033[m\n");
+    return;
+}
+
+/**
+ * @brief Embaralha um vetor de cartas usando o algoritmo de Fisher-Yates.
+ *
+ * @param cartas Ponteiro para o vetor de cartas a ser embaralhado.
+ * @param quantd_cartas número total de cartas no vetor.
+ * 
+ */
+void embaralhar(Cartas* cartas, int quantd_cartas) {
+    srand(time(NULL));
+    Cartas temp;
+    for (int i = quantd_cartas - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        temp = cartas[i];
+        cartas[i] = cartas[j];
+        cartas[j] = temp;
+    }
+}
+
+/**
+ * @brief Compara duas cartas para ordenação.
+ *
+ * @param a Ponteiro para a primeira carta.
+ * @param b Ponteiro para a segunda carta.
+ * @return int 
+ */
+int compare_cartas(const void* a, const void* b) {
+    Cartas* cartaA = (Cartas*)a;
+    Cartas* cartaB = (Cartas*)b;
+
+    // Compara a letra da classe
+    if (cartaA->letra < cartaB->letra) return -1;
+    if (cartaA->letra > cartaB->letra) return 1;
+
+    /* Se a letra da classe é igual, compara o nome
+    strcmp -> compara duas strings, retorna 0 se forem iguais,
+    < 0 se a primeira for menor que a segunda,
+    > 0 se a primeira for maior que a segunda
+    */
+    return strcasecmp(cartaA->nome, cartaB->nome);
+}
+
+/**
+ * @brief Desembaralha um vetor de cartas com base na letra de classe (A/B/C/D) e organiza por ordem alfabética.
+ *
+ * @param cartas Ponteiro para o vetor de cartas a ser desembaralhado.
+ * @param quantd_cartas número total de cartas no vetor.
+ */
+void desembaralhar(Cartas** cartas, int quantd_cartas) {
+    /**
+     * qsort (quicksort) é uma função/algoritmo de ordenação rápida, e vem por padrão na stdlib.h
+    Ela ordena um array de elementos com base em uma função de comparação fornecida pelo usuário.
+    A função de comparação deve retornar:
+    Um valor negativo se o primeiro elemento for menor que o segundo.
+    Zero se os elementos forem iguais.
+    Um valor positivo se o primeiro elemento for maior que o segundo
+    */
+    qsort((*cartas), quantd_cartas, sizeof(Cartas), compare_cartas);
+}
+
+/**
+ * @brief Ordena os í­ndices em ordem decrescente para evitar problemas ao remover
+ * @note Auxiliar da remover_carta
+ * 
+ * @param posi_excluir >>> posições a serem excluídas 
+ * @param num_excluir >>> quantidade de posições a serem excluí­das
+ */
+void sort_decrease(int* posi_excluir, int num_excluir) {
+    int aux;
+    for (int i = 0; i < num_excluir - 1; i++) {
+        for (int j = i + 1; j < num_excluir; j++) {
+            if (posi_excluir[i] < posi_excluir[j]) {
+                aux = posi_excluir[i];
+                posi_excluir[i] = posi_excluir[j];
+                posi_excluir[j] = aux;
+            }
+        }
+    }
+    return;
+}
+
+/**
+ * @brief Remove as cartas do vetor de acordo com as posições a serem excluí­das
+ * 
+ * @param vetor >>> vetor de cartas
+ * @param quantd_cartas_vetor >>> quantidade de cartas no vetor
+ * @param posicoes_excluir >>> posições a serem excluí­das
+ * @param quantd_excluir >>> quantidade de posições a serem excluí­das
+ */
+void remover_cartas_vetor(Cartas** vetor, int* quantd_cartas_vetor, int* posicoes_excluir, int quantd_excluir){
+    // Excluindo as cartas do vetor
+    for (int i = 0; i < quantd_excluir; i++) {
+        for (int j = posicoes_excluir[i]; j < *quantd_cartas_vetor - 1; j++) {
+            (*vetor)[j] = (*vetor)[j + 1];
+        }
+        (*quantd_cartas_vetor)--;
+    }
+
+    // Realocando o vetor para o tamanho das cartas remanescentes
+    Cartas* temp = realloc(*vetor, (*quantd_cartas_vetor) * sizeof(Cartas));
+    if (!temp) {
+        perror("\nErro ao alocar vetor Cartas");
+        return;
+    }
+
+    *vetor = temp;
+    temp = NULL;
+    return;
+}
