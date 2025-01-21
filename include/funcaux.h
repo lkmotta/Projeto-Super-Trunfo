@@ -26,6 +26,8 @@ typedef struct {
     int vitorias;
     int empates;
     int pontuacao; 
+    int dia;
+    int mes;
 } Historico;
 
 typedef enum {

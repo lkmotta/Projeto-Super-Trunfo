@@ -13,4 +13,5 @@ void remover_carta(Cartas** cartas, int* quantd_cartas);
 void alterar_carta(Cartas** cartas, int quantd_cartas);
 void buscar_carta(Cartas carta[], int qnt_cartas);
 void historico();
+void ranking();
 #endif

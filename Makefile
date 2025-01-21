@@ -1,49 +1,43 @@
-# Makefile para Projeto Super Trunfo
-
-# Compilador e flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -Iinclude
-LDFLAGS =
+CFLAGS = -Wall -Wextra -O2 -g -Iinclude -Iraylib/include
+LDFLAGS = -Lraylib/lib -lraylib -lgdi32 -lwinmm
 
-# Diretorios e arquivos
-SRC = src/main.c src/funcaux.c src/filechange.c src/game.c
-HEADERS = include/funcaux.h include/filechange.h include/game.h
-OBJ = $(SRC:.c=.o)
-TARGET = trunfo
-
-# Detectar sistema operacional
+# Definição para Windows
 ifeq ($(OS),Windows_NT)
-	ARQBIN = assets\data\arqbin.dat
-	RM = cmd /C "for %%i in (src\*.o) do del /f /q %%i"
-	RM_TARGET = cmd /C del /f /q $(TARGET)
-	RM_ARQBIN = cmd /C del /f /q $(ARQBIN)
-	TARGET := trunfo.exe
-	RUN_CMD = $(TARGET)
+    EXECUTABLE := trunfo.exe
+    DEL_CMD := del /f /q
+    RUN_CMD := .\\$(EXECUTABLE)
 else
-	ARQBIN = assets/data/arqbin.dat
-	RM = rm -f
-	RM_TARGET = rm -f $(TARGET)
-	RM_ARQBIN = rm -f $(ARQBIN)
-	RUN_CMD = ./$(TARGET)
+    EXECUTABLE := trunfo
+    DEL_CMD := rm -f
+    RUN_CMD := ./$(EXECUTABLE)
 endif
 
-# Regras
-all: $(TARGET)
+# Diretórios e arquivos
+SRC = src/main.c src/funcaux.c src/filechange.c src/game.c src/interface.c
+HEADERS = include/funcaux.h include/filechange.h include/game.h include/interface.h
+OBJ = $(SRC:.c=.o)
 
-$(TARGET): $(OBJ)
+# Regras de compilação
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+debug: $(EXECUTABLE)
+	gdb $(RUN_CMD)
+
+run: $(EXECUTABLE)
+	$(RUN_CMD)
+
 clean:
-	$(RM)
+	$(DEL_CMD) $(OBJ)
 
 clean_all: clean
-	$(RM_TARGET)
+	$(DEL_CMD) $(EXECUTABLE)
 
 reset: clean_all
-	$(RM_ARQBIN)
-
-run: $(TARGET)
-	$(RUN_CMD)
+	$(DEL_CMD) assets\\data\\arqbin.dat

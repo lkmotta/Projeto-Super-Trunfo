@@ -1,14 +1,15 @@
 /**
  * @file main.c
  * @brief Arquivo principal do jogo
+ * @authors @lkmotta, @Dirceu06, @boonfim
  * 
  * @note make -> compilar
  *       make run -> executar
  *       make clean -> limpar arquivos .o
- *       make clean_all -> limpar arquivos .o / executÃ¡vel
- *       make reset -> limpar arquivos .o / executÃ¡vel / arquivos gerados
+ *       make clean_all -> limpar arquivos .o / executavél
+ *       make reset -> limpar arquivos .o / executavél / arquivos gerados
  * 
- * @license MIT
+ * LICENSE: MIT
  * @copyright Copyright (c) 2024
  * 
  */
@@ -20,10 +21,14 @@
 #include "funcaux.h"
 #include "filechange.h"
 #include "game.h"
+#include "interface.h"
 
 int main() {
     if (sistema()) {
-        setlocale(LC_ALL, "Portuguese_Brazil.1252");
+        if (setlocale(LC_ALL, "portuguese") == NULL) {
+            fprintf(stderr, "Erro ao configurar a localidade para pt_BR\n");
+            exit(1);
+        }
         system("cls"); // limpando o prompt de comando -> Windows
     } else {
         system("clear"); // limpando o terminal -> Linux
@@ -36,7 +41,7 @@ int main() {
     int size = 32;
     int criadoBin = 0;
     if (arqbin == NULL) {
-        printf("\033[1;93mBem-vindo!\033[1m Parece que Ã© a primeira vez que vocÃª estÃ¡ rodando o programa.\033[m\n");
+        printf("\033[1;93mBem-vindo!\033[1;30m Parece que é a primeira vez que você está rodando o jogo.\033[m\n");
         for (int i = 0; i < 32; i++) {
             cartas = (Cartas*) realloc(cartas, (i + 1) * sizeof(Cartas));
             if (cartas == NULL) {
@@ -53,7 +58,7 @@ int main() {
                 &cartas[i].velocidade, 
                 &cartas[i].poderes, 
                 &cartas[i].poder_cura);
-            }
+        } 
     } else {
         printf("\033[1;93mBem-vindo de volta!\033[m\n");
         fseek(arqbin, 0, SEEK_END);
@@ -75,7 +80,7 @@ int main() {
     
     printf("\nQuantidade de cartas: %i\n", size);
 
-    // Inicializando posicoes ocupadas para cada letra
+    // inicializando posicoes ocupadas para cada letra
     int *ptr_posicoesA = NULL, *ptr_posicoesB = NULL, *ptr_posicoesC = NULL, *ptr_posicoesD = NULL;
     int sizeA = 0, sizeB = 0, sizeC = 0, sizeD = 0;
 
@@ -105,19 +110,25 @@ int main() {
 
     // Menu Principal
     do {
-        printf("\nEscolha uma opcao:\n1 - \033[7mJOGAR\033[m\n2 - Inserir cartas\n3 - Listar as cartas\n4 - Pesquisar uma carta\n5 - Alterar uma carta\n6 - Excluir carta\n7 - Exportar CSV\n8 - ver historico de partidas\n9 - sair\n: ");
+        printf("\nEscolha uma opção:\n1 - \033[7mJOGAR (raylib)\033[m\n2 - \033[7mJOGAR (terminal)\033[m\n3 - Inserir cartas\n4 - Listar as cartas\n5 - Pesquisar uma carta\n6 - Alterar uma carta\n7 - Excluir carta\n8 - Exportar CSV\n9 - Historico de partidas\n10 - ranking\n0 - Sair\n: ");
         fflush(stdout);
 
-        do {
-            if (!(scanf("%i", &escolha)) || (escolha > 9) || (escolha < 1)) {
-                setbuf(stdin, NULL);
-                printf("\n\033[1;91mEscolha invalida! Insira um numero de 1 a 9:\033[m ");
-            } else break;
-        } while (1);
+        escolha = get_int(0, 11, "\033[1;91mOpção inválida!\033[1mInsira uma opção válida:\033[m ");
 
         switch (escolha) {
+        case 0:
+            sair = 1;
+            printf("\n\033[1;36mEncerrando...\033[m\n");
+            break;
         case 1: {
-            //modo();
+            int quantd_cartas_baralho = (int)((float)(size)/2);
+
+            interface(cartas, size, quantd_cartas_baralho);
+            
+            desembaralhar(&cartas, size);
+            break;
+        }
+        case 2: {
             int quantd_cartas_baralho = (int)((float)(size)/2);
 
             int *cartas_usadas = NULL;
@@ -132,22 +143,21 @@ int main() {
             desembaralhar(&cartas, size);
             break;
         }
-
-        case 2:
+        case 3:
             inserir_cartas(&cartas, &ptr_posicoesA, &ptr_posicoesB, &ptr_posicoesC, &ptr_posicoesD,&size);
             desembaralhar(&cartas, size);
             break;
-        case 3:
-            printf("\nNÃºmero de Cartas: %d\n", size);
+        case 4:
+            printf("\nNúmero de Cartas: %d\n", size);
             listar_cartas(cartas, size);
             break;
-        case 4:
+        case 5:
             buscar_carta(cartas,size);
             break;
-        case 5:
+        case 6:
             alterar_carta(&cartas, size);
             break;
-        case 6:
+        case 7: {
             remover_carta(&cartas, &size);
             int sizeA = 0, sizeB = 0, sizeC = 0, sizeD = 0;
 
@@ -172,29 +182,32 @@ int main() {
                     }
                 }
             }
-            
             break;
-        case 7:
+        }
+        case 8:
             exportar_csv(cartas, size);
             break;
-        case 8:
+        case 9:
             historico();
             break;
-        case 9:
-            printf("\n\033[1;32mSaindo...\033[m\n");
-            sair = 1;
+        
+        case 10:
+            ranking();
+            break;
+        default:
             break;
         }
     } while (!sair);
 
     // Atualizando arquivo binario
+    
     arqbin = fopen("assets/data/arqbin.dat", "wb+");
     fseek(arqbin, 0, SEEK_SET);
     fwrite(cartas, sizeof(Cartas), size, arqbin);
 
     fclose(arqbin);
 
-    // Liberando memoria alocada e fechando arquivos
+    // Liberando memoria alocada
     free(ptr_posicoesA);
     free(ptr_posicoesB);
     free(ptr_posicoesC);
