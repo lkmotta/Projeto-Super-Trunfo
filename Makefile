@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -O2 -g -Iinclude -Iraylib/include
 LDFLAGS = -Lraylib/lib -lraylib -lgdi32 -lwinmm
 
-# Definição para Windows
+# Definindo para Windows
 ifeq ($(OS),Windows_NT)
     EXECUTABLE := trunfo.exe
     DEL_CMD := del /f /q
@@ -13,12 +13,12 @@ else
     RUN_CMD := ./$(EXECUTABLE)
 endif
 
-# Diretórios e arquivos
+# Diretï¿½rios e arquivos
 SRC = src/main.c src/funcaux.c src/filechange.c src/game.c src/interface.c
 HEADERS = include/funcaux.h include/filechange.h include/game.h include/interface.h
 OBJ = $(SRC:.c=.o)
 
-# Regras de compilação
+# Regras de compilaï¿½ï¿½o
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ)

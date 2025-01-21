@@ -59,21 +59,26 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
     // carregando musica de fundo
     InitAudioDevice();
-    //Music musica_fundo = LoadMusicStream("assets/sounds/loading.wav");
-    //PlayMusicStream(musica_fundo); 
+    Music musica_fundo = LoadMusicStream("assets/sounds/supermanepic.wav");
+    PlayMusicStream(musica_fundo); 
+    SetMusicVolume(musica_fundo, 0.2);
+
+    Music musica_fundo1=LoadMusicStream("assets/sounds/timmarionaoquerodinheiro.wav");
     
+    Music musica_atual;
     //carregando audio de atributos e de confirmação/maior/menor
     Sound som_atributos=LoadSound("assets/sounds/atributos.wav");
     Sound som_resto=LoadSound("assets/sounds/resto.wav");
-    SetSoundVolume(som_resto, 0.8);
+    SetSoundVolume(som_resto, 0.6);
     Sound som_tecla=LoadSound("assets/sounds/tecla.wav");
 
     Image imagem_fundo;
 
     while (!WindowShouldClose()){
+        UpdateMusicStream(musica_atual);
         BeginDrawing();
         ClearBackground(COR_FUNDO);
-        
+
         switch (estadoAtual){
             case CARREGANDO_TELA_INICIAL: {
                 if(quem_ganhou == 0){
@@ -146,9 +151,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int progresso = 0;
                 int tempo_carregamento = GetRandomValue(2, 3) * FPS; // de 2 a 3 segundos
                 Rectangle barra_progresso = {pos_x_barra, pos_y_barra, (largura_barra * progresso) / tempo_carregamento, altura_barra};
+                
+                musica_atual=musica_fundo;
 
                 while (progresso < tempo_carregamento && !WindowShouldClose())
                 {
+                    UpdateMusicStream(musica_fundo);
                     progresso++;
 
                     ClearBackground((Color){30, 30, 30, 255}); // fundo da janela
@@ -210,7 +218,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     DrawCircle(circulo_x, circulo_y, raio_circulo, LIGHTGRAY);
                 }
                 
-
                 // Texto da letra e número da carta
                 char texto[10];
                 snprintf(texto, sizeof(texto), "%c%d", carta_jogador.letra, carta_jogador.num);
@@ -230,7 +237,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     Rectangle retangulo_atributo = {atributo_x, atributo_y, 200, 30};
 
                     if (CheckCollisionPointRec(GetMousePosition(), retangulo_atributo) || IsKeyDown(  KEY_ONE + i))
-                    { // verificando se o mouse est? em cima do atributo
+                    { // verificando se o mouse esta em cima do atributo
                         DrawRectangle(atributo_x-2.5, atributo_y-2.5, 205, 35, BLACK);
                         DrawRectangleRec(retangulo_atributo, GRAY);
 
@@ -242,7 +249,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         {                                                                                   // se o botao do mouse for clicado
                             int atributo_y_selecionado_anterior = carta_y + 150 + atributo * 50;            // pegando o retangulo selecionado antes
                             DrawRectangleLines(atributo_x, atributo_y_selecionado_anterior, 200, 30, GRAY); // apagando a borda
-                            DrawRectangle(atributo_x-2.5, atributo_y-2.5, 205, 35, BLACK);                 // desenhando a borda no novo atributo selecionado
+                            DrawRectangle(atributo_x-2.5, atributo_y-2.5, 205, 35, BLACK);                  // desenhando a borda no novo atributo selecionado
                             atributo = i;                                                                   // indice do atributo escolhido
                             atributo_nome = atributos[i];                                                   // nome do atributo escolhido
                             PlaySound(som_atributos);
@@ -331,8 +338,85 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     DrawRectangleRec(retangulo_jogar, (Color){79, 79, 79, 255});
                 }
                 DrawText("Jogar", SCREEN_WIDTH - 130, SCREEN_HEIGHT - 65, 20, RAYWHITE);
-
                 DrawText(TextFormat("Rodada: %d", rodada), 10, SCREEN_HEIGHT - 30, 20, RAYWHITE);
+
+                //PLAYER DE MUSICA
+                Rectangle botao_serio = {10, SCREEN_HEIGHT / 2 - 20, 100, 30};
+                Rectangle botao_legal = {120, SCREEN_HEIGHT / 2 - 20, 100, 30};
+                static int botao_serio_pressionado = 1;
+                static int botao_legal_pressionado = 0;
+
+                //DrawText("Musica", botao_serio.x + 10, botao_serio.y-25, 20, WHITE);
+
+                if (CheckCollisionPointRec(GetMousePosition(), botao_serio) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    PlaySound(som_resto);
+                    StopMusicStream(musica_fundo1);
+                    PlayMusicStream(musica_fundo);
+                    botao_serio_pressionado = 1;
+                    botao_legal_pressionado = 0;
+                    musica_atual = musica_fundo;
+                }
+                if (CheckCollisionPointRec(GetMousePosition(), botao_legal) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    PlaySound(som_resto);
+                    StopMusicStream(musica_fundo);
+                    PlayMusicStream(musica_fundo1);
+                    botao_legal_pressionado = 1;
+                    botao_serio_pressionado = 0;
+                    musica_atual = musica_fundo1;
+                }
+
+                // Desenha um retângulo arredondado atrás dos botões
+                DrawRectangleRounded((Rectangle){5, SCREEN_HEIGHT / 2 - 35, 220, 90}, 0.3, 10, DARKGRAY);
+
+                if (botao_serio_pressionado) {
+                    DrawRectangleRounded((Rectangle){botao_serio.x - 2.5, botao_serio.y - 2.5, botao_serio.width + 5, botao_serio.height + 5}, 0.3, 10, BLUE);
+                    DrawRectangleRounded(botao_serio, 0.3, 10, GRAY);
+                    DrawText("Serio", botao_serio.x + 10, botao_serio.y + 5, 20, WHITE);
+
+                    DrawRectangleRounded(botao_legal, 0.3, 10, GRAY);
+                    DrawText("Legal", botao_legal.x + 10, botao_legal.y + 5, 20, WHITE);
+                }
+                if(botao_legal_pressionado) {
+                    DrawRectangleRounded((Rectangle){botao_legal.x - 2.5, botao_legal.y - 2.5, botao_legal.width + 5, botao_legal.height + 5}, 0.3, 10, RED);
+                    DrawRectangleRounded(botao_legal, 0.3, 10, GRAY);
+                    DrawText("Legal", botao_legal.x + 10, botao_legal.y + 5, 20, WHITE);
+
+                    DrawRectangleRounded(botao_serio, 0.3, 10, GRAY);
+                    DrawText("Serio", botao_serio.x + 10, botao_serio.y + 5, 20, WHITE);
+                }
+
+                DrawRectangleRounded(botao_serio, 0.3, 10, GRAY);
+                DrawText("Serio", botao_serio.x + 10, botao_serio.y + 5, 20, WHITE);
+
+                DrawRectangleRounded(botao_legal, 0.3, 10, GRAY);
+                DrawText("Legal", botao_legal.x + 10, botao_legal.y + 5, 20, WHITE);
+
+                // Controle de volume
+                int volume_x = 10;
+                int volume_y = SCREEN_HEIGHT / 2 + 20;
+                int volume_width = 210;
+                int volume_height = 20;
+                static float volume = 0.2;
+                Rectangle volume_bar = {volume_x, volume_y, volume_width, volume_height};
+                SetMusicVolume(musica_fundo, volume);
+                SetMusicVolume(musica_fundo1, volume);
+
+                DrawRectangleRounded(volume_bar, 0.3, 10, LIGHTGRAY);
+                DrawRectangle(volume_x, volume_y, volume_width * volume, volume_height, GREEN);
+
+                int volume_circle_x = volume_x + volume_width * volume;
+                int volume_circle_y = volume_y + volume_height / 2;
+                int volume_circle_radius = 10;
+
+                DrawCircle(volume_circle_x, volume_circle_y, volume_circle_radius, DARKGREEN);
+
+                if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), volume_bar)) {
+                    volume = (GetMouseX() - volume_x) / (float)volume_width;
+                    if (volume < 0.0f) volume = 0.0f;
+                    if (volume > 1.0f) volume = 0.5f;
+                    SetMusicVolume(musica_fundo, volume);
+                    SetMusicVolume(musica_fundo1, volume);
+                }
 
                 break;
             }
@@ -356,6 +440,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 Rectangle barra_progresso_cpu = { pos_x_barra_cpu, pos_y_barra_cpu, 0, altura_barra_cpu };
 
                 while (progresso_cpu < tempo_carregamento_cpu && !WindowShouldClose()) {
+                    UpdateMusicStream(musica_fundo);
                     progresso_cpu++;
 
                     BeginDrawing();
@@ -961,9 +1046,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
 
     // parando e descarregando a musica
-    /* StopMusicStream(musica_fundo);
+    StopMusicStream(musica_fundo);
     UnloadMusicStream(musica_fundo);
-    CloseAudioDevice(); */
+    CloseAudioDevice(); 
 
     CloseWindow(); // fechando a janela
     return;
