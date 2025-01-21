@@ -60,12 +60,15 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     // carregando musica de fundo
     InitAudioDevice();
     Music musica_fundo = LoadMusicStream("assets/sounds/supermanepic.wav");
-    PlayMusicStream(musica_fundo); 
-    SetMusicVolume(musica_fundo, 0.2);
+    Music musica_fundo1=LoadMusicStream("assets/sounds/shouldstayshouldgo.wav");
+    Music musica_vitoria=LoadMusicStream("assets/sounds/timmarionaoquerodinheiro.wav");
+    Music musica_derrota=LoadMusicStream("assets/sounds/sadmusicmario.wav");
 
-    Music musica_fundo1=LoadMusicStream("assets/sounds/timmarionaoquerodinheiro.wav");
-    
-    Music musica_atual;
+    Music musica_atual=musica_fundo;
+    PlayMusicStream(musica_atual); 
+    SetMusicVolume(musica_atual, 0.2);
+    SetMasterVolume(0.7);
+
     //carregando audio de atributos e de confirmação/maior/menor
     Sound som_atributos=LoadSound("assets/sounds/atributos.wav");
     Sound som_resto=LoadSound("assets/sounds/resto.wav");
@@ -151,8 +154,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int progresso = 0;
                 int tempo_carregamento = GetRandomValue(2, 3) * FPS; // de 2 a 3 segundos
                 Rectangle barra_progresso = {pos_x_barra, pos_y_barra, (largura_barra * progresso) / tempo_carregamento, altura_barra};
-                
-                musica_atual=musica_fundo;
 
                 while (progresso < tempo_carregamento && !WindowShouldClose())
                 {
@@ -402,16 +403,18 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 SetMusicVolume(musica_fundo1, volume);
 
                 DrawRectangleRounded(volume_bar, 0.3, 10, LIGHTGRAY);
-                DrawRectangle(volume_x, volume_y, volume_width * volume, volume_height, GREEN);
 
-                int volume_circle_x = volume_x + volume_width * volume;
+                int limitador = 2.4; //operando com um pouco menos da metade da capacidade valor padrao: 2.4
+                DrawRectangle(volume_x, volume_y, volume_width * volume*limitador, volume_height, GREEN);
+
+                int volume_circle_x = volume_x + volume_width * volume*limitador;
                 int volume_circle_y = volume_y + volume_height / 2;
                 int volume_circle_radius = 10;
 
                 DrawCircle(volume_circle_x, volume_circle_y, volume_circle_radius, DARKGREEN);
 
                 if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), volume_bar)) {
-                    volume = (GetMouseX() - volume_x) / (float)volume_width;
+                    volume = (GetMouseX() - volume_x) / (float)(volume_width*limitador);
                     if (volume < 0.0f) volume = 0.0f;
                     if (volume > 1.0f) volume = 0.5f;
                     SetMusicVolume(musica_fundo, volume);
@@ -784,6 +787,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
 
             case JOGADOR_VENCEU: {
+                StopMusicStream(musica_atual);
+                musica_atual = musica_vitoria;
+
                 DrawText("Fim de Jogo", SCREEN_WIDTH / 2 - MeasureText("Fim de Jogo", 50) / 2, SCREEN_HEIGHT / 2 - 250, 50, WHITE);
                 DrawText("Voce ganhou", SCREEN_WIDTH / 2 - MeasureText("Voce ganhou", 40) / 2, SCREEN_HEIGHT / 2 - 130, 40, GREEN);
                 pontuacao = (10 * ((100 * vitorias) / rodada))+50*empates;
@@ -821,6 +827,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
 
             case CPU_VENCEU: {
+                StopMusicStream(musica_atual);
+                musica_atual = musica_derrota;
+
                 DrawText("Fim de Jogo", SCREEN_WIDTH / 2 - MeasureText("Fim de Jogo", 50) / 2, SCREEN_HEIGHT / 2 - 250, 50, WHITE);
                 DrawText("CPU ganhou", SCREEN_WIDTH / 2 - MeasureText("Voce ganhou", 40) / 2, SCREEN_HEIGHT / 2 - 130, 40, RED);
                 pontuacao = 10 * ((100 * vitorias) / rodada);
