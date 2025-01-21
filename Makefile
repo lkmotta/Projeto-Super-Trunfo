@@ -13,12 +13,12 @@ else
     RUN_CMD := ./$(EXECUTABLE)
 endif
 
-# Diret�rios e arquivos
+# Diretorios e arquivos
 SRC = src/main.c src/funcaux.c src/filechange.c src/game.c src/interface.c
 HEADERS = include/funcaux.h include/filechange.h include/game.h include/interface.h
 OBJ = $(SRC:.c=.o)
 
-# Regras de compila��o
+# Regras de compilacao
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ)
