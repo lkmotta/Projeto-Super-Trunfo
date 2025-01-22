@@ -1,7 +1,7 @@
 /**
  * @file interface.h
  * @authors @lkmotta, @Dirceu06, @boonfim
- * @brief Arquivo de cabe�alho com as fun��es de interface gr�fica do jogo
+ * @brief Arquivo de cabeçalho com as funções de interface gráfica do jogo
  *
  * LICENSE: MIT
  * @copyright Copyright (c) 2025
@@ -18,9 +18,11 @@
 // estados do jogo
 typedef enum
 {
-    RESET,
     CARREGANDO_TELA_INICIAL,
     TELA_INICIAL,
+    AJUSTES,
+    REGRAS,
+    RESET,
     NOVO_BARALHO,
     TELA_CARREGAMENTO,
     TELA_PLAYER_ESCOLHENDO_ATRIBUTO,
@@ -40,6 +42,11 @@ typedef enum
 #define FPS 90
 #define COR_FUNDO CLITERAL(Color){30, 30, 30, 255} // #1E1E1E (hex)
 #define COR_BARRA CLITERAL(Color){251, 59, 0, 255} // #FB3B00 (hex)
+#define COR_DESTAQUE_TELAINICIAL CLITERAL(Color){109, 96, 58, 255} // #6D603A (hex)
+#define COR_DESTAQUE_TELAINICIAL_CPUWIN CLITERAL(Color){223, 0, 0, 255} // #DF0000(hex)
+#define COR_DESTAQUE_TELAINICIAL_PLAYERWIN CLITERAL(Color){34, 183, 252, 255} // #22B7FC(hex)
+#define SILVER CLITERAL(Color){192, 192, 192, 255}
+#define BRONZE CLITERAL(Color){205, 127, 50, 255}
 
 void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho);
 

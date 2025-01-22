@@ -6,8 +6,8 @@
  * @note make -> compilar
  *       make run -> executar
  *       make clean -> limpar arquivos .o
- *       make clean_all -> limpar arquivos .o / executavél
- *       make reset -> limpar arquivos .o / executavél / arquivos gerados
+ *       make clean_all -> limpar arquivos .o / executavï¿½l
+ *       make reset -> limpar arquivos .o / executavï¿½l / arquivos gerados
  * 
  * LICENSE: MIT
  * @copyright Copyright (c) 2024
@@ -41,7 +41,7 @@ int main() {
     int size = 32;
     int criadoBin = 0;
     if (arqbin == NULL) {
-        printf("\033[1;93mBem-vindo!\033[1;30m Parece que é a primeira vez que você está rodando o jogo.\033[m\n");
+        printf("\033[1;93mBem-vindo!\033[1;30m Parece que Ã© a primeira vez que vocÃª estÃ¡ rodando o jogo.\033[m\n");
         for (int i = 0; i < 32; i++) {
             cartas = (Cartas*) realloc(cartas, (i + 1) * sizeof(Cartas));
             if (cartas == NULL) {
@@ -110,10 +110,10 @@ int main() {
 
     // Menu Principal
     do {
-        printf("\nEscolha uma opção:\n1 - \033[7mJOGAR (raylib)\033[m\n2 - \033[7mJOGAR (terminal)\033[m\n3 - Inserir cartas\n4 - Listar as cartas\n5 - Pesquisar uma carta\n6 - Alterar uma carta\n7 - Excluir carta\n8 - Exportar CSV\n9 - Historico de partidas\n10 - ranking\n0 - Sair\n: ");
+        printf("\nEscolha uma opÃ§Ã£o:\n1 - \033[7mJOGAR (raylib)\033[m\n2 - \033[7mJOGAR (terminal)\033[m\n3 - Inserir cartas\n4 - Listar as cartas\n5 - Pesquisar uma carta\n6 - Alterar uma carta\n7 - Excluir carta\n8 - Exportar CSV\n9 - Historico de partidas\n10 - ranking\n0 - Sair\n: ");
         fflush(stdout);
 
-        escolha = get_int(0, 11, "\033[1;91mOpção inválida!\033[1mInsira uma opção válida:\033[m ");
+        escolha = get_int(0, 11, "\033[1;91mOpÃ§Ã£o invÃ¡lida!\033[1mInsira uma opÃ§Ã£o vÃ¡lida:\033[m ");
 
         switch (escolha) {
         case 0:
@@ -148,7 +148,7 @@ int main() {
             desembaralhar(&cartas, size);
             break;
         case 4:
-            printf("\nNúmero de Cartas: %d\n", size);
+            printf("\nNï¿½mero de Cartas: %d\n", size);
             listar_cartas(cartas, size);
             break;
         case 5:
