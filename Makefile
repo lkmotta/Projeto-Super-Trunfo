@@ -1,24 +1,36 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -g -Iinclude -Iraylib/include
-LDFLAGS = -Lraylib/lib -lraylib -lgdi32 -lwinmm
+CFLAGS =
+LDFLAGS =
 
 # Definindo para Windows
 ifeq ($(OS),Windows_NT)
     EXECUTABLE := trunfo.exe
+	CFLAGS += -Wall -Wextra -O2 -g -Iinclude -Iraylib/include
+	LDFLAGS += -Lraylib/libwin -lraylib -lgdi32 -lwinmm
     DEL_CMD := del /f /q
     RUN_CMD := .\\$(EXECUTABLE)
 else
     EXECUTABLE := trunfo
-    DEL_CMD := rm -f
+    CFLAGS = -Wall -Wextra -O2 -Iinclude -Iraylib/include -m64
+	LDFLAGS = -Lraylib/lib -lraylib -lm -lpthread -ldl -lrt -lX11
+	DEL_CMD := rm -f
     RUN_CMD := ./$(EXECUTABLE)
 endif
 
+<<<<<<< HEAD
 # Diretorios e arquivos
+=======
+# Diretórios e arquivos
+>>>>>>> ba6a647890dd7b997fabd6b9d1f9fd11d80c2dd2
 SRC = src/main.c src/funcaux.c src/filechange.c src/game.c src/interface.c
 HEADERS = include/funcaux.h include/filechange.h include/game.h include/interface.h
 OBJ = $(SRC:.c=.o)
 
+<<<<<<< HEAD
 # Regras de compilacao
+=======
+# Regras de compilação
+>>>>>>> ba6a647890dd7b997fabd6b9d1f9fd11d80c2dd2
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ)
