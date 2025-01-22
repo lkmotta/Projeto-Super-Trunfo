@@ -17,18 +17,15 @@
 #include <time.h> // necessária para srand
 #include "raylib.h"
 
-#define SILVER (Color){192, 192, 192, 255}
-#define BRONZE (Color){205, 127, 50, 255}
-
-static float hue = 0.0f;
 
 void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 {
-    //GameState estadoAtual = CARREGANDO_TELA_INICIAL; // primeiro vamos gerar os baralhos
-    GameState estadoAtual = NOVO_BARALHO; // primeiro vamos gerar os baralhos
+    GameState estadoAtual = CARREGANDO_TELA_INICIAL; // carregando tela inicial primeiro
     Cartas *baralho_jogador = NULL, *baralho_cpu = NULL;
     bool player_joga = true;             // booleano -> 0 = cpu joga, 1 = player joga
-    int quem_ganhou = -1;                 // 0 = cpu, 1 = player, -1 = empate
+    int quem_ganhou = -1;                // 0 = cpu, 1 = player, -1 = empate/ainda nao definido
+    int qual_tela = -1;                  // -1 = tela inicial, 1 = tela playerwin, 0 = tela cpuwin
+    bool tela_inicial = true;            // booleano -> 0 = tela inicial, 1 = continuar jogo
     const char *atributos[] = {"Força", "Habilidade", "Velocidade", "Poderes", "Poder Cura"};
     int atributo = 0;                    // atributo escolhido (indice)
     const char *atributo_nome = "Força"; // nome do atributo escolhido (forca por padrao)
@@ -51,7 +48,11 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     int tempo_contagem_regressiva, tempo_agora,tempo_inicial;
     int carta_x, carta_y, circulo_x, circulo_y, raio_circulo;
     int atributo_x = 0, atributo_y = 0;
+    static float hue = 0.0f;
     char informacao_rodada[30];
+    Texture2D textura_fundo;
+    Rectangle retangulo_fundo_botoes;
+    Color cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projeto Super-Trunfo"); // iniciando a janela
     SetTargetFPS(FPS);                                               // definindo a taxa de quadros por segundo
@@ -60,20 +61,20 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     // carregando musica de fundo
     InitAudioDevice();
     Music musica_fundo = LoadMusicStream("assets/sounds/supermanepic.wav");
-    Music musica_fundo1=LoadMusicStream("assets/sounds/shouldstayshouldgo.wav");
-    Music musica_vitoria=LoadMusicStream("assets/sounds/timmarionaoquerodinheiro.wav");
-    Music musica_derrota=LoadMusicStream("assets/sounds/sadmusicmario.wav");
+    Music musica_fundo1 = LoadMusicStream("assets/sounds/shouldstayshouldgo.wav");
+    Music musica_vitoria = LoadMusicStream("assets/sounds/timmarionaoquerodinheiro.wav");
+    Music musica_derrota = LoadMusicStream("assets/sounds/sadmusicmario.wav");
 
-    Music musica_atual=musica_fundo;
+    Music musica_atual = musica_fundo;
     PlayMusicStream(musica_atual); 
     SetMusicVolume(musica_atual, 0.2);
     SetMasterVolume(0.7);
 
     //carregando audio de atributos e de confirmação/maior/menor
-    Sound som_atributos=LoadSound("assets/sounds/atributos.wav");
-    Sound som_resto=LoadSound("assets/sounds/resto.wav");
+    Sound som_atributos = LoadSound("assets/sounds/atributos.wav");
+    Sound som_resto = LoadSound("assets/sounds/resto.wav");
     SetSoundVolume(som_resto, 0.6);
-    Sound som_tecla=LoadSound("assets/sounds/tecla.wav");
+    Sound som_tecla = LoadSound("assets/sounds/tecla.wav");
 
     Image imagem_fundo;
 
@@ -84,33 +85,73 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
         switch (estadoAtual){
             case CARREGANDO_TELA_INICIAL: {
-                if(quem_ganhou == 0){
-                    imagem_fundo = LoadImage("assets/img/tela_inicial_cpuwin.png");
-                }else if(quem_ganhou == 1){
-                    imagem_fundo = LoadImage("assets/img/tela_inicial_playerwin.png");
-                }else{
-                    imagem_fundo = LoadImage("assets/img/tela_inicial.png");
+                if(qual_tela == 0){
+                    textura_fundo = LoadTexture("assets/img/tela_inicial_cpuwin(800x600).png");
+                    cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL_CPUWIN;
+                }else if(qual_tela == 1){
+                    textura_fundo = LoadTexture("assets/img/tela_inicial_playerwin(800x600).png");
+                    cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL_PLAYERWIN;
+                }else if(qual_tela == -1){
+                    textura_fundo = LoadTexture("assets/img/tela_inicial(800x600).png");
+                    cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
                 }
+
+                retangulo_fundo_botoes.x = (SCREEN_WIDTH - retangulo_fundo_botoes.width) / 2, retangulo_fundo_botoes.y = SCREEN_HEIGHT - retangulo_fundo_botoes.height - 20;
+                retangulo_fundo_botoes.width = 700, retangulo_fundo_botoes.height = 80;
                 
-                if (!imagem_fundo.data) {
-                    ClearBackground(COR_FUNDO);
-                }else{
-                    Texture2D textura_fundo = LoadTextureFromImage(imagem_fundo);
-                    DrawTexture(textura_fundo, 0, 0, WHITE);
-                    UnloadImage(imagem_fundo);
-                }
+                if(tela_inicial) estadoAtual = TELA_INICIAL;
+                else estadoAtual = NOVO_BARALHO;
                 break;
             }
 
             case TELA_INICIAL: {
-                // implementar os botões da tela inicial
-                
+                DrawTexture(textura_fundo, 0, 0, WHITE); // inserido imagem de fundo
+
+                // inserindo retangulo de fundo dos botões com opacidade 80%
+                DrawRectangleRounded(retangulo_fundo_botoes, 0.2, 0, Fade(BLACK, 0.8f));
+
+                // inserindo botões dentro do retangulo de fundo
+                Rectangle botoes[] = {
+                    {retangulo_fundo_botoes.x + 20, retangulo_fundo_botoes.y + 20, (retangulo_fundo_botoes.width - 60) / 4, retangulo_fundo_botoes.height - 40},
+                    {retangulo_fundo_botoes.x + 20 + (retangulo_fundo_botoes.width - 60) / 4 + 5, retangulo_fundo_botoes.y + 20, (retangulo_fundo_botoes.width - 60) / 4, retangulo_fundo_botoes.height - 40},
+                    {retangulo_fundo_botoes.x + 20 + 2 * (retangulo_fundo_botoes.width - 60) / 4 + 10, retangulo_fundo_botoes.y + 20, (retangulo_fundo_botoes.width - 60) / 4, retangulo_fundo_botoes.height - 40},
+                    {retangulo_fundo_botoes.x + 20 + 3 * (retangulo_fundo_botoes.width - 60) / 4 + 15, retangulo_fundo_botoes.y + 20, (retangulo_fundo_botoes.width - 60) / 4, retangulo_fundo_botoes.height - 40}
+                };
+
+                for (int i = 0; i < 4; i++) {
+                    if (CheckCollisionPointRec(GetMousePosition(), botoes[i])) {
+                        DrawRectangleRec(botoes[i], cor_destaque_telainicial);
+                        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                            if (i == 0) {
+                                estadoAtual = NOVO_BARALHO;
+                            } else if (i == 1) {
+                                estadoAtual = AJUSTES;
+                            } else if (i == 2) {
+                                estadoAtual = REGRAS;
+                            } else if (i == 3) {
+                                estadoAtual = FECHAR_JANELA;
+                            }
+                        }
+                    } else {
+                        DrawRectangleRec(botoes[i], Fade(DARKGRAY, 0.5f));
+                    }
+                    if (i == 0) {
+                        DrawText("JOGAR", botoes[i].x + botoes[i].width / 2 - MeasureText("JOGAR", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
+                    } else if (i == 1) {
+                        DrawText("AJUSTES", botoes[i].x + botoes[i].width / 2 - MeasureText("AJUSTES", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
+                    } else if (i == 2) {
+                        DrawText("REGRAS", botoes[i].x + botoes[i].width / 2 - MeasureText("REGRAS", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
+                    } else if (i == 3) {
+                        DrawText("SAIR", botoes[i].x + botoes[i].width / 2 - MeasureText("SAIR", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
+                    }
+                }
+
                 break;
             }
            
             case RESET: {
                 player_joga = true;
-                quem_ganhou = 0, atributo = 0;
+                quem_ganhou = -1, atributo = 0;
                 atributo_nome = "Força";
                 maior_menor = true, maior_menor_selecionado = true;
                 quant_cartas_jogador = quant_cartas_baralho, quant_cartas_cpu = quant_cartas_baralho;
@@ -125,7 +166,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     free(cartas_empate_cpu);
                     cartas_empate_cpu = NULL;
                 }
-                estadoAtual = NOVO_BARALHO;
+                estadoAtual = CARREGANDO_TELA_INICIAL;
                 break;
             }
 
@@ -154,22 +195,20 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int progresso = 0;
                 int tempo_carregamento = GetRandomValue(2, 3) * FPS; // de 2 a 3 segundos
                 Rectangle barra_progresso = {pos_x_barra, pos_y_barra, (largura_barra * progresso) / tempo_carregamento, altura_barra};
+                Color cor_embaralhando = (qual_tela == -1) ? BLACK : RAYWHITE;
 
                 while (progresso < tempo_carregamento && !WindowShouldClose())
                 {
                     UpdateMusicStream(musica_fundo);
                     progresso++;
+                    BeginDrawing();
 
-                    ClearBackground((Color){30, 30, 30, 255}); // fundo da janela
-                    DrawText("Super Trunfo", SCREEN_WIDTH / 2 - MeasureText("Super Trunfo", 40) / 2, 50, 40, RAYWHITE);
-                    DrawText("Liga da Justiça", SCREEN_WIDTH / 2 - MeasureText("Liga da Justiça", 20) / 2, 100, 20, RAYWHITE);
+                    DrawTexture(textura_fundo, 0, 0, WHITE); // inserido imagem de fundo
+                    DrawText("Embaralhando...", SCREEN_WIDTH / 2 - MeasureText("Embaralhando...", 20) / 2, pos_y_barra - 40, 20, cor_embaralhando);
 
-                    DrawText("Embaralhando...", SCREEN_WIDTH / 2 - MeasureText("Embaralhando...", 20) / 2, pos_y_barra - 40, 20, RAYWHITE);
-
-                    DrawRectangleRounded(barra_progresso, 0.3, 0, (Color){251, 59, 0, 255});  // barra de progresso
+                    DrawRectangleRounded(barra_progresso, 0.3, 0, cor_destaque_telainicial);  // barra de progresso
                     barra_progresso.width = (largura_barra * progresso) / tempo_carregamento; // incrementando barra de progresso
 
-                    BeginDrawing();
                     EndDrawing();
                 }
                 estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
@@ -197,7 +236,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 Color cor = ColorFromHSV(hue * 360.0f, 1.0f, 1.0f);
                 
-                // CARTA COM BORDA !!!!!!!!!!!!!!!!!!!!!!!!!
+                // CARTA COM BORDA
                 Rectangle rec= {carta_x-5, carta_y-5, 305, 420};
                 if(carta_jogador.super_trunfo){
                     DrawRectangleRounded(rec, 0.1, 10, cor);
@@ -210,7 +249,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 circulo_x = carta_x + raio_circulo + 5;
                 circulo_y = carta_y + raio_circulo + 5;
 
-                //CIRCULO COM A BORDA CERTA
                 if (carta_jogador.super_trunfo){
                     DrawCircle(circulo_x, circulo_y, raio_circulo+3.5, BLACK);
                     DrawCircle(circulo_x, circulo_y, raio_circulo, LIGHTGRAY);
@@ -219,7 +257,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     DrawCircle(circulo_x, circulo_y, raio_circulo, LIGHTGRAY);
                 }
                 
-                // Texto da letra e número da carta
+                // texto da letra e número da carta
                 char texto[10];
                 snprintf(texto, sizeof(texto), "%c%d", carta_jogador.letra, carta_jogador.num);
                 int texto_largura = MeasureText(texto, 20);
@@ -428,7 +466,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 carta_jogador = baralho_jogador[0];
                 carta_cpu = baralho_cpu[0];
 
-
                 srand(time(NULL));
                 atributo = rand() % 5 + 1; // +1 para n�o pegar 0
                 maior_menor = rand() % 2;
@@ -534,11 +571,11 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 else quem_ganhou = verifica_menor(&carta_jogador, &carta_cpu, atributo);
                 
                 if(quem_ganhou == -1){ // empate
-                    printf("\nEMPATE\n");
+                    //printf("\nEMPATE\n");
                     empates++;
                     lidar_com_empate(&baralho_jogador, &quant_cartas_jogador, &baralho_cpu, &quant_cartas_cpu, &cartas_empate_jogador, &cartas_empate_cpu, &quant_cartas_empate);
                 }else if(quem_ganhou){ // jogador ganhou
-                    printf("\nGANHOU\n");
+                    //printf("\nGANHOU\n");
                     vitorias++;
                     // adicionando as cartas de empate ao baralho do jogador
                     if(quant_cartas_empate > 0){
@@ -558,7 +595,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     }
                     adicionar_carta_vencedor(&baralho_jogador, &baralho_cpu, &quant_cartas_jogador, &quant_cartas_cpu);
                 }else{                // CPU ganhou
-                    printf("\nPERDEU\n");
+                    //printf("\nPERDEU\n");
                     // adicionando as cartas de empate ao baralho do CPU
                     if(quant_cartas_empate > 0){
                         for (int i = 0; i < quant_cartas_empate; i++) {
@@ -755,9 +792,15 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_ENTER)){
                     PlaySound(som_resto);
                     if (CheckCollisionPointRec(GetMousePosition(), botaook) || IsKeyPressed(KEY_ENTER)){
-                        if(quant_cartas_cpu == 0) estadoAtual = JOGADOR_VENCEU;
-                        else if(quant_cartas_jogador == 0) estadoAtual = CPU_VENCEU;
-                        else {
+                        if(quant_cartas_cpu == 0) {
+                            qual_tela = 1;
+                            estadoAtual = JOGADOR_VENCEU;
+                            break;
+                        }else if(quant_cartas_jogador == 0){
+                            qual_tela = 0;
+                            estadoAtual = CPU_VENCEU;
+                            break;
+                        } else {
                             player_joga = !player_joga;
                             rodada++; // NOVA RODADA
                             if(player_joga) estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
@@ -770,9 +813,13 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 tempo_agora = GetTime();
                 
                 if (tempo_agora >= tempo_contagem_regressiva){
-                    if(quant_cartas_cpu == 0) estadoAtual = JOGADOR_VENCEU;
-                    else if(quant_cartas_jogador == 0) estadoAtual = CPU_VENCEU;
-                    else {
+                    if(quant_cartas_cpu == 0) {
+                        qual_tela = 1;
+                        estadoAtual = JOGADOR_VENCEU;
+                    }else if(quant_cartas_jogador == 0){
+                        qual_tela = 0;
+                        estadoAtual = CPU_VENCEU;
+                    } else {
                         player_joga = !player_joga;
                         rodada++; // NOVA RODADA
                         if(player_joga) estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
@@ -807,6 +854,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if (CheckCollisionPointRec(GetMousePosition(), botaook) || IsKeyPressed(KEY_ENTER)){
                         PlaySound(som_resto);
                         estadoAtual = NICKNAME;
+                        break;
                     }
                 }
                 
@@ -848,6 +896,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if (CheckCollisionPointRec(GetMousePosition(), botaook) || IsKeyPressed(KEY_ENTER)){
                         PlaySound(som_resto);
                         estadoAtual = JOGAR_NOVAMENTE;
+                        break;
                     }
                 }
 
@@ -861,7 +910,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 struct tm tm = *localtime(&t);
                 partidaHist.dia=tm.tm_mday;
                 partidaHist.mes=tm.tm_mon+1;
-
 
                 break;
             }
@@ -1006,11 +1054,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if (CheckCollisionPointRec(GetMousePosition(), botaook) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                         PlaySound(som_resto);
                         estadoAtual = JOGAR_NOVAMENTE;
+                        break;
                     }else if (IsKeyPressed(KEY_ENTER)){
                         PlaySound(som_resto);
                         estadoAtual = JOGAR_NOVAMENTE;
+                        break;
                     }
-                    
                 }
 
                 break;
@@ -1034,13 +1083,15 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 if (CheckCollisionPointRec(GetMousePosition(), botaoSim) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
                     // RESETAR AS VARIAVEIS POR PADRAO AQUI, OU CRIAR UM CASE ANTES DE NOVO BARALHO PRA TRATA
                     PlaySound(som_resto);
+                    tela_inicial = false;
                     estadoAtual = RESET;
                 }
 
                 // verificando se o botão nao foi clicado
                 if (CheckCollisionPointRec(GetMousePosition(), botaoNao) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
                     PlaySound(som_resto);
-                    estadoAtual = FECHAR_JANELA;
+                    tela_inicial = true;
+                    estadoAtual = RESET;
                 }
                 break;
             }
