@@ -3,9 +3,33 @@
 echo "Instalando dependências necessárias para compilar e rodar o projeto..."
 
 # atualizando pacotes e instalando gcc e make
+echo "Atualizando pacotes e verificando se gcc e make estão instalados..."
 sudo apt update && sudo apt install -y gcc make
 
+# instalando dependências do raylib
+echo "Instalando dependências do Raylib..."
+
+if [ "$(cat /etc/os-release | grep -oP '(?<=^NAME=).*')" = "Ubuntu" ]; then
+    # UBUNTU
+    sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libwayland-dev libxkbcommon-dev
+elif [ "$(cat /etc/os-release | grep -oP '(?<=^NAME=).*')" = "Fedora" ]; then
+    # FEDORA
+    sudo dnf install alsa-lib-devel mesa-libGL-devel libX11-devel libXrandr-devel libXi-devel libXcursor-devel libXinerama-devel libatomic
+elif [ "$(cat /etc/os-release | grep -oP '(?<=^NAME=).*')" = "Arch Linux" ]; then
+    # ARCH LINUX
+    sudo pacman -S alsa-lib mesa libx11 libxrandr libxi libxcursor libxinerama
+elif [ "$(cat /etc/os-release | grep -oP '(?<=^NAME=).*')" = "Void Linux" ]; then
+    # VOID LINUX
+    sudo xbps-install alsa-lib-devel libglvnd-devel libX11-devel libXrandr-devel libXi-devel libXcursor-devel libXinerama-devel mesa MesaLib-devel
+else
+    echo "Sistema operacional não suportado. Abortando a instalação."
+    exit 1
+fi
+
+echo "Dependências instaladas com sucesso!"
+
 # adicionando o caminho da raylib ao LD_LIBRARY_PATH
+echo "Adicionando o caminho da raylib ao LD_LIBRARY_PATH..."
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/raylib/lib
 
 # verificando se tudo foi configurado corretamente

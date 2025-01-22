@@ -9,12 +9,16 @@ ifeq ($(OS),Windows_NT)
 	LDFLAGS += -Lraylib/libwin -lraylib -lgdi32 -lwinmm
     DEL_CMD := del /f /q
     RUN_CMD := .\\$(EXECUTABLE)
+	ARQBIN = assets\\data\\arqbin.dat
+	HISTORICO = assets\\data\\historico.dat
 else
     EXECUTABLE := trunfo
     CFLAGS = -Wall -Wextra -O2 -Iinclude -Iraylib/include -m64
 	LDFLAGS = -Lraylib/lib -lraylib -lm -lpthread -ldl -lrt -lX11
 	DEL_CMD := rm -f
     RUN_CMD := ./$(EXECUTABLE)
+	ARQBIN = assets/data/arqbin.dat
+	HISTORICO = assets/data/historico.dat
 endif
 
 # Diretórios e arquivos
@@ -44,4 +48,5 @@ clean_all: clean
 	$(DEL_CMD) $(EXECUTABLE)
 
 reset: clean_all
-	$(DEL_CMD) assets\\data\\arqbin.dat
+	$(DEL_CMD) $(ARQBIN)
+	$(DEL_CMD) $(HISTORICO)

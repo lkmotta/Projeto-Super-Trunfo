@@ -480,7 +480,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 Rectangle barra_progresso_cpu = { pos_x_barra_cpu, pos_y_barra_cpu, 0, altura_barra_cpu };
 
                 while (progresso_cpu < tempo_carregamento_cpu && !WindowShouldClose()) {
-                    UpdateMusicStream(musica_fundo);
+                    UpdateMusicStream(musica_atual);
                     progresso_cpu++;
 
                     BeginDrawing();
