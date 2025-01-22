@@ -1117,8 +1117,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
 
     // parando e descarregando a musica
-    StopMusicStream(musica_fundo);
-    UnloadMusicStream(musica_fundo);
+    StopMusicStream(musica_atual);
+    UnloadMusicStream(musica_atual);
     CloseAudioDevice(); 
 
     CloseWindow(); // fechando a janela
