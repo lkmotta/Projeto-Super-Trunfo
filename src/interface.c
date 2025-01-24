@@ -199,7 +199,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 while (progresso < tempo_carregamento && !WindowShouldClose())
                 {
-                    UpdateMusicStream(musica_fundo);
+                    UpdateMusicStream(musica_atual);
                     progresso++;
                     BeginDrawing();
 
@@ -437,8 +437,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int volume_height = 20;
                 static float volume = 0.2;
                 Rectangle volume_bar = {volume_x, volume_y, volume_width, volume_height};
-                SetMusicVolume(musica_fundo, volume);
-                SetMusicVolume(musica_fundo1, volume);
+                SetMusicVolume(musica_atual, volume);
 
                 DrawRectangleRounded(volume_bar, 0.3, 10, LIGHTGRAY);
 
@@ -834,9 +833,15 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
 
             case JOGADOR_VENCEU: {
-                StopMusicStream(musica_atual);
-                musica_atual = musica_vitoria;
-
+                static bool ja_pousou = false;
+                if (!ja_pousou) {
+                    StopMusicStream(musica_atual);
+                    musica_atual = musica_vitoria;
+                    PlayMusicStream(musica_atual);
+                    ja_pousou = true;
+                }
+                SetMusicVolume(musica_atual, 0.2);
+        
                 DrawText("Fim de Jogo", SCREEN_WIDTH / 2 - MeasureText("Fim de Jogo", 50) / 2, SCREEN_HEIGHT / 2 - 250, 50, WHITE);
                 DrawText("Voce ganhou", SCREEN_WIDTH / 2 - MeasureText("Voce ganhou", 40) / 2, SCREEN_HEIGHT / 2 - 130, 40, GREEN);
                 pontuacao = (10 * ((100 * vitorias) / rodada))+50*empates;
@@ -875,8 +880,14 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
 
             case CPU_VENCEU: {
-                StopMusicStream(musica_atual);
-                musica_atual = musica_derrota;
+                static bool ja_pousou = false;
+                if (!ja_pousou) {
+                    StopMusicStream(musica_atual);
+                    musica_atual = musica_derrota;
+                    PlayMusicStream(musica_atual);
+                    ja_pousou = true;
+                }
+                SetMusicVolume(musica_atual, 0.2);
 
                 DrawText("Fim de Jogo", SCREEN_WIDTH / 2 - MeasureText("Fim de Jogo", 50) / 2, SCREEN_HEIGHT / 2 - 250, 50, WHITE);
                 DrawText("CPU ganhou", SCREEN_WIDTH / 2 - MeasureText("Voce ganhou", 40) / 2, SCREEN_HEIGHT / 2 - 130, 40, RED);
@@ -1106,8 +1117,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
 
     // parando e descarregando a musica
-    StopMusicStream(musica_fundo);
-    UnloadMusicStream(musica_fundo);
+    StopMusicStream(musica_atual);
+    UnloadMusicStream(musica_atual);
     CloseAudioDevice(); 
 
     CloseWindow(); // fechando a janela
