@@ -11,6 +11,7 @@
 typedef struct {
     char nome[TAM_NOME_CARTA];
     char letra;
+    char textura[50];
     int num;
     int super_trunfo;
     int forca;

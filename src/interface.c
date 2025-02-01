@@ -17,6 +17,26 @@
 #include <time.h> // necessária para srand
 #include "raylib.h"
 
+/**
+ * @brief Carrega a imagem da carta, redimensiona para o display da carta e carrega a textura.
+ * 
+ * @param carta 
+ * @param textura_carta 
+ * @return bool
+ */
+bool carregando_imagem_carta(Cartas carta, Texture2D *textura_carta){
+    Image carta_imagem = LoadImage(carta.textura);
+    if(carta_imagem.data == NULL){
+        printf("\n\033[1;91mErro ao carregar imagem da carta %s\033[m\n", carta.nome);
+        UnloadImage(carta_imagem);
+        return false;
+    }
+
+    ImageResize(&carta_imagem, 300, 400); // redimensionando imagem para o tamanho do display da carta
+    *textura_carta = LoadTextureFromImage(carta_imagem);
+    UnloadImage(carta_imagem);
+    return true;
+}
 
 void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 {
@@ -48,11 +68,15 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     int tempo_contagem_regressiva, tempo_agora,tempo_inicial;
     int carta_x, carta_y, circulo_x, circulo_y, raio_circulo;
     int atributo_x = 0, atributo_y = 0;
-    static float hue = 0.0f;
+    static float rgb = 0.0f;
+    bool tentou_carregar = false, carregou = false;
     char informacao_rodada[30];
     Texture2D textura_fundo;
+    Texture2D textura_carta_jogador, textura_carta_cpu;
+    Image imagem_fundo;
     Rectangle retangulo_fundo_botoes;
-    Color cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
+    
+    Color cor, cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projeto Super-Trunfo"); // iniciando a janela
     SetTargetFPS(FPS);                                               // definindo a taxa de quadros por segundo
@@ -70,13 +94,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     SetMusicVolume(musica_atual, 0.2);
     SetMasterVolume(0.7);
 
-    //carregando audio de atributos e de confirmação/maior/menor
+    // carregando audio de atributos e de confirmação/maior/menor
     Sound som_atributos = LoadSound("assets/sounds/atributos.wav");
     Sound som_resto = LoadSound("assets/sounds/resto.wav");
     SetSoundVolume(som_resto, 0.6);
     Sound som_tecla = LoadSound("assets/sounds/tecla.wav");
 
-    Image imagem_fundo;
 
     while (!WindowShouldClose()){
         UpdateMusicStream(musica_atual);
@@ -86,13 +109,13 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
         switch (estadoAtual){
             case CARREGANDO_TELA_INICIAL: {
                 if(qual_tela == 0){
-                    textura_fundo = LoadTexture("assets/img/tela_inicial_cpuwin(800x600).png");
+                    textura_fundo = LoadTexture("assets/img/telas/tela_inicial_cpuwin(800x600).png");
                     cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL_CPUWIN;
                 }else if(qual_tela == 1){
-                    textura_fundo = LoadTexture("assets/img/tela_inicial_playerwin(800x600).png");
+                    textura_fundo = LoadTexture("assets/img/telas/tela_inicial_playerwin(800x600).png");
                     cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL_PLAYERWIN;
                 }else if(qual_tela == -1){
-                    textura_fundo = LoadTexture("assets/img/tela_inicial(800x600).png");
+                    textura_fundo = LoadTexture("assets/img/telas/tela_inicial(800x600).png");
                     cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
                 }
 
@@ -125,7 +148,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                             if (i == 0) {
                                 estadoAtual = NOVO_BARALHO;
                             } else if (i == 1) {
-                                estadoAtual = AJUSTES;
+                                estadoAtual = RANKING;
                             } else if (i == 2) {
                                 estadoAtual = REGRAS;
                             } else if (i == 3) {
@@ -138,7 +161,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if (i == 0) {
                         DrawText("JOGAR", botoes[i].x + botoes[i].width / 2 - MeasureText("JOGAR", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
                     } else if (i == 1) {
-                        DrawText("AJUSTES", botoes[i].x + botoes[i].width / 2 - MeasureText("AJUSTES", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
+                        DrawText("AJUSTES", botoes[i].x + botoes[i].width / 2 - MeasureText("RANKING", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
                     } else if (i == 2) {
                         DrawText("REGRAS", botoes[i].x + botoes[i].width / 2 - MeasureText("REGRAS", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
                     } else if (i == 3) {
@@ -151,6 +174,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
            
             case RESET: {
                 player_joga = true;
+                tentou_carregar = false, carregou = false;
                 quem_ganhou = -1, atributo = 0;
                 atributo_nome = "Força";
                 maior_menor = true, maior_menor_selecionado = true;
@@ -223,28 +247,38 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 maior_menor=maior_menor_selecionado;
 
-                // placar
+                // PLACAR 
                 DrawText(TextFormat("Jogador:%10d", quant_cartas_jogador), 10, 10, 20, BLUE);
                 DrawText(TextFormat("CPU:%15d", quant_cartas_cpu), 10, 40, 20, RED);
 
-                // carta do jogador
+                // ------------------------------------- CARTA JOGADOR -------------------------------------
                 carta_x = (SCREEN_WIDTH - 300) / 2;
                 carta_y = (SCREEN_HEIGHT - 400) / 2;
 
-                hue += 0.001f;
-                if (hue > 1.0f) hue = 0.0f;
-
-                Color cor = ColorFromHSV(hue * 360.0f, 1.0f, 1.0f);
                 
-                // CARTA COM BORDA
+                // CARTA
                 Rectangle rec= {carta_x-5, carta_y-5, 305, 420};
-                if(carta_jogador.super_trunfo){
-                    DrawRectangleRounded(rec, 0.1, 10, cor);
+                if(!tentou_carregar){
+                    tentou_carregar = true;
+                    carregou = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
+                }
+
+                if(carregou){
+                    DrawTexture(textura_carta_jogador, carta_x, carta_y, WHITE);
                 }else{
                     DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
                 }
 
-                // desenhando círculo com borda
+                if(carta_jogador.super_trunfo){ // se a carta for super-trunfo, terá efeito RGB na borda
+                    rgb += 0.001f;
+                    if (rgb > 1.0f) rgb = 0.0f;
+                    cor = ColorFromHSV(rgb * 360.0f, 1.0f, 1.0f);
+                    DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor);
+                }else{
+                    DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor_destaque_telainicial);
+                }
+
+                // ------------------------------------- ID CARTA -------------------------------------
                 raio_circulo = 25;
                 circulo_x = carta_x + raio_circulo + 5;
                 circulo_y = carta_y + raio_circulo + 5;
@@ -267,7 +301,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int nome_largura = MeasureText(carta_jogador.nome, 20);
                 DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
 
-                // atributos da carta
+                // ATRIBUTOS DA CARTA
                 int valores[] = {carta_jogador.forca, carta_jogador.habilidade, carta_jogador.velocidade, carta_jogador.poderes, carta_jogador.poder_cura};
                 for (int i = 0; i < 5; i++)
                 {
@@ -275,7 +309,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     atributo_y = carta_y + 150 + i * 50;
                     Rectangle retangulo_atributo = {atributo_x, atributo_y, 200, 30};
 
-                    if (CheckCollisionPointRec(GetMousePosition(), retangulo_atributo) || IsKeyDown(  KEY_ONE + i))
+                    if (CheckCollisionPointRec(GetMousePosition(), retangulo_atributo) || IsKeyDown(KEY_ONE + i))
                     { // verificando se o mouse esta em cima do atributo
                         DrawRectangle(atributo_x-2.5, atributo_y-2.5, 205, 35, BLACK);
                         DrawRectangleRec(retangulo_atributo, GRAY);
@@ -311,7 +345,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 Rectangle maiorRect = {maior_x, maior_y, 100, 30};
                 Rectangle menorRect = {menor_x, menor_y, 100, 30};
 
-                // BOTAO MAIOR
+                // ------------------------------------- BOTAO MAIOR -------------------------------------
                 if (CheckCollisionPointRec(GetMousePosition(), maiorRect) || IsKeyDown(KEY_UP))
                 {
                     DrawRectangle(maior_x-2, maior_y-2, 105, 35, RED);
@@ -338,7 +372,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
                 DrawText("Maior", SCREEN_WIDTH - 140, SCREEN_HEIGHT - 175, 20, RAYWHITE);
 
-                // BOTAO MENOR
+                // ------------------------------------- BOTAO MENOR -------------------------------------
                 if (CheckCollisionPointRec(GetMousePosition(), menorRect) || IsKeyDown(KEY_DOWN))
                 {
                     DrawRectangle(menor_x-2, menor_y-2, 105, 35, BLUE);
@@ -363,7 +397,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
                 DrawText("Menor", SCREEN_WIDTH - 140, SCREEN_HEIGHT - 125, 20, RAYWHITE);
 
-                // BOTAO JOGAR
+                // ------------------------------------- BOTAO JOGAR -------------------------------------
                 Rectangle retangulo_jogar = {SCREEN_WIDTH - 150, SCREEN_HEIGHT - 80, 100, 50};
                 if (CheckCollisionPointRec(GetMousePosition(), retangulo_jogar) || IsKeyDown(KEY_ENTER) ){ // se o mouse tiver em cima do botao
                     DrawRectangleRec(retangulo_jogar, DARKGREEN);
@@ -379,7 +413,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawText("Jogar", SCREEN_WIDTH - 130, SCREEN_HEIGHT - 65, 20, RAYWHITE);
                 DrawText(TextFormat("Rodada: %d", rodada), 10, SCREEN_HEIGHT - 30, 20, RAYWHITE);
 
-                //PLAYER DE MUSICA
+                // ------------------------------------- PLAYER DE MUSICA -------------------------------------
                 Rectangle botao_serio = {10, SCREEN_HEIGHT / 2 - 20, 100, 30};
                 Rectangle botao_legal = {120, SCREEN_HEIGHT / 2 - 20, 100, 30};
                 static int botao_serio_pressionado = 1;
@@ -430,7 +464,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawRectangleRounded(botao_legal, 0.3, 10, GRAY);
                 DrawText("Legal", botao_legal.x + 10, botao_legal.y + 5, 20, WHITE);
 
-                // Controle de volume
+                // CONTROLE DO VOLUME
                 int volume_x = 10;
                 int volume_y = SCREEN_HEIGHT / 2 + 20;
                 int volume_width = 210;
@@ -469,7 +503,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 atributo = rand() % 5 + 1; // +1 para n�o pegar 0
                 maior_menor = rand() % 2;
 
-                // definição das vari�veis
+                // definindo variaveis
                 int progresso_cpu = 0;
                 int tempo_carregamento_cpu = GetRandomValue( 3 ,4 ) * FPS; // de 1 a 2 segundos
                 int largura_barra_cpu = 400;
@@ -499,26 +533,30 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     DrawText(TextFormat("Jogador:%10d", quant_cartas_jogador), 10, 10, 20, BLUE);
                     DrawText(TextFormat("CPU:%15d", quant_cartas_cpu), 10, 40, 20, RED);
 
-                    // Carta do jogador
-                    //int carta_x = (SCREEN_WIDTH - 300) / 2;
-                    //int carta_y = (SCREEN_HEIGHT - 400) / 2;
-
-
                     // carta do jogador
                     carta_x = (SCREEN_WIDTH - 300) / 2;
                     carta_y = (SCREEN_HEIGHT - 400) / 2;
 
-                    hue += 0.001f;
-                    if (hue > 1.0f) hue = 0.0f;
-
-                    Color cor = ColorFromHSV(hue * 360.0f, 1.0f, 1.0f);
+                    Rectangle rec = {carta_x-5, carta_y-5, 305, 420};
                     
-                    // CARTA COM BORDA !!!!!!!!!!!!!!!!!!!!!!!!!
-                    Rectangle rec= {carta_x-5, carta_y-5, 305, 420};
-                    if(carta_jogador.super_trunfo){
-                        DrawRectangleRounded(rec, 0.1, 10, cor);
+                    if(!tentou_carregar){
+                        tentou_carregar = true;
+                        carregou = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
+                    }
+
+                    if(carregou){
+                        DrawTexture(textura_carta_jogador, carta_x, carta_y, WHITE);
                     }else{
                         DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
+                    }
+
+                    if(carta_jogador.super_trunfo){ // se a carta for super-trunfo, terá efeito RGB na borda
+                        rgb += 0.001f;
+                        if (rgb > 1.0f) rgb = 0.0f;
+                        cor = ColorFromHSV(rgb * 360.0f, 1.0f, 1.0f);
+                        DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor);
+                    }else{
+                        DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor_destaque_telainicial);
                     }
 
                     // desenhando círculo com borda
@@ -526,7 +564,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     circulo_x = carta_x + raio_circulo + 5;
                     circulo_y = carta_y + raio_circulo + 5;
 
-                    //CIRCULO COM A BORDA CERTA
+                    // CIRCULO COM A BORDA CERTA
                     if (carta_jogador.super_trunfo){
                         DrawCircle(circulo_x, circulo_y, raio_circulo+3.5, BLACK);
                         DrawCircle(circulo_x, circulo_y, raio_circulo, LIGHTGRAY);
@@ -624,18 +662,27 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 carta_x = (SCREEN_WIDTH - 700) / 2;
                 carta_y = (SCREEN_HEIGHT - 500) / 2;
 
-                hue += 0.001f;
-                if (hue > 1.0f) hue = 0.0f;
-
-                Color cor = ColorFromHSV(hue * 360.0f, 1.0f, 1.0f);
-                
-                // CARTA COM BORDA !!!!!!!!!!!!!!!!!!!!!!!!!
                 DrawText("Sua carta", carta_x + 100, (SCREEN_HEIGHT - 550) / 2, 20, DARKGREEN);
-                Rectangle rec= {carta_x-5, carta_y-5, 305, 420};
-                if(carta_jogador.super_trunfo){
-                    DrawRectangleRounded(rec, 0.1, 10, cor);
+                Rectangle rec = {carta_x-5, carta_y-5, 305, 420};
+                
+                if(!tentou_carregar){
+                    tentou_carregar = true;
+                    carregou = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
+                }
+
+                if(carregou){
+                    DrawTexture(textura_carta_jogador, carta_x, carta_y, WHITE);
                 }else{
                     DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
+                }
+
+                if(carta_jogador.super_trunfo){ // se a carta for super-trunfo, terá efeito RGB na borda
+                    rgb += 0.001f;
+                    if (rgb > 1.0f) rgb = 0.0f;
+                    cor = ColorFromHSV(rgb * 360.0f, 1.0f, 1.0f);
+                    DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor);
+                }else{
+                    DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor_destaque_telainicial);
                 }
 
                 // desenhando círculo com borda
@@ -690,15 +737,28 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 // --------------------------------------- CARTA DA CPU ----------------------------------------
                 carta_x = (SCREEN_WIDTH - 350);
                 carta_y = (SCREEN_HEIGHT - 500) / 2;
+                rec.x = carta_x-5, rec.y = carta_y-5, rec.width = 305, rec.height = 420;
                 
                 DrawText("Carta CPU", carta_x + 100, (SCREEN_HEIGHT - 550) / 2, 20, (Color){ 156, 0, 0, 255 }); // #9C0000
 
-                // CARTA COM BORDA !!!!!!!!!!!!!!!!!!!!!!!!!
-                Rectangle rec1= {carta_x-5, carta_y-5, 305, 420};
-                if(carta_cpu.super_trunfo){
-                    DrawRectangleRounded(rec1, 0.1, 10, cor);
+                if(!tentou_carregar){
+                    tentou_carregar = true;
+                    carregou = carregando_imagem_carta(carta_cpu, &textura_carta_cpu);
+                }
+
+                if(carregou){
+                    DrawTexture(textura_carta_cpu, carta_x, carta_y, WHITE);
                 }else{
-                    DrawRectangleRounded(rec1, 0.1, 10, (Color){ 167, 167, 167, 255 });
+                    DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
+                }
+
+                if(carta_cpu.super_trunfo){ // se a carta for super-trunfo, terá efeito RGB na borda
+                    rgb += 0.001f;
+                    if (rgb > 1.0f) rgb = 0.0f;
+                    cor = ColorFromHSV(rgb * 360.0f, 1.0f, 1.0f);
+                    DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor);
+                }else{
+                    DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor_destaque_telainicial);
                 }
 
                 // desenhando círculo com borda
@@ -706,7 +766,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 circulo_x = carta_x + raio_circulo + 5;
                 circulo_y = carta_y + raio_circulo + 5;
 
-                //CIRCULO COM A BORDA CERTA
+                // CIRCULO COM A BORDA CERTA
                 if (carta_cpu.super_trunfo){
                     DrawCircle(circulo_x, circulo_y, raio_circulo+3.5, BLACK);
                     DrawCircle(circulo_x, circulo_y, raio_circulo, LIGHTGRAY);
@@ -751,7 +811,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int largura_barra_dentro = 300;  // largura da barra de dentro
                 int largura_maxima_barra = 280; // largura máxima da barra de vida
 
-                // largura das barras baseada nas proporções
+                // LARGURA DAS BARRAS baseada nas proporções
                 int largura_barra_jogador = largura_maxima_barra * proporcao_jogador;
                 int largura_barra_cpu = largura_maxima_barra * proporcao_cpu;
 
@@ -777,11 +837,11 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 // RODADAS
                 DrawText(TextFormat("Rodada: %d", rodada), 10, SCREEN_HEIGHT - 30, 20, RAYWHITE);
 
-                // INFORMA��ES DA COMPARA��O
+                // INFORMACOES DA COMPARACAO
                 sprintf(informacao_rodada, "%s - %s", atributo_nome, maior_menor ? "MAIOR" : "MENOR");
                 DrawText(informacao_rodada, SCREEN_WIDTH - 10 - MeasureText(informacao_rodada, 20), SCREEN_HEIGHT - 30, 20, RAYWHITE); 
 
-                // botao OK
+                // BOTAO OK
                 Rectangle botaook = {SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT - 80, 100, 50};
                 Color botaocor = CheckCollisionPointRec(GetMousePosition(), botaook) ? DARKGREEN : GREEN;
                 DrawRectangleRec(botaook, botaocor);
@@ -802,6 +862,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         } else {
                             player_joga = !player_joga;
                             rodada++; // NOVA RODADA
+                            tentou_carregar = false, carregou = false;
                             if(player_joga) estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
                             else estadoAtual = TELA_CPU_ESCOLHENDO_ATRIBUTO;
                         }
@@ -821,6 +882,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     } else {
                         player_joga = !player_joga;
                         rodada++; // NOVA RODADA
+                        tentou_carregar = false, carregou = false;
                         if(player_joga) estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
                         else estadoAtual = TELA_CPU_ESCOLHENDO_ATRIBUTO;
                     }
@@ -829,6 +891,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawText(TextFormat("%d", (tempo_contagem_regressiva - tempo_agora)), 
                     SCREEN_WIDTH / 2 - MeasureText(TextFormat("%d",(tempo_contagem_regressiva - tempo_agora)), 20) / 2,
                     botaook.y + botaook.height + 10, 20, WHITE);
+                
+                
                 break;
             }
 
@@ -1031,7 +1095,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                     bool top5 = false;
                     for (int i = 0; i < aux && i < 5; i++) {
-                        Color cor;
+                        cor;
                         if (i == 0) cor = GOLD;
                         else if (i == 1) cor = SILVER;
                         else if (i == 2) cor = BRONZE;

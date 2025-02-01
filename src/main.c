@@ -48,8 +48,8 @@ int main() {
                 perror("\n\033[1;91mErro ao alocar memoria para cartas\033[m");
                 exit(1);
             }
-            fscanf(arq_cartas, "%[^,],%c,%i,%i,%i,%i,%i,%i,%i\n", 
-                cartas[i].nome, 
+            fscanf(arq_cartas, "%[^,],%c,%i,%i,%i,%i,%i,%i,%i,%s\n", 
+                cartas[i].nome,
                 &cartas[i].letra, 
                 &cartas[i].num, 
                 &cartas[i].super_trunfo, 
@@ -57,8 +57,9 @@ int main() {
                 &cartas[i].habilidade, 
                 &cartas[i].velocidade, 
                 &cartas[i].poderes, 
-                &cartas[i].poder_cura);
-        } 
+                &cartas[i].poder_cura,
+                &cartas[i].textura);
+        }
     } else {
         printf("\033[1;93mBem-vindo de volta!\033[m\n");
         fseek(arqbin, 0, SEEK_END);
