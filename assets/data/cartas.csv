@@ -1,32 +1,32 @@
-Charada,A,1,0,10,60,5,5,10,assets/img/cartas/charada.jpg
-Crocodilo,A,2,0,20,60,3,25,60,assets/img/cartas/crocodilo.jpg
-Pinguim,A,3,0,5,50,3,5,10,assets/img/cartas/pinguim.jpg
-Hera Venenosa,A,4,0,5,60,4,15,25,assets/img/cartas/heravenenosa.jpg
-Lex Luthor,A,5,0,10,65,5,5,10,assets/img/cartas/lexluthor.jpg
-General Zod,A,6,0,45,90,18,45,80,assets/img/cartas/generalzod.jpg
-Aquaman,A,7,0,35,90,17,40,65,assets/img/cartas/aquaman.jpg
-Lanterna Verde,A,8,0,35,70,17,35,50,assets/img/cartas/lanternaverde.jpg
-Apocalypse,B,1,0,50,55,17,45,75,assets/img/cartas/apocalypse.jpg
-Arqueiro Verde,B,2,0,10,80,8,10,30,assets/img/cartas/arqueiroverde.jpg
-Super Man,B,3,1,50,95,20,45,80,assets/img/cartas/superman.jpg
-Coringa,B,4,0,10,75,5,5,10,assets/img/cartas/coringa.jpg
-Batgirl,B,5,0,5,65,6,5,10,assets/img/cartas/batgirl.jpg
-Mulher Maravilha,B,6,0,45,90,18,45,80,assets/img/cartas/mulhermaravilha.jpg
-Shazam,B,7,0,45,70,19,40,75,assets/img/cartas/shazam.jpg
-Cyborg,B,8,0,25,70,10,35,65,assets/img/cartas/cyborg.jpg
-Gaviao Negro,C,1,0,20,70,17,30,65,assets/img/cartas/gaviaonegro.jpg
-Katana,C,2,0,10,80,7,10,25,assets/img/cartas/katana.jpg
-Batman,C,3,0,15,85,8,10,30,assets/img/cartas/batman.jpg
-Robin,C,4,0,10,70,7,5,10,assets/img/cartas/robin.jpg
-Duas Caras,C,5,0,10,55,5,5,10,assets/img/cartas/duascaras.jpg
-Supergirl,C,6,0,45,85,18,40,80,assets/img/cartas/supergirl.jpg
-Cacador De Marte,C,7,0,40,65,15,40,70,assets/img/cartas/cacadormarte.png
-Bane,C,8,0,25,65,3,25,65,assets/img/cartas/bane.jpg
-Capitao Atomo,D,1,0,25,65,14,25,30,assets/img/cartas/capitaoatomo.jpg
-Pistoleiro,D,2,0,10,80,6,10,20,assets/img/cartas/pistoleiro.jpg
-Mulher Gato,D,3,0,10,85,7,5,15,assets/img/cartas/mulhergato.jpg
-Arlequina,D,4,0,5,75,6,5,10,assets/img/cartas/arlequina.jpg
-Espantalho,D,5,0,10,50,5,5,10,assets/img/cartas/espantalho.jpg
-Flash,D,6,0,20,100,20,40,80,assets/img/cartas/flash.jpg
-Sinestro,D,7,0,35,70,17,35,50,assets/img/cartas/sinestro.jpg
+Charada,A,1,0,10,60,5,5,10,assets/img/cartas/charada.png
+Crocodilo,A,2,0,20,60,3,25,60,assets/img/cartas/crocodilo.png
+Pinguim,A,3,0,5,50,3,5,10,assets/img/cartas/pinguim.png
+Hera Venenosa,A,4,0,5,60,4,15,25,assets/img/cartas/heravenenosa.png
+Lex Luthor,A,5,0,10,65,5,5,10,assets/img/cartas/lexluthor.png
+General Zod,A,6,0,45,90,18,45,80,assets/img/cartas/generalzod.png
+Aquaman,A,7,0,35,90,17,40,65,assets/img/cartas/aquaman.png
+Lanterna Verde,A,8,0,35,70,17,35,50,assets/img/cartas/lanternaverde.png
+Apocalypse,B,1,0,50,55,17,45,75,assets/img/cartas/apocalypse.png
+Arqueiro Verde,B,2,0,10,80,8,10,30,assets/img/cartas/arqueiroverde.png
+Super Man,B,3,1,50,95,20,45,80,assets/img/cartas/superman.png
+Coringa,B,4,0,10,75,5,5,10,assets/img/cartas/coringa.png
+Batgirl,B,5,0,5,65,6,5,10,assets/img/cartas/batgirl.png
+Mulher Maravilha,B,6,0,45,90,18,45,80,assets/img/cartas/mulhermaravilha.png
+Shazam,B,7,0,45,70,19,40,75,assets/img/cartas/shazam.png
+Cyborg,B,8,0,25,70,10,35,65,assets/img/cartas/cyborg.png
+Gaviao Negro,C,1,0,20,70,17,30,65,assets/img/cartas/gaviaonegro.png
+Katana,C,2,0,10,80,7,10,25,assets/img/cartas/katana.png
+Batman,C,3,0,15,85,8,10,30,assets/img/cartas/batman.png
+Robin,C,4,0,10,70,7,5,10,assets/img/cartas/robin.png
+Duas Caras,C,5,0,10,55,5,5,10,assets/img/cartas/duascaras.png
+Supergirl,C,6,0,45,85,18,40,80,assets/img/cartas/supergirl.png
+Cacador De Marte,C,7,0,40,65,15,40,70,assets/img/cartas/cacadordemarte.png
+Bane,C,8,0,25,65,3,25,65,assets/img/cartas/bane.png
+Capitao Atomo,D,1,0,25,65,14,25,30,assets/img/cartas/capitaoatomo.png
+Pistoleiro,D,2,0,10,80,6,10,20,assets/img/cartas/pistoleiro.png
+Mulher Gato,D,3,0,10,85,7,5,15,assets/img/cartas/mulhergato.png
+Arlequina,D,4,0,5,75,6,5,10,assets/img/cartas/arlequina.png
+Espantalho,D,5,0,10,50,5,5,10,assets/img/cartas/espantalho.png
+Flash,D,6,0,20,100,20,40,80,assets/img/cartas/flash.png
+Sinestro,D,7,0,35,70,17,35,50,assets/img/cartas/sinestro.png
 Exterminador,D,8,0,20,85,8,10,35,assets/img/cartas/exterminador.png

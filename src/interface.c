@@ -77,10 +77,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     Rectangle retangulo_fundo_botoes;
     
     Color cor, cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
-
+    Image icon = LoadImage("assets/img/icons/windowicon.png");
+    
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projeto Super-Trunfo"); // iniciando a janela
+    SetWindowIcon(icon);                                             // definindo icone da janela
+    UnloadImage(icon);
     SetTargetFPS(FPS);                                               // definindo a taxa de quadros por segundo
-
 
     // carregando musica de fundo
     InitAudioDevice();
@@ -299,6 +301,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawText(texto, circulo_x - texto_largura / 2, circulo_y - texto_altura / 2, 20, BLACK);
 
                 int nome_largura = MeasureText(carta_jogador.nome, 20);
+                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 100 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(WHITE, 0.5f));
                 DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
 
                 // ATRIBUTOS DA CARTA
@@ -312,11 +315,11 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if (CheckCollisionPointRec(GetMousePosition(), retangulo_atributo) || IsKeyDown(KEY_ONE + i))
                     { // verificando se o mouse esta em cima do atributo
                         DrawRectangle(atributo_x-2.5, atributo_y-2.5, 205, 35, BLACK);
-                        DrawRectangleRec(retangulo_atributo, GRAY);
+                        DrawRectangleRec(retangulo_atributo, Fade(GRAY, 0.5f));
 
                         if (i == atributo){
                             DrawRectangle(atributo_x-2.5, atributo_y-2.5, 205, 35, BLACK);
-                            DrawRectangleRec(retangulo_atributo, GRAY);
+                            DrawRectangleRec(retangulo_atributo, Fade(GRAY, 0.5f));
                         }
                         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_ONE + i))
                         {                                                                                   // se o botao do mouse for clicado
@@ -330,10 +333,10 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     }
                     else
                     {
-                        DrawRectangleRec(retangulo_atributo, DARKGRAY);
+                        DrawRectangleRec(retangulo_atributo, Fade(DARKGRAY, 0.5f));
                         if (i == atributo){
                             DrawRectangle(atributo_x-2.5, atributo_y-2.5, 205, 35, RED);
-                            DrawRectangleRec(retangulo_atributo, GRAY);
+                            DrawRectangleRec(retangulo_atributo, Fade(GRAY, 0.5f));
                         }
                     }
                     DrawText(atributos[i], atributo_x + 5, atributo_y + 5, 20, RAYWHITE);
@@ -405,6 +408,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         PlaySound(som_resto);
                         atributo+=1; // o enum dos atributos começa com 1
                         estadoAtual = VERIFICANDO_GANHADOR;
+                        tentou_carregar = false, carregou = false;
                     }
                 }
                 else{
@@ -500,12 +504,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 carta_cpu = baralho_cpu[0];
 
                 srand(time(NULL));
-                atributo = rand() % 5 + 1; // +1 para n�o pegar 0
+                atributo = rand() % 5 + 1; // +1 para nao pegar 0
                 maior_menor = rand() % 2;
 
                 // definindo variaveis
                 int progresso_cpu = 0;
-                int tempo_carregamento_cpu = GetRandomValue( 3 ,4 ) * FPS; // de 1 a 2 segundos
+                int tempo_carregamento_cpu = GetRandomValue(1, 2) * FPS; // de 1 a 2 segundos
                 int largura_barra_cpu = 400;
                 int altura_barra_cpu = 20;
                 int pos_x_barra_cpu = (SCREEN_WIDTH - largura_barra_cpu) / 2;
@@ -581,6 +585,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     DrawText(texto, circulo_x - texto_largura/2, circulo_y - texto_altura/2, 20, BLACK);
 
                     int nome_largura = MeasureText(carta_jogador.nome, 20);
+                    DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 100 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(WHITE, 0.5f));
                     DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
 
                     // Atributos da carta
@@ -588,7 +593,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                     for (int i = 0; i < 5; i++) {
                         Rectangle retangulo_atributo = {carta_x + 10, carta_y + 150 + i * 50, 200, 30};
-                        DrawRectangleRec(retangulo_atributo, DARKGRAY);
+                        DrawRectangleRec(retangulo_atributo, Fade(DARKGRAY, 0.5f));
                         DrawText(atributos[i], carta_x + 20, carta_y + 155 + i * 50, 20, RAYWHITE);
                         DrawText(TextFormat("%d", valores[i]), carta_x + 180, carta_y + 155 + i * 50, 20, RAYWHITE);
                     }
@@ -600,6 +605,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 tempo_inicial = GetTime();
                 estadoAtual = VERIFICANDO_GANHADOR;
+                tentou_carregar = false, carregou = false;
                 break;
             }
 
@@ -666,7 +672,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 Rectangle rec = {carta_x-5, carta_y-5, 305, 420};
                 
                 if(!tentou_carregar){
-                    tentou_carregar = true;
                     carregou = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
                 }
 
@@ -708,6 +713,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 // nome da carta
                 int nome_largura = MeasureText(carta_jogador.nome, 20);
+                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 100 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(WHITE, 0.5f));
                 DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
 
                 // atributos da carta
@@ -725,7 +731,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         } else if (quem_ganhou == 1) {
                             DrawRectangleRec(retangulo_atributo, GREEN);
                         }
-                    }else DrawRectangleRec(retangulo_atributo, DARKGRAY);
+                    }else DrawRectangleRec(retangulo_atributo, Fade(DARKGRAY, 0.4f));
 
                     DrawText(atributos[i], carta_x + 20, carta_y + 155 + i * 50, 20, RAYWHITE);
                     DrawText(TextFormat("%d", valores[i]), carta_x + 180, carta_y + 155 + i * 50, 20, RAYWHITE);
@@ -782,6 +788,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 // nome da carta
                 nome_largura = MeasureText(carta_cpu.nome, 20);
+                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 100 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(WHITE, 0.5f));
                 DrawText(carta_cpu.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
 
                 // atributos da carta
@@ -798,7 +805,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         } else if (quem_ganhou == 1) {
                             DrawRectangleRec(retangulo_atributo, RED);
                         }
-                    }else DrawRectangleRec(retangulo_atributo, DARKGRAY);
+                    }else DrawRectangleRec(retangulo_atributo, Fade(DARKGRAY, 0.4f));
 
                     DrawText(atributos[i], carta_x + 20, carta_y + 155 + i * 50, 20, RAYWHITE);
                     DrawText(TextFormat("%d", valores_cpu[i]), carta_x + 180, carta_y + 155 + i * 50, 20, RAYWHITE);
