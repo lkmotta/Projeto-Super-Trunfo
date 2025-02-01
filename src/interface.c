@@ -19,6 +19,7 @@
 
 /**
  * @brief Carrega a imagem da carta, redimensiona para o display da carta e carrega a textura.
+ * Retorna true(1) se deu certo, false(0) caso contrario.
  * 
  * @param carta 
  * @param textura_carta 
@@ -63,8 +64,10 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     int vitorias = 0, empates = 0, pontuacao = 0;
     Historico partidaHist;
 
-    // variáveis das telas (para evitar redeclarar)
+    // variáveis das telas (para evitar redeclarar no loop)
     char nickname[4] = "";
+    char texto[10];
+    int texto_largura, texto_altura, nome_largura;
     int tempo_contagem_regressiva, tempo_agora,tempo_inicial;
     int carta_x, carta_y, circulo_x, circulo_y, raio_circulo;
     int atributo_x = 0, atributo_y = 0;
@@ -73,7 +76,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     char informacao_rodada[30];
     Texture2D textura_fundo;
     Texture2D textura_carta_jogador, textura_carta_cpu;
-    Image imagem_fundo;
     Rectangle retangulo_fundo_botoes;
     
     Color cor, cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
@@ -86,10 +88,10 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
     // carregando musica de fundo
     InitAudioDevice();
-    Music musica_fundo = LoadMusicStream("assets/sounds/supermanepic.wav");
-    Music musica_fundo1 = LoadMusicStream("assets/sounds/shouldstayshouldgo.wav");
-    Music musica_vitoria = LoadMusicStream("assets/sounds/timmarionaoquerodinheiro.wav");
-    Music musica_derrota = LoadMusicStream("assets/sounds/sadmusicmario.wav");
+    Music musica_fundo = LoadMusicStream("assets/sounds/supermanepic.mp3");
+    Music musica_fundo1 = LoadMusicStream("assets/sounds/shouldstayshouldgo.mp3");
+    Music musica_vitoria = LoadMusicStream("assets/sounds/timmarionaoquerodinheiro.mp3");
+    Music musica_derrota = LoadMusicStream("assets/sounds/sadmusicmario.mp3");
 
     Music musica_atual = musica_fundo;
     PlayMusicStream(musica_atual); 
@@ -97,11 +99,10 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     SetMasterVolume(0.7);
 
     // carregando audio de atributos e de confirmação/maior/menor
-    Sound som_atributos = LoadSound("assets/sounds/atributos.wav");
-    Sound som_resto = LoadSound("assets/sounds/resto.wav");
+    Sound som_atributos = LoadSound("assets/sounds/atributos.mp3");
+    Sound som_resto = LoadSound("assets/sounds/resto.mp3");
     SetSoundVolume(som_resto, 0.6);
-    Sound som_tecla = LoadSound("assets/sounds/tecla.wav");
-
+    Sound som_tecla = LoadSound("assets/sounds/tecla.mp3");
 
     while (!WindowShouldClose()){
         UpdateMusicStream(musica_atual);
@@ -163,7 +164,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if (i == 0) {
                         DrawText("JOGAR", botoes[i].x + botoes[i].width / 2 - MeasureText("JOGAR", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
                     } else if (i == 1) {
-                        DrawText("AJUSTES", botoes[i].x + botoes[i].width / 2 - MeasureText("RANKING", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
+                        DrawText("RANKING", botoes[i].x + botoes[i].width / 2 - MeasureText("RANKING", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
                     } else if (i == 2) {
                         DrawText("REGRAS", botoes[i].x + botoes[i].width / 2 - MeasureText("REGRAS", 20) / 2, botoes[i].y + botoes[i].height / 2 - 10, 20, RAYWHITE);
                     } else if (i == 3) {
@@ -175,6 +176,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
            
             case RESET: {
+                // RESETANDO AS VARIAVEIS
                 player_joga = true;
                 tentou_carregar = false, carregou = false;
                 quem_ganhou = -1, atributo = 0;
@@ -200,8 +202,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int *cartas_usadas = NULL;
                 int size_cartas_usadas = 0;
 
-                baralho_jogador = get_baralho(cartas, size_cartas, quant_cartas_baralho, &size_cartas_usadas, &cartas_usadas);
-                baralho_cpu = get_baralho(cartas, size_cartas, quant_cartas_baralho, &size_cartas_usadas, &cartas_usadas);
+                baralho_jogador = gerar_baralho(cartas, size_cartas, quant_cartas_baralho, &size_cartas_usadas, &cartas_usadas);
+                baralho_cpu = gerar_baralho(cartas, size_cartas, quant_cartas_baralho, &size_cartas_usadas, &cartas_usadas);
                 
                 /* printf("\nCartas jogador:\n");
                 listar_cartas(baralho_jogador, quant_cartas_baralho);
@@ -266,7 +268,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
 
                 if(carregou){
-                    DrawTexture(textura_carta_jogador, carta_x, carta_y, WHITE);
+                    DrawTexture(textura_carta_jogador, carta_x, carta_y + 10, WHITE);
                 }else{
                     DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
                 }
@@ -281,7 +283,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
 
                 // ------------------------------------- ID CARTA -------------------------------------
-                raio_circulo = 25;
+                raio_circulo = 20;
                 circulo_x = carta_x + raio_circulo + 5;
                 circulo_y = carta_y + raio_circulo + 5;
 
@@ -294,22 +296,22 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
                 
                 // texto da letra e número da carta
-                char texto[10];
                 snprintf(texto, sizeof(texto), "%c%d", carta_jogador.letra, carta_jogador.num);
-                int texto_largura = MeasureText(texto, 20);
-                int texto_altura = 20;
+                texto_largura = MeasureText(texto, 20);
+                texto_altura = 20;
                 DrawText(texto, circulo_x - texto_largura / 2, circulo_y - texto_altura / 2, 20, BLACK);
 
-                int nome_largura = MeasureText(carta_jogador.nome, 20);
-                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 100 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(WHITE, 0.5f));
-                DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
+                // NOME DA CARTA
+                nome_largura = MeasureText(carta_jogador.nome, 20);
+                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 10 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(COR_FUNDO, 0.5f));
+                DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 10, 20, WHITE);
 
-                // ATRIBUTOS DA CARTA
+                // ------------------------------------- ATRIBUTOS DA CARTA -------------------------------------
                 int valores[] = {carta_jogador.forca, carta_jogador.habilidade, carta_jogador.velocidade, carta_jogador.poderes, carta_jogador.poder_cura};
                 for (int i = 0; i < 5; i++)
                 {
                     atributo_x = carta_x + 10;
-                    atributo_y = carta_y + 150 + i * 50;
+                    atributo_y = carta_y + 190 + i * 45;
                     Rectangle retangulo_atributo = {atributo_x, atributo_y, 200, 30};
 
                     if (CheckCollisionPointRec(GetMousePosition(), retangulo_atributo) || IsKeyDown(KEY_ONE + i))
@@ -442,7 +444,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     musica_atual = musica_fundo1;
                 }
 
-                // Desenha um retângulo arredondado atrás dos botões
+                // inserindo um retangulo arredondado atras dos botoes
                 DrawRectangleRounded((Rectangle){5, SCREEN_HEIGHT / 2 - 35, 220, 90}, 0.3, 10, DARKGRAY);
 
                 if (botao_serio_pressionado) {
@@ -468,7 +470,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawRectangleRounded(botao_legal, 0.3, 10, GRAY);
                 DrawText("Legal", botao_legal.x + 10, botao_legal.y + 5, 20, WHITE);
 
-                // CONTROLE DO VOLUME
+                // ------------------------------------- CONTROLE DO VOLUME -------------------------------------
                 int volume_x = 10;
                 int volume_y = SCREEN_HEIGHT / 2 + 20;
                 int volume_width = 210;
@@ -523,21 +525,19 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     BeginDrawing();
                     ClearBackground((Color){30, 30, 30, 255}); // fundo da janela
 
-                    // Texto "Vez da CPU" 
                     DrawText("Vez da CPU", (SCREEN_WIDTH - 120) - MeasureText("Vez da CPU", 40) / 2, 20, 35, RED);
 
-                    // Texto "CPU escolhendo atributo..."
                     DrawText("CPU escolhendo atributo...", (SCREEN_WIDTH / 2) - MeasureText("CPU escolhendo atributo...", 20) / 2, pos_y_barra_cpu - 30, 20, RAYWHITE);
 
-                    // Barra de progresso
+                    // BARRA DE PROGRESSO
                     barra_progresso_cpu.width = (largura_barra_cpu * progresso_cpu) / tempo_carregamento_cpu; // incrementando barra de progresso
                     DrawRectangleRounded(barra_progresso_cpu, 0.3, 0, (Color){251, 59, 0, 255});  // barra de progresso
 
-                    // Placar
+                    // PLACAR
                     DrawText(TextFormat("Jogador:%10d", quant_cartas_jogador), 10, 10, 20, BLUE);
                     DrawText(TextFormat("CPU:%15d", quant_cartas_cpu), 10, 40, 20, RED);
 
-                    // carta do jogador
+                    // ------------------------------------- CARTA JOGADOR -------------------------------------
                     carta_x = (SCREEN_WIDTH - 300) / 2;
                     carta_y = (SCREEN_HEIGHT - 400) / 2;
 
@@ -549,7 +549,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     }
 
                     if(carregou){
-                        DrawTexture(textura_carta_jogador, carta_x, carta_y, WHITE);
+                        DrawTexture(textura_carta_jogador, carta_x, carta_y + 10, WHITE);
                     }else{
                         DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
                     }
@@ -563,8 +563,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor_destaque_telainicial);
                     }
 
-                    // desenhando círculo com borda
-                    raio_circulo = 25;
+                    // ------------------------------------- ID CARTA -------------------------------------
+                    raio_circulo = 20;
                     circulo_x = carta_x + raio_circulo + 5;
                     circulo_y = carta_y + raio_circulo + 5;
 
@@ -578,24 +578,23 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     }
 
                     // Texto da letra e número da carta
-                    char texto[10];
                     snprintf(texto, sizeof(texto), "%c%d", carta_jogador.letra, carta_jogador.num);
-                    int texto_largura = MeasureText(texto, 20);
-                    int texto_altura = 20;
+                    texto_largura = MeasureText(texto, 20);
+                    texto_altura = 20;
                     DrawText(texto, circulo_x - texto_largura/2, circulo_y - texto_altura/2, 20, BLACK);
 
-                    int nome_largura = MeasureText(carta_jogador.nome, 20);
-                    DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 100 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(WHITE, 0.5f));
-                    DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
+                    nome_largura = MeasureText(carta_jogador.nome, 20);
+                    DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 10 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(COR_FUNDO, 0.5f));
+                    DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 10, 20, WHITE);
 
-                    // Atributos da carta
+                    // ------------------------------------- ATRIBUTOS DA CARTA -------------------------------------
                     int valores[] = {carta_jogador.forca, carta_jogador.habilidade, carta_jogador.velocidade, carta_jogador.poderes, carta_jogador.poder_cura};
 
                     for (int i = 0; i < 5; i++) {
-                        Rectangle retangulo_atributo = {carta_x + 10, carta_y + 150 + i * 50, 200, 30};
+                        Rectangle retangulo_atributo = {carta_x + 10, carta_y + 190 + i * 45, 200, 30};
                         DrawRectangleRec(retangulo_atributo, Fade(DARKGRAY, 0.5f));
-                        DrawText(atributos[i], carta_x + 20, carta_y + 155 + i * 50, 20, RAYWHITE);
-                        DrawText(TextFormat("%d", valores[i]), carta_x + 180, carta_y + 155 + i * 50, 20, RAYWHITE);
+                        DrawText(atributos[i], carta_x + 20, carta_y + 195 + i * 45, 20, RAYWHITE);
+                        DrawText(TextFormat("%d", valores[i]), carta_x + 180, carta_y + 195 + i * 45, 20, RAYWHITE);
                     }
                     //rodadas
                     DrawText(TextFormat("Rodada: %d", rodada), 10, SCREEN_HEIGHT - 30, 20, RAYWHITE);
@@ -676,7 +675,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
 
                 if(carregou){
-                    DrawTexture(textura_carta_jogador, carta_x, carta_y, WHITE);
+                    DrawTexture(textura_carta_jogador, carta_x, carta_y + 10, WHITE);
                 }else{
                     DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
                 }
@@ -690,8 +689,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor_destaque_telainicial);
                 }
 
-                // desenhando círculo com borda
-                raio_circulo = 25;
+                // ------------------------------------- ID CARTA JOGADOR -------------------------------------
+                raio_circulo = 20;
                 circulo_x = carta_x + raio_circulo + 5;
                 circulo_y = carta_y + raio_circulo + 5;
 
@@ -705,26 +704,25 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
 
                 // texto da letra e numero da carta
-                char texto[10];
                 snprintf(texto, sizeof(texto), "%c%d", carta_jogador.letra, carta_jogador.num);
-                int texto_largura = MeasureText(texto, 20);
-                int texto_altura = 20;
+                texto_largura = MeasureText(texto, 20);
+                texto_altura = 20;
                 DrawText(texto, circulo_x - texto_largura/2, circulo_y - texto_altura/2, 20, BLACK);
 
-                // nome da carta
-                int nome_largura = MeasureText(carta_jogador.nome, 20);
-                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 100 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(WHITE, 0.5f));
-                DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
+                // NOME DA CARTA
+                nome_largura = MeasureText(carta_jogador.nome, 20);
+                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 10 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(COR_FUNDO, 0.5f));
+                DrawText(carta_jogador.nome, carta_x + (300 - nome_largura) / 2, carta_y + 10, 20, WHITE);
 
-                // atributos da carta
+                // ------------------------------------- ATRIBUTOS DA CARTA JOGADOR -------------------------------------
                 int valores[] = {carta_jogador.forca, carta_jogador.habilidade, carta_jogador.velocidade, carta_jogador.poderes, carta_jogador.poder_cura};
 
                 for (int i = 0; i < 5; i++) {
-                    Rectangle retangulo_atributo = {carta_x + 10, carta_y + 150 + i * 50, 200, 30};
+                    Rectangle retangulo_atributo = {carta_x + 10, carta_y + 190 + i * 45, 200, 30};
 
                     if (i == atributo) {
                         if (quem_ganhou == -1) {
-                            DrawRectangle(carta_x + 10-2.5, carta_y + 150 + i * 50-2.5, 205, 35, YELLOW);
+                            DrawRectangle(carta_x + 10-2.5, carta_y + 190 + i * 45-2.5, 205, 35, YELLOW);
                             DrawRectangleRec(retangulo_atributo, DARKGRAY);
                         } else if (quem_ganhou == 0) {
                             DrawRectangleRec(retangulo_atributo, RED);
@@ -733,8 +731,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         }
                     }else DrawRectangleRec(retangulo_atributo, Fade(DARKGRAY, 0.4f));
 
-                    DrawText(atributos[i], carta_x + 20, carta_y + 155 + i * 50, 20, RAYWHITE);
-                    DrawText(TextFormat("%d", valores[i]), carta_x + 180, carta_y + 155 + i * 50, 20, RAYWHITE);
+                    DrawText(atributos[i], carta_x + 20, carta_y + 195 + i * 45, 20, RAYWHITE);
+                    DrawText(TextFormat("%d", valores[i]), carta_x + 180, carta_y + 195 + i * 45, 20, RAYWHITE);
                 }
 
                 // DESENHANDO UM X ENTRE AS DUAS CARTAS
@@ -753,7 +751,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
 
                 if(carregou){
-                    DrawTexture(textura_carta_cpu, carta_x, carta_y, WHITE);
+                    DrawTexture(textura_carta_cpu, carta_x, carta_y + 10, WHITE);
                 }else{
                     DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
                 }
@@ -767,8 +765,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor_destaque_telainicial);
                 }
 
-                // desenhando círculo com borda
-                raio_circulo = 25;
+                // ------------------------------------- ID CARTA CPU -------------------------------------
+                raio_circulo = 20;
                 circulo_x = carta_x + raio_circulo + 5;
                 circulo_y = carta_y + raio_circulo + 5;
 
@@ -786,19 +784,19 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 texto_altura = 20;
                 DrawText(texto, circulo_x - texto_largura/2, circulo_y - texto_altura/2, 20, BLACK);
 
-                // nome da carta
+                // NOME DA CARTA
                 nome_largura = MeasureText(carta_cpu.nome, 20);
-                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 100 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(WHITE, 0.5f));
-                DrawText(carta_cpu.nome, carta_x + (300 - nome_largura) / 2, carta_y + 100, 20, BLACK);
+                DrawRectangleRounded((Rectangle){carta_x + (300 - nome_largura) / 2 - 5, carta_y + 10 - 5, nome_largura + 10, 30}, 0.3, 10, Fade(COR_FUNDO, 0.5f));
+                DrawText(carta_cpu.nome, carta_x + (300 - nome_largura) / 2, carta_y + 10, 20, WHITE);
 
-                // atributos da carta
+                // ------------------------------------- ATRIBUTOS DA CARTA CPU -------------------------------------
                 int valores_cpu[] = {carta_cpu.forca, carta_cpu.habilidade, carta_cpu.velocidade, carta_cpu.poderes, carta_cpu.poder_cura};
 
                 for (int i = 0; i < 5; i++) {
-                    Rectangle retangulo_atributo = {carta_x + 10, carta_y + 150 + i * 50, 200, 30};
+                    Rectangle retangulo_atributo = {carta_x + 10, carta_y + 190 + i * 45, 200, 30};
                     if (i == atributo) {
                         if (quem_ganhou == -1) {
-                            DrawRectangle(carta_x + 10-2.5, carta_y + 150 + i * 50-2.5, 205, 35, YELLOW);
+                            DrawRectangle(carta_x + 10-2.5, carta_y + 190 + i * 45-2.5, 205, 35, YELLOW);
                             DrawRectangleRec(retangulo_atributo, DARKGRAY);
                         } else if (quem_ganhou == 0) {
                             DrawRectangleRec(retangulo_atributo, GREEN);
@@ -807,8 +805,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         }
                     }else DrawRectangleRec(retangulo_atributo, Fade(DARKGRAY, 0.4f));
 
-                    DrawText(atributos[i], carta_x + 20, carta_y + 155 + i * 50, 20, RAYWHITE);
-                    DrawText(TextFormat("%d", valores_cpu[i]), carta_x + 180, carta_y + 155 + i * 50, 20, RAYWHITE);
+                    DrawText(atributos[i], carta_x + 20, carta_y + 195 + i * 45, 20, RAYWHITE);
+                    DrawText(TextFormat("%d", valores_cpu[i]), carta_x + 180, carta_y + 195 + i * 45, 20, RAYWHITE);
                 }
 
                 // --------------------------------------- BARRAS DE VIDA ----------------------------------------
@@ -899,7 +897,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     SCREEN_WIDTH / 2 - MeasureText(TextFormat("%d",(tempo_contagem_regressiva - tempo_agora)), 20) / 2,
                     botaook.y + botaook.height + 10, 20, WHITE);
                 
-                
                 break;
             }
 
@@ -933,9 +930,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         break;
                     }
                 }
-                
-                //strcpy(partidaHist.vencedor, "CPU");
-                strcpy(partidaHist.vencedor, "jogador"); //vai ficar "jogador" enquanto n�o tiver a tela para nickname do ranking
+
+                strcpy(partidaHist.vencedor, "jogador");
                 partidaHist.rodadas = rodada;
                 partidaHist.vitorias = vitorias;
                 partidaHist.empates = empates;
@@ -964,9 +960,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawText("CPU ganhou", SCREEN_WIDTH / 2 - MeasureText("Voce ganhou", 40) / 2, SCREEN_HEIGHT / 2 - 130, 40, RED);
                 pontuacao = 10 * ((100 * vitorias) / rodada);
                 DrawText(TextFormat("Rodadas: %d", rodada), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Rodadas: %d", rodada), 30) / 2, SCREEN_HEIGHT / 2 - 30, 30, WHITE);
-                DrawText(TextFormat("Vitórias: %d", vitorias), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Vit�rias: %d", vitorias), 30) / 2, SCREEN_HEIGHT / 2, 30, WHITE);
+                DrawText(TextFormat("Vitórias: %d", vitorias), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Vitórias: %d", vitorias), 30) / 2, SCREEN_HEIGHT / 2, 30, WHITE);
                 DrawText(TextFormat("Empates: %d", empates), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Empates: %d", empates), 30) / 2, SCREEN_HEIGHT / 2 + 30, 30, WHITE);
-                DrawText(TextFormat("Pontuação: %d", pontuacao), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Pontua��o: %d", pontuacao), 30) / 2, SCREEN_HEIGHT / 2 + 60, 30, WHITE);
+                DrawText(TextFormat("Pontuação: %d", pontuacao), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Pontuação: %d", pontuacao), 30) / 2, SCREEN_HEIGHT / 2 + 60, 30, WHITE);
                 // botao
                 Rectangle botaook = {SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 180, 100, 50};
                 Color DARKRED = (Color){139, 0, 0, 255};
@@ -1185,7 +1181,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             break;
         EndDrawing();
     }
-
 
     // parando e descarregando a musica
     StopMusicStream(musica_atual);

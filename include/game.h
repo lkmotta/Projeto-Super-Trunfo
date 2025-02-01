@@ -9,7 +9,7 @@
 #include "filechange.h"
 
 int modo();
-Cartas* get_baralho(Cartas* cartas, int quantd_cartas, int quant_cartas_baralho, int* quant_cartas_usadas, int** cartas_usadas);
+Cartas* gerar_baralho(Cartas* cartas, int quantd_cartas, int quant_cartas_baralho, int* quant_cartas_usadas, int** cartas_usadas);
 int primeiro_player();
 int verifica_maior(Cartas* carta_jogador, Cartas* carta_cpu, int atributo);
 int verifica_menor(Cartas* carta_jogador, Cartas* carta_cpu, int atributo);

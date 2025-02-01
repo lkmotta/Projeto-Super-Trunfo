@@ -48,6 +48,7 @@ typedef enum
 #define SILVER CLITERAL(Color){192, 192, 192, 255}
 #define BRONZE CLITERAL(Color){205, 127, 50, 255}
 
+bool carregando_imagem_carta(Cartas carta, Texture2D *textura_carta);
 void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho);
 
 #endif

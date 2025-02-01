@@ -6,8 +6,8 @@
  * @note make -> compilar
  *       make run -> executar
  *       make clean -> limpar arquivos .o
- *       make clean_all -> limpar arquivos .o / executav�l
- *       make reset -> limpar arquivos .o / executav�l / arquivos gerados
+ *       make clean_all -> limpar arquivos .o / executavel
+ *       make reset -> limpar arquivos .o / executavel / arquivos gerados
  * 
  * LICENSE: MIT
  * @copyright Copyright (c) 2024
@@ -135,8 +135,8 @@ int main() {
             int *cartas_usadas = NULL;
             int size_cartas_usadas = 0;
             
-            Cartas* baralho_player = get_baralho(cartas, size, quantd_cartas_baralho, &size_cartas_usadas, &cartas_usadas);
-            Cartas* baralho_cpu = get_baralho(cartas, size, quantd_cartas_baralho, &size_cartas_usadas, &cartas_usadas);
+            Cartas* baralho_player = gerar_baralho(cartas, size, quantd_cartas_baralho, &size_cartas_usadas, &cartas_usadas);
+            Cartas* baralho_cpu = gerar_baralho(cartas, size, quantd_cartas_baralho, &size_cartas_usadas, &cartas_usadas);
             free(cartas_usadas);
 
             partida(baralho_player, baralho_cpu, quantd_cartas_baralho);
@@ -149,7 +149,7 @@ int main() {
             desembaralhar(&cartas, size);
             break;
         case 4:
-            printf("\nN�mero de Cartas: %d\n", size);
+            printf("\nNumero de Cartas: %d\n", size);
             listar_cartas(cartas, size);
             break;
         case 5:

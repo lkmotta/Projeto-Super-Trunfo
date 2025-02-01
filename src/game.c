@@ -28,7 +28,7 @@ int modo()
  * @param cartas_usadas // vetor de posicoes das cartas usadas (posicoes em 'cartas')
  * @return Cartas*
  */
-Cartas *get_baralho(Cartas *cartas, int quantd_cartas, int quant_cartas_baralho, int *quant_cartas_usadas, int **cartas_usadas)
+Cartas *gerar_baralho(Cartas *cartas, int quantd_cartas, int quant_cartas_baralho, int *quant_cartas_usadas, int **cartas_usadas)
 {
     Cartas *baralho = (Cartas *)malloc(quant_cartas_baralho * sizeof(Cartas));
     if (baralho == NULL)
