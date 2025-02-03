@@ -29,9 +29,9 @@ int main() {
             fprintf(stderr, "Erro ao configurar a localidade para pt_BR\n");
             exit(1);
         }
-        system("cls"); // limpando o prompt de comando -> Windows
+        //system("cls"); // limpando o prompt de comando -> Windows
     } else {
-        system("clear"); // limpando o terminal -> Linux
+        //system("clear"); // limpando o terminal -> Linux
     }
 
     // Abrindo arquivos
@@ -58,7 +58,7 @@ int main() {
                 &cartas[i].velocidade, 
                 &cartas[i].poderes, 
                 &cartas[i].poder_cura,
-                &cartas[i].textura);
+                cartas[i].textura);
         }
     } else {
         printf("\033[1;93mBem-vindo de volta!\033[m\n");
