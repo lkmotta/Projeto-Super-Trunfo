@@ -326,7 +326,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_ONE + i))
                         {                                                                                   // se o botao do mouse for clicado
                             int atributo_y_selecionado_anterior = carta_y + 150 + atributo * 50;            // pegando o retangulo selecionado antes
-                            DrawRectangleLines(atributo_x, atributo_y_selecionado_anterior, 200, 30, GRAY); // apagando a borda
+                            //DrawRectangleLines(atributo_x, atributo_y_selecionado_anterior, 200, 30, GRAY); // apagando a borda
                             DrawRectangle(atributo_x-2.5, atributo_y-2.5, 205, 35, BLACK);                  // desenhando a borda no novo atributo selecionado
                             atributo = i;                                                                   // indice do atributo escolhido
                             atributo_nome = atributos[i];                                                   // nome do atributo escolhido
