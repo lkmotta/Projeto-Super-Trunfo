@@ -65,6 +65,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     Historico partidaHist;
 
     // variáveis das telas (para evitar redeclarar no loop)
+    bool veio_tela_inicial = false;
     char nickname[4] = "";
     char texto[10];
     int texto_largura, texto_altura, nome_largura;
@@ -152,6 +153,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                                 estadoAtual = NOVO_BARALHO;
                             } else if (i == 1) {
                                 estadoAtual = RANKING;
+                                veio_tela_inicial = true;
                             } else if (i == 2) {
                                 estadoAtual = REGRAS;
                             } else if (i == 3) {
@@ -177,6 +179,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
            
             case RESET: {
                 // RESETANDO AS VARIAVEIS
+                veio_tela_inicial=false;
                 player_joga = true;
                 tentou_carregar = false, carregou = false;
                 quem_ganhou = -1, atributo = 0;
@@ -1131,11 +1134,20 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_ENTER)) {
                     if (CheckCollisionPointRec(GetMousePosition(), botaook) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                         PlaySound(som_resto);
-                        estadoAtual = JOGAR_NOVAMENTE;
+                        if(veio_tela_inicial){
+                            estadoAtual = TELA_INICIAL;
+                        }else{
+                            estadoAtual = JOGAR_NOVAMENTE;
+                        }
                         break;
+                        
                     }else if (IsKeyPressed(KEY_ENTER)){
                         PlaySound(som_resto);
-                        estadoAtual = JOGAR_NOVAMENTE;
+                        if(veio_tela_inicial){
+                            estadoAtual = TELA_INICIAL;
+                        }else{
+                            estadoAtual = JOGAR_NOVAMENTE;
+                        }
                         break;
                     }
                 }

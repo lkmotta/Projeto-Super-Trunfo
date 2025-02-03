@@ -136,7 +136,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
 
         printf("Poder de cura [1 ~ 100]: ");
         (*carta)[(*size) + i].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 100]:\033[m ");
-        strcpy((*carta)[(*size) + i].textura, '\0');
+        //strcpy((*carta)[(*size) + i].textura, '\0');
         setbuf(stdin, NULL);
     }
 
