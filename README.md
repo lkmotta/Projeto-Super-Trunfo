@@ -1,11 +1,8 @@
-<h1 align="center">
-    PROJETO SUPER-TRUNFO
-    <p style="font-size: 15px; color: rgb(124, 124, 124);">LIGA DA JUSTIÇA</p>
-</h1>
+[![Super-Trunfo](assets/img/telas/tela_inicial_cpuwin(800x600).png)](Super-Trunfo)
 
-<br>
-
-[![Licença](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+## Feito com: 
+[![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)](#)
+[![RayLib](https://img.shields.io/badge/RAYLIB-FFFFFF?style=for-the-badge&logo=raylib&logoColor=black)](https://github.com/raysan5/raylib/)
 
 ## Rodando no Linux
 #### Dê permissão ao arquivo `install dependencies.sh` para ser executável:
@@ -17,21 +14,22 @@ chmod +x install_dependencies.sh
 ##### Serão instalados todos os pacotes necessários para rodar o projeto.
 
 ## Rodando no Windows
-- Execute o arquivo `verificar_setup_windows.bat`.
-- Caso queira modificar o projeto por conta própria, siga as recomendações que aparecerão.
+- Instale o [mingw-w64](https://winlibs.com/) em C:/ e <strong>adicione ao PATH do sistema</strong>
+##### O jogo irá compilar e rodar normalmente.
+<br>
 
-<h2>COMANDOS MAKE</h2>
+## COMANDOS MAKE
 
 ```bash
-mingw32-make            # compilar
-mingw32-make run        # EXECUTAR
-mingw32-make clean      # limpar arquivos .o
-mingw32-make clean_all  # limpar arquivos .o / executável
-mingw32-make reset      # limpar tudo
+make            # compilar
+make run        # EXECUTAR
+make clean      # limpar arquivos .o
+make clean_all  # limpar arquivos .o / executável
+make reset      # limpar tudo
 ```
 
 ### Alertas
-- Para compilar NO WINDOWS, siga as orientações do repositório oficial do Raylib: https://github.com/raysan5/raylib/wiki/Working-on-Windows.
-- Se estiver utilizando um sistema operacional diferente do Windows, utilize `make` ao invés de `mingw32-make`.
+- <b>Projeto ainda não finalizado!</b>
+- Se o comando `make` não funciona, tente `mingw32-make`.
 - Verifique se o `mingw-w64` está instalado e configurado corretamente no seu PATH.
 - Caso esteja usando o `MinGW` antigo, o projeto não irá compilar.
