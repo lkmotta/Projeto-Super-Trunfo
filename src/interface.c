@@ -915,7 +915,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
         
                 DrawText("Fim de Jogo", SCREEN_WIDTH / 2 - MeasureText("Fim de Jogo", 50) / 2, SCREEN_HEIGHT / 2 - 250, 50, WHITE);
                 DrawText("Voce ganhou", SCREEN_WIDTH / 2 - MeasureText("Voce ganhou", 40) / 2, SCREEN_HEIGHT / 2 - 130, 40, GREEN);
-                pontuacao = (10 * ((100 * vitorias) / rodada))+50*empates;
+                pontuacao = (10 * ((100 * vitorias) / rodada))+10*empates;
                 DrawText(TextFormat("Rodadas: %d", rodada), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Rodadas: %d", rodada), 30) / 2, SCREEN_HEIGHT / 2 - 30, 30, WHITE);
                 DrawText(TextFormat("Vitórias: %d", vitorias), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Vit�rias: %d", vitorias), 30) / 2, SCREEN_HEIGHT / 2, 30, WHITE);
                 DrawText(TextFormat("Empates: %d", empates), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Empates: %d", empates), 30) / 2, SCREEN_HEIGHT / 2 + 30, 30, WHITE);
