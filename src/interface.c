@@ -277,7 +277,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
 
                 if(carta_jogador.super_trunfo){ // se a carta for super-trunfo, terá efeito RGB na borda
-                    rgb += 0.001f;
+                    rgb += 0.005f;
                     if (rgb > 1.0f) rgb = 0.0f;
                     cor = ColorFromHSV(rgb * 360.0f, 1.0f, 1.0f);
                     DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor);
@@ -510,6 +510,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 srand(time(NULL));
                 atributo = rand() % 5 + 1; // +1 para nao pegar 0
+                atributo_nome = atributos[atributo - 1];
                 maior_menor = rand() % 2;
 
                 // definindo variaveis
@@ -558,7 +559,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     }
 
                     if(carta_jogador.super_trunfo){ // se a carta for super-trunfo, terá efeito RGB na borda
-                        rgb += 0.001f;
+                        rgb += 0.005f;
                         if (rgb > 1.0f) rgb = 0.0f;
                         cor = ColorFromHSV(rgb * 360.0f, 1.0f, 1.0f);
                         DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor);
@@ -684,7 +685,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
 
                 if(carta_jogador.super_trunfo){ // se a carta for super-trunfo, terá efeito RGB na borda
-                    rgb += 0.001f;
+                    rgb += 0.005f;
                     if (rgb > 1.0f) rgb = 0.0f;
                     cor = ColorFromHSV(rgb * 360.0f, 1.0f, 1.0f);
                     DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor);
@@ -760,7 +761,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 }
 
                 if(carta_cpu.super_trunfo){ // se a carta for super-trunfo, terá efeito RGB na borda
-                    rgb += 0.001f;
+                    rgb += 0.005f;
                     if (rgb > 1.0f) rgb = 0.0f;
                     cor = ColorFromHSV(rgb * 360.0f, 1.0f, 1.0f);
                     DrawRectangleRoundedLinesEx(rec, 0.1, 10, 3.0, cor);
