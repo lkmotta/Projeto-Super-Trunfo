@@ -1076,15 +1076,19 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
             
             case REGRAS: {
-                // Carregar as texturas
                 static Texture2D fundo_regras;
                 static Texture2D texto_regras;
-                static bool texturas_carregadas = false;
+                static bool fundo_regras_carregado = false;
+                static bool texto_regras_carregado = false;
 
-                if (!texturas_carregadas) {
+                // Carregar as texturas apenas uma vez
+                if (!fundo_regras_carregado) {
                     fundo_regras = LoadTexture("assets/img/telas/fundo_regras.png");
+                    fundo_regras_carregado = true;
+                }
+                if (!texto_regras_carregado) {
                     texto_regras = LoadTexture("assets/img/telas/texto_regras.png");
-                    texturas_carregadas = true;
+                    texto_regras_carregado = true;
                 }
 
                 // Definir o retângulo para o botão de sair
@@ -1101,10 +1105,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 Rectangle barra_rolagem = {710, 142 + scrollOffset , 20, 30}; //barra rolagem
 
-
                 // Desenha fundo
                 DrawTexture(fundo_regras, 0, 0, WHITE);
-
 
                 // Atualiza a posição da barra de rolagem com base no movimento do mouse
                 if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
@@ -1168,10 +1170,19 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
 
             case RANKING: {
-                DrawText("Ranking", SCREEN_WIDTH / 2 - MeasureText("Ranking", 50) / 2, 20, 50, WHITE);
-                DrawText("Nickname", 50, 100, 40, WHITE);
-                DrawText("Pontos", 315, 100, 40, WHITE);
-                DrawText("Data", 500, 100, 40, WHITE);
+                //carrega textura fundo ranking
+                static Texture2D fundo_ranking;
+                static bool fundo_ranking_carregado = false;
+                // Carrega textura fundo ranking apenas uma vez
+                if (!fundo_ranking_carregado) {
+                    fundo_ranking = LoadTexture("assets/img/telas/fundo_ranking.png");
+                    fundo_ranking_carregado = true;
+                }
+                // Desenha fundo
+                DrawTexture(fundo_ranking, 0, 0, WHITE);
+
+                // Definir o retângulo para o botão de sair
+                Rectangle retangulo_sair = {345, 517, 110, 40};
 
                 FILE *historico = fopen("assets/data/historico.dat", "rb");
                 if (historico == NULL) {
@@ -1203,9 +1214,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         else if (i == 2) cor = BRONZE;
                         else cor = WHITE;
 
-                        DrawText(historicos[i].vencedor, 60, 150 + i * 40, 30, cor);
-                        DrawText(TextFormat("%d", historicos[i].pontuacao), 325, 150 + i * 40, 30, cor);
-                        DrawText(TextFormat("%02d/%02d", historicos[i].dia, historicos[i].mes), 500, 150 + i * 40, 30, cor);
+                        DrawText(historicos[i].vencedor, 168, 217 + i * 48, 30, cor);
+                        DrawText(TextFormat("%d", historicos[i].pontuacao), 418, 217 + i * 48, 30, cor);
+                        DrawText(TextFormat("%02d/%02d", historicos[i].dia, historicos[i].mes), 607, 217 + i * 48, 30, cor);
 
                         if (strcmp(historicos[i].vencedor, partidaHist.vencedor) == 0 && historicos[i].pontuacao == partidaHist.pontuacao) {
                             top5 = true;
@@ -1215,38 +1226,27 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if (!top5) {
                         for (int i = 5; i < aux; i++) {
                             if (strcmp(historicos[i].vencedor, partidaHist.vencedor) == 0 && historicos[i].pontuacao == partidaHist.pontuacao) {
-                                DrawText(TextFormat("Sua posição: %d°", i + 1), 50, 350, 30, YELLOW);
+                               
+                                DrawText(TextFormat("Sua posição: %d°", i + 1), 290, 463, 36, YELLOW);                                break;
                                 break;
                             }
                         }
                     }
                 }
 
-                Rectangle botaook = {SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT - 80, 100, 50};
-                Color botaocor = CheckCollisionPointRec(GetMousePosition(), botaook) ? DARKGREEN : GREEN;
-                DrawRectangleRec(botaook, botaocor);
-                DrawText("OK", botaook.x + botaook.width / 2 - MeasureText("OK", 20) / 2, botaook.y + botaook.height / 2 - 10, 20, WHITE);
+                // Botao SAIR
+                if(CheckCollisionPointRec(GetMousePosition(), retangulo_sair)){
+                    DrawRectangleRec(retangulo_sair, DARKGREEN);
 
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_ENTER)) {
-                    if (CheckCollisionPointRec(GetMousePosition(), botaook) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
                         PlaySound(som_resto);
-                        if(veio_tela_inicial){
-                            estadoAtual = TELA_INICIAL;
-                        }else{
-                            estadoAtual = JOGAR_NOVAMENTE;
-                        }
-                        break;
-                        
-                    }else if (IsKeyPressed(KEY_ENTER)){
-                        PlaySound(som_resto);
-                        if(veio_tela_inicial){
-                            estadoAtual = TELA_INICIAL;
-                        }else{
-                            estadoAtual = JOGAR_NOVAMENTE;
-                        }
-                        break;
+                        estadoAtual = TELA_INICIAL;
                     }
+
+                }else{
+                    DrawRectangleRec(retangulo_sair, LIME);
                 }
+                DrawText("SAIR", retangulo_sair.x + retangulo_sair.width / 2 - MeasureText("SAIR", 20) / 2, retangulo_sair.y + retangulo_sair.height / 2 - 10, 20, WHITE);
 
                 break;
             }
