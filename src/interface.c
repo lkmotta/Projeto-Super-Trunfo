@@ -5,7 +5,7 @@
  *
  * LICENSE: MIT
  * @copyright Copyright (c) 2025
- *
+ * 
  */
 
 #include "interface.h"
@@ -145,9 +145,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     {retangulo_fundo_botoes.x + 20 + 3 * (retangulo_fundo_botoes.width - 60) / 4 + 15, retangulo_fundo_botoes.y + 20, (retangulo_fundo_botoes.width - 60) / 4, retangulo_fundo_botoes.height - 40}
                 };
 
+                // Definindo as cores para cada botão
+                Color cores_botoes[] = {Fade(GREEN, 0.5f), Fade(BLUE, 0.5f), Fade(GOLD, 0.5f), Fade(RED, 0.5f)};
+
                 for (int i = 0; i < 4; i++) {
                     if (CheckCollisionPointRec(GetMousePosition(), botoes[i])) {
-                        DrawRectangleRec(botoes[i], cor_destaque_telainicial);
+                        DrawRectangleRec(botoes[i], cores_botoes[i]);
                         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                             if (i == 0) {
                                 estadoAtual = NOVO_BARALHO;
@@ -1072,6 +1075,98 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 break;
             }
             
+            case REGRAS: {
+                // Carregar as texturas
+                static Texture2D fundo_regras;
+                static Texture2D texto_regras;
+                static bool texturas_carregadas = false;
+
+                if (!texturas_carregadas) {
+                    fundo_regras = LoadTexture("assets/img/telas/fundo_regras.png");
+                    texto_regras = LoadTexture("assets/img/telas/texto_regras.png");
+                    texturas_carregadas = true;
+                }
+
+                // Definir o retângulo para o botão de sair
+                Rectangle retangulo_sair = {345, 517, 110, 40};
+
+                // Definir a área de visualização do texto
+                Rectangle area_texto = {105,142,590,350};
+                
+                Rectangle retangulo_rolagem = {710, 142, 20, 350}; //retângulo fundo da barra de rolagem
+               
+                // Variável para armazenar o deslocamento da rolagem
+                static float scrollOffset = 0;
+                static bool arrastando = false;
+
+                Rectangle barra_rolagem = {710, 142 + scrollOffset , 20, 30}; //barra rolagem
+
+
+                // Desenha fundo
+                DrawTexture(fundo_regras, 0, 0, WHITE);
+
+
+                // Atualiza a posição da barra de rolagem com base no movimento do mouse
+                if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+                    if (arrastando || CheckCollisionPointRec(GetMousePosition(), retangulo_rolagem)) {
+                        arrastando = true;
+                        float mouseY = GetMouseY();
+                        barra_rolagem.y = mouseY - barra_rolagem.height / 2;
+
+                        // Limita a barra de rolagem dentro do retângulo de rolagem
+                        if (barra_rolagem.y < retangulo_rolagem.y) barra_rolagem.y = retangulo_rolagem.y;
+                        if (barra_rolagem.y > retangulo_rolagem.y + retangulo_rolagem.height - barra_rolagem.height) barra_rolagem.y = retangulo_rolagem.y + retangulo_rolagem.height - barra_rolagem.height;
+                    }
+                } else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+                    arrastando = false;
+                }
+
+
+                if (arrastando) {
+                    // Calcula o deslocamento da rolagem com base na posição da barra de rolagem
+                    scrollOffset = (barra_rolagem.y - retangulo_rolagem.y) / (retangulo_rolagem.height - barra_rolagem.height) * (texto_regras.height - area_texto.height);
+                } else {
+                    // Atualiza a posição da barra de rolagem com base no scrollOffset
+                    barra_rolagem.y = retangulo_rolagem.y + (scrollOffset / (texto_regras.height - area_texto.height)) * (retangulo_rolagem.height - barra_rolagem.height);
+                    // Limita a barra de rolagem dentro do retângulo de rolagem
+                    if (barra_rolagem.y < retangulo_rolagem.y) barra_rolagem.y = retangulo_rolagem.y;
+                    if (barra_rolagem.y > retangulo_rolagem.y + retangulo_rolagem.height - barra_rolagem.height) barra_rolagem.y = retangulo_rolagem.y + retangulo_rolagem.height - barra_rolagem.height;
+                                
+                }
+
+                // Desenha a barra de rolagem
+                DrawRectangleRec(retangulo_rolagem, DARKGRAY);
+                // Desenha a barra de rolagem com cor diferente se estiver sendo pressionada
+                if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && arrastando) {
+                    DrawRectangleRec(barra_rolagem, LIGHTGRAY);
+                } else {
+                    DrawRectangleRec(barra_rolagem, GRAY);
+                }
+
+                // Desenha a parte visível do texto
+                DrawTextureRec(texto_regras, (Rectangle){0, scrollOffset, area_texto.width, area_texto.height}, (Vector2){area_texto.x, area_texto.y}, WHITE);
+
+
+                // Botao SAIR
+                if(CheckCollisionPointRec(GetMousePosition(), retangulo_sair)){
+                    DrawRectangleRec(retangulo_sair, DARKGREEN);
+
+                    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+                        PlaySound(som_resto);
+                        estadoAtual = TELA_INICIAL;
+                    }
+
+                }else{
+                    DrawRectangleRec(retangulo_sair, LIME);
+                }
+                DrawText("SAIR", retangulo_sair.x + retangulo_sair.width / 2 - MeasureText("SAIR", 20) / 2, retangulo_sair.y + retangulo_sair.height / 2 - 10, 20, WHITE);
+
+                // Atualizar a música copilot
+                UpdateMusicStream(musica_atual);
+            
+                break;
+            }
+
             case RANKING: {
                 DrawText("Ranking", SCREEN_WIDTH / 2 - MeasureText("Ranking", 50) / 2, 20, 50, WHITE);
                 DrawText("Nickname", 50, 100, 40, WHITE);
