@@ -122,7 +122,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
 
         printf("\nInsira os atributos da carta:\n");
 
-        printf("For�a [1 ~ 50]: ");
+        printf("Força [1 ~ 50]: ");
         (*carta)[(*size) + i].forca = get_int(1, 50, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 50]:\033[m ");
 
         printf("Habilidade [1 ~ 100]: ");
@@ -137,6 +137,34 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         printf("Poder de cura [1 ~ 100]: ");
         (*carta)[(*size) + i].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 100]:\033[m ");
         //strcpy((*carta)[(*size) + i].textura, '\0');
+        printf("Deseja inserir uma textura para a carta? [1 - Sim, 2 - Não]: \n");
+        int escolha_textura = get_int(1, 2, "\033[1;31mInsira um valor válido!\033[1;30m [1 ~ 2]:\033[m ");
+        setbuf(stdin, NULL);
+        if(escolha_textura){
+            printf("Primeiro coloque na sua textura na pasta assets/img/cartas\npor fim nos diga o nome da textura\n");
+            printf("Nome textura: ");
+            burocracia((*carta)[(*size) + i].textura, TAM_NOME_CARTA);
+            //concatenando o caminho da textura das pastas
+            int escolha_formato;
+            do
+            {
+                printf("1 - png\n2 - jpg\n");
+                scanf("%d", &escolha_formato);
+                if (escolha_formato==1)
+                {
+                    strcat((*carta)[(*size) + i].textura, ".png");
+                }else if(escolha_formato==2){
+                    strcat((*carta)[(*size) + i].textura, ".jpg");
+                }else{
+                    printf("\033[1;31mInsira um valor válido!\033[1;30m [1 ~ 2]:\033[m ");
+                }
+            } while (escolha_formato != 1 && escolha_formato != 2);
+            
+            char caminho[100] = "assets/img/cartas/";
+            strcat(caminho, (*carta)[(*size) + i].textura);
+            strcpy((*carta)[(*size) + i].textura, caminho);
+
+        }
         setbuf(stdin, NULL);
     }
 

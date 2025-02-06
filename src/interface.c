@@ -73,7 +73,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     int carta_x, carta_y, circulo_x, circulo_y, raio_circulo;
     int atributo_x = 0, atributo_y = 0;
     static float rgb = 0.0f;
-    bool tentou_carregar = false, carregou = false;
+    bool tentou_carregarPlayer = false, carregouPlayer = false;
+    bool tentou_carregarCPU = false, carregouCPU = false;
     char informacao_rodada[30];
     Texture2D textura_fundo;
     Texture2D textura_carta_jogador, textura_carta_cpu;
@@ -184,7 +185,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 // RESETANDO AS VARIAVEIS
                 veio_tela_inicial=false;
                 player_joga = true;
-                tentou_carregar = false, carregou = false;
+                tentou_carregarPlayer = false, carregouPlayer = false;
+                tentou_carregarCPU = false, carregouCPU = false;
                 quem_ganhou = -1, atributo = 0;
                 atributo_nome = "Força";
                 maior_menor = true, maior_menor_selecionado = true;
@@ -268,12 +270,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 
                 // CARTA
                 Rectangle rec= {carta_x-5, carta_y-5, 305, 420};
-                if(!tentou_carregar){
-                    tentou_carregar = true;
-                    carregou = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
+                if(!tentou_carregarPlayer){
+                    tentou_carregarPlayer = true;
+                    carregouPlayer = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
                 }
 
-                if(carregou){
+                if(carregouPlayer){
                     DrawTexture(textura_carta_jogador, carta_x, carta_y + 10, WHITE);
                 }else{
                     DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
@@ -416,7 +418,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         PlaySound(som_resto);
                         atributo+=1; // o enum dos atributos começa com 1
                         estadoAtual = VERIFICANDO_GANHADOR;
-                        tentou_carregar = false, carregou = false;
+                        tentou_carregarPlayer = false, carregouPlayer = false;
                     }
                 }
                 else{
@@ -550,12 +552,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                     Rectangle rec = {carta_x-5, carta_y-5, 305, 420};
                     
-                    if(!tentou_carregar){
-                        tentou_carregar = true;
-                        carregou = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
+                    if(!tentou_carregarPlayer){
+                        tentou_carregarPlayer = true;
+                        carregouPlayer = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
                     }
 
-                    if(carregou){
+                    if(carregouPlayer){
                         DrawTexture(textura_carta_jogador, carta_x, carta_y + 10, WHITE);
                     }else{
                         DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
@@ -611,7 +613,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 tempo_inicial = GetTime();
                 estadoAtual = VERIFICANDO_GANHADOR;
-                tentou_carregar = false, carregou = false;
+                tentou_carregarPlayer = false, carregouPlayer = false;
                 break;
             }
 
@@ -677,11 +679,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawText("Sua carta", carta_x + 100, (SCREEN_HEIGHT - 550) / 2, 20, DARKGREEN);
                 Rectangle rec = {carta_x-5, carta_y-5, 305, 420};
                 
-                if(!tentou_carregar){
-                    carregou = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
+                if(!tentou_carregarPlayer){
+                    tentou_carregarPlayer = true;
+                    carregouPlayer = carregando_imagem_carta(carta_jogador, &textura_carta_jogador);
                 }
 
-                if(carregou){
+                if(carregouPlayer){
                     DrawTexture(textura_carta_jogador, carta_x, carta_y + 10, WHITE);
                 }else{
                     DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
@@ -725,6 +728,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int valores[] = {carta_jogador.forca, carta_jogador.habilidade, carta_jogador.velocidade, carta_jogador.poderes, carta_jogador.poder_cura};
 
                 for (int i = 0; i < 5; i++) {
+                    UpdateMusicStream(musica_atual);
+
                     Rectangle retangulo_atributo = {carta_x + 10, carta_y + 190 + i * 45, 200, 30};
 
                     if (i == atributo) {
@@ -752,12 +757,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 
                 DrawText("Carta CPU", carta_x + 100, (SCREEN_HEIGHT - 550) / 2, 20, (Color){ 156, 0, 0, 255 }); // #9C0000
 
-                if(!tentou_carregar){
-                    tentou_carregar = true;
-                    carregou = carregando_imagem_carta(carta_cpu, &textura_carta_cpu);
+                if(!tentou_carregarCPU){
+                    tentou_carregarCPU = true;
+                    carregouCPU = carregando_imagem_carta(carta_cpu, &textura_carta_cpu);
                 }
 
-                if(carregou){
+                if(carregouCPU){
                     DrawTexture(textura_carta_cpu, carta_x, carta_y + 10, WHITE);
                 }else{
                     DrawRectangleRounded(rec, 0.1, 10, LIGHTGRAY);
@@ -800,6 +805,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int valores_cpu[] = {carta_cpu.forca, carta_cpu.habilidade, carta_cpu.velocidade, carta_cpu.poderes, carta_cpu.poder_cura};
 
                 for (int i = 0; i < 5; i++) {
+                    UpdateMusicStream(musica_atual);
+
                     Rectangle retangulo_atributo = {carta_x + 10, carta_y + 190 + i * 45, 200, 30};
                     if (i == atributo) {
                         if (quem_ganhou == -1) {
@@ -874,7 +881,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         } else {
                             player_joga = !player_joga;
                             rodada++; // NOVA RODADA
-                            tentou_carregar = false, carregou = false;
+                            tentou_carregarPlayer = false, carregouPlayer = false;
+                            tentou_carregarCPU = false, carregouCPU = false;
                             if(player_joga) estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
                             else estadoAtual = TELA_CPU_ESCOLHENDO_ATRIBUTO;
                         }
@@ -894,7 +902,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     } else {
                         player_joga = !player_joga;
                         rodada++; // NOVA RODADA
-                        tentou_carregar = false, carregou = false;
+                        tentou_carregarPlayer = false, carregouPlayer = false;
+                        tentou_carregarCPU = false, carregouCPU = false;
                         if(player_joga) estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
                         else estadoAtual = TELA_CPU_ESCOLHENDO_ATRIBUTO;
                     }
@@ -1238,9 +1247,12 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 if(CheckCollisionPointRec(GetMousePosition(), retangulo_sair)){
                     DrawRectangleRec(retangulo_sair, DARKGREEN);
 
-                    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+                    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)&&veio_tela_inicial){
                         PlaySound(som_resto);
                         estadoAtual = TELA_INICIAL;
+                    }else if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)&&!veio_tela_inicial){
+                        PlaySound(som_resto);
+                        estadoAtual = JOGAR_NOVAMENTE;
                     }
 
                 }else{
