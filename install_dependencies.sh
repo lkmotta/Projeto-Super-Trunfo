@@ -1,15 +1,8 @@
 #!/bin/bash
 
-echo "Instalando dependências necessárias para compilar e rodar o projeto..."
-
 read -p "Quer instalar as dependências necessárias? [Y/n] " resposta
 
 if [ "$resposta" = "Y" ] || [ "$resposta" = "y" ] || [ -z "$resposta" ]; then
-    # atualizando pacotes e instalando gcc e make
-    echo "Atualizando pacotes e verificando se gcc e make estão instalados..."
-    sudo apt update && sudo apt install -y gcc make
-
-    # instalando dependências do raylib
     echo "Instalando dependências do Raylib..."
 
     os_name=$(grep '^NAME=' /etc/os-release | cut -d= -f2 | tr -d '"')
@@ -34,7 +27,6 @@ if [ "$resposta" = "Y" ] || [ "$resposta" = "y" ] || [ -z "$resposta" ]; then
     echo "Dependências instaladas com sucesso!"
 fi
 
-# adicionando o caminho da raylib ao LD_LIBRARY_PATH
 echo "Adicionando o caminho da raylib ao LD_LIBRARY_PATH..."
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/raylib/lib
 
