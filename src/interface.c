@@ -233,7 +233,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 int progresso = 0;
                 int tempo_carregamento = GetRandomValue(2, 3) * FPS; // de 2 a 3 segundos
                 Rectangle barra_progresso = {pos_x_barra, pos_y_barra, (largura_barra * progresso) / tempo_carregamento, altura_barra};
-                Color cor_embaralhando = (qual_tela == -1) ? BLACK : RAYWHITE;
 
                 while (progresso < tempo_carregamento && !WindowShouldClose())
                 {
@@ -624,70 +623,67 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if(carta_jogador.super_trunfo && carta_cpu.letra != 'A'){
                         quem_ganhou = 1; // jogador ganhou
                         vitorias++;
-                        adicionar_carta_vencedor(&baralho_jogador, &baralho_cpu, &quant_cartas_jogador, &quant_cartas_empate);
                     }else if(carta_cpu.super_trunfo && carta_jogador.letra == 'A'){
                         quem_ganhou = 1; // jogador ganhou
                         vitorias++;
-                        adicionar_carta_vencedor(&baralho_jogador, &baralho_cpu, &quant_cartas_jogador, &quant_cartas_empate);
-                        ganhou_a=1;
+                        ganhou_a = true;
                     }else if(carta_cpu.super_trunfo && carta_jogador.letra != 'A'){
                         quem_ganhou = 0; // CPU ganhou
-                        adicionar_carta_vencedor(&baralho_cpu, &baralho_jogador, &quant_cartas_cpu, &quant_cartas_jogador);
                     }else if(carta_jogador.super_trunfo && carta_cpu.letra == 'A'){
                         quem_ganhou = 0; // CPU ganhou
-                        ganhou_a=1;
-                        adicionar_carta_vencedor(&baralho_cpu, &baralho_jogador, &quant_cartas_cpu, &quant_cartas_jogador);
+                        ganhou_a = true;
                     }
                     
                 }else{
                     if(maior_menor) quem_ganhou = verifica_maior(&carta_jogador, &carta_cpu, atributo);
                     else quem_ganhou = verifica_menor(&carta_jogador, &carta_cpu, atributo);
-                    
-                    if(quem_ganhou == -1){ // empate
-                        //printf("\nEMPATE\n");
-                        empates++;
-                        lidar_com_empate(&baralho_jogador, &quant_cartas_jogador, &baralho_cpu, &quant_cartas_cpu, &cartas_empate_jogador, &cartas_empate_cpu, &quant_cartas_empate);
-                    }else if(quem_ganhou){ // jogador ganhou
-                        //printf("\nGANHOU\n");
-                        vitorias++;
-                        // adicionando as cartas de empate ao baralho do jogador
-                        if(quant_cartas_empate > 0){
-                            for (int i = 0; i < quant_cartas_empate; i++) {
-                                adicionar_carta_vencedor(&baralho_jogador, &cartas_empate_jogador, &quant_cartas_jogador, &quant_cartas_empate);
-                                adicionar_carta_vencedor(&baralho_jogador, &cartas_empate_cpu, &quant_cartas_jogador, &quant_cartas_empate);
-                            }
-                            quant_cartas_empate = 0;
-                            if (cartas_empate_jogador != NULL) {
-                                free(cartas_empate_jogador);
-                                cartas_empate_jogador = NULL;
-                            }
-                            if (cartas_empate_cpu != NULL) {
-                                free(cartas_empate_cpu);
-                                cartas_empate_cpu = NULL;
-                            }
-                        }
-                        adicionar_carta_vencedor(&baralho_jogador, &baralho_cpu, &quant_cartas_jogador, &quant_cartas_cpu);
-                    }else{                // CPU ganhou
-                        //printf("\nPERDEU\n");
-                        // adicionando as cartas de empate ao baralho do CPU
-                        if(quant_cartas_empate > 0){
-                            for (int i = 0; i < quant_cartas_empate; i++) {
-                                adicionar_carta_vencedor(&baralho_cpu, &cartas_empate_jogador, &quant_cartas_cpu, &quant_cartas_empate);
-                                adicionar_carta_vencedor(&baralho_cpu, &cartas_empate_cpu, &quant_cartas_cpu, &quant_cartas_empate);
-                            }
-                            quant_cartas_empate = 0;
-                            if (cartas_empate_jogador != NULL) {
-                                free(cartas_empate_jogador);
-                                cartas_empate_jogador = NULL;
-                            }
-                            if (cartas_empate_cpu != NULL) {
-                                free(cartas_empate_cpu);
-                                cartas_empate_cpu = NULL;
-                            }
-                        }
-                        adicionar_carta_vencedor(&baralho_cpu, &baralho_jogador, &quant_cartas_cpu, &quant_cartas_jogador);
-                    }
                 }
+
+                if(quem_ganhou == -1){ // empate
+                    //printf("\nEMPATE\n");
+                    empates++;
+                    lidar_com_empate(&baralho_jogador, &quant_cartas_jogador, &baralho_cpu, &quant_cartas_cpu, &cartas_empate_jogador, &cartas_empate_cpu, &quant_cartas_empate);
+                }else if(quem_ganhou){ // jogador ganhou
+                    //printf("\nGANHOU\n");
+                    vitorias++;
+                    // adicionando as cartas de empate ao baralho do jogador
+                    if(quant_cartas_empate > 0){
+                        for (int i = 0; i < quant_cartas_empate; i++) {
+                            adicionar_carta_vencedor(&baralho_jogador, &cartas_empate_jogador, &quant_cartas_jogador, &quant_cartas_empate);
+                            adicionar_carta_vencedor(&baralho_jogador, &cartas_empate_cpu, &quant_cartas_jogador, &quant_cartas_empate);
+                        }
+                        quant_cartas_empate = 0;
+                        if (cartas_empate_jogador != NULL) {
+                            free(cartas_empate_jogador);
+                            cartas_empate_jogador = NULL;
+                        }
+                        if (cartas_empate_cpu != NULL) {
+                            free(cartas_empate_cpu);
+                            cartas_empate_cpu = NULL;
+                        }
+                    }
+                    adicionar_carta_vencedor(&baralho_jogador, &baralho_cpu, &quant_cartas_jogador, &quant_cartas_cpu);
+                }else{                // CPU ganhou
+                    //printf("\nPERDEU\n");
+                    // adicionando as cartas de empate ao baralho do CPU
+                    if(quant_cartas_empate > 0){
+                        for (int i = 0; i < quant_cartas_empate; i++) {
+                            adicionar_carta_vencedor(&baralho_cpu, &cartas_empate_jogador, &quant_cartas_cpu, &quant_cartas_empate);
+                            adicionar_carta_vencedor(&baralho_cpu, &cartas_empate_cpu, &quant_cartas_cpu, &quant_cartas_empate);
+                        }
+                        quant_cartas_empate = 0;
+                        if (cartas_empate_jogador != NULL) {
+                            free(cartas_empate_jogador);
+                            cartas_empate_jogador = NULL;
+                        }
+                        if (cartas_empate_cpu != NULL) {
+                            free(cartas_empate_cpu);
+                            cartas_empate_cpu = NULL;
+                        }
+                    }
+                    adicionar_carta_vencedor(&baralho_cpu, &baralho_jogador, &quant_cartas_cpu, &quant_cartas_jogador);
+                }
+                
                 atributo-=1; // voltando o valor do atributo para índice
                 estadoAtual = TELA_RESULTADO;
                 break;
@@ -879,10 +875,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawText(TextFormat("Rodada: %d", rodada), 10, SCREEN_HEIGHT - 30, 20, RAYWHITE);
 
                 // INFORMACOES DA COMPARACAO
-                if((carta_cpu.super_trunfo || carta_jogador.super_trunfo) && !ganhou_a){
-                    DrawText("Super-trunfo", SCREEN_WIDTH - 10 - MeasureText("super-trunfo", 20), SCREEN_HEIGHT - 30, 20, RAYWHITE);
-                }else if((carta_cpu.super_trunfo || carta_jogador.super_trunfo) && ganhou_a){
-                    DrawText("Classe A sobre trunfo", SCREEN_WIDTH - 10 - MeasureText("Classe A sobre trunfo", 20), SCREEN_HEIGHT - 30, 20, RAYWHITE);
+                if((carta_cpu.super_trunfo || carta_jogador.super_trunfo) && ganhou_a){
+                    DrawText("Classe A sobre Trunfo", SCREEN_WIDTH - 10 - MeasureText("Classe A sobre Trunfo", 20), SCREEN_HEIGHT - 30, 20, RAYWHITE);
                 }else{
                     sprintf(informacao_rodada, "%s - %s", atributo_nome, maior_menor ? "MAIOR" : "MENOR");
                     DrawText(informacao_rodada, SCREEN_WIDTH - 10 - MeasureText(informacao_rodada, 20), SCREEN_HEIGHT - 30, 20, RAYWHITE); 
