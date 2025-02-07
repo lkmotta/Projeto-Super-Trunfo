@@ -25,10 +25,7 @@
 
 int main() {
     if (sistema()) {
-        if (setlocale(LC_ALL, "portuguese") == NULL) {
-            fprintf(stderr, "Erro ao configurar a localidade para pt_BR\n");
-            exit(1);
-        }
+        setlocale(LC_ALL, "portuguese");
         system("cls");   // limpando o prompt de comando -> Windows
     } else {
         system("clear"); // limpando o terminal -> Linux
