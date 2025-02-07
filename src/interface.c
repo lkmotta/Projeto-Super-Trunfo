@@ -65,7 +65,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     Historico partidaHist;
 
     // variáveis das telas (para evitar redeclarar no loop)
-    bool vitoria_trunfo=0;
+    
     bool ganhou_a=0;
     bool veio_tela_inicial = false;
     char nickname[4] = "";
@@ -620,25 +620,25 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
 
             case VERIFICANDO_GANHADOR: {
-                if(carta_jogador.super_trunfo || carta_cpu.super_trunfo){ // se uma das cartas for super-trunfo, ela ganha
-                    if(carta_jogador.super_trunfo&&carta_cpu.letra != 'A'){
+                if(carta_jogador.super_trunfo || carta_cpu.super_trunfo){ // se uma das cartas for super-trunfo
+                    if(carta_jogador.super_trunfo && carta_cpu.letra != 'A'){
                         quem_ganhou = 1; // jogador ganhou
                         vitorias++;
-                        adicionar_carta_vencedor(&baralho_jogador, &cartas_empate_jogador, &quant_cartas_jogador, &quant_cartas_empate);
+                        adicionar_carta_vencedor(&baralho_jogador, &baralho_cpu, &quant_cartas_jogador, &quant_cartas_empate);
                     }else if(carta_cpu.super_trunfo && carta_jogador.letra == 'A'){
                         quem_ganhou = 1; // jogador ganhou
                         vitorias++;
-                        adicionar_carta_vencedor(&baralho_jogador, &cartas_empate_jogador, &quant_cartas_jogador, &quant_cartas_empate);
+                        adicionar_carta_vencedor(&baralho_jogador, &baralho_cpu, &quant_cartas_jogador, &quant_cartas_empate);
                         ganhou_a=1;
-                    }else if(carta_cpu.super_trunfo&&carta_jogador.letra != 'A'){
+                    }else if(carta_cpu.super_trunfo && carta_jogador.letra != 'A'){
                         quem_ganhou = 0; // CPU ganhou
                         adicionar_carta_vencedor(&baralho_cpu, &baralho_jogador, &quant_cartas_cpu, &quant_cartas_jogador);
-                    }else if(carta_jogador.super_trunfo&& carta_cpu.letra == 'A'){
+                    }else if(carta_jogador.super_trunfo && carta_cpu.letra == 'A'){
                         quem_ganhou = 0; // CPU ganhou
-                        adicionar_carta_vencedor(&baralho_cpu, &baralho_jogador, &quant_cartas_cpu, &quant_cartas_jogador);
                         ganhou_a=1;
+                        adicionar_carta_vencedor(&baralho_cpu, &baralho_jogador, &quant_cartas_cpu, &quant_cartas_jogador);
                     }
-                    vitoria_trunfo=1;
+                    
                 }else{
                     if(maior_menor) quem_ganhou = verifica_maior(&carta_jogador, &carta_cpu, atributo);
                     else quem_ganhou = verifica_menor(&carta_jogador, &carta_cpu, atributo);
@@ -879,9 +879,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 DrawText(TextFormat("Rodada: %d", rodada), 10, SCREEN_HEIGHT - 30, 20, RAYWHITE);
 
                 // INFORMACOES DA COMPARACAO
-                if(vitoria_trunfo && !ganhou_a){
+                if((carta_cpu.super_trunfo || carta_jogador.super_trunfo) && !ganhou_a){
                     DrawText("Super-trunfo", SCREEN_WIDTH - 10 - MeasureText("super-trunfo", 20), SCREEN_HEIGHT - 30, 20, RAYWHITE);
-                }else if(vitoria_trunfo && ganhou_a){
+                }else if((carta_cpu.super_trunfo || carta_jogador.super_trunfo) && ganhou_a){
                     DrawText("Classe A sobre trunfo", SCREEN_WIDTH - 10 - MeasureText("Classe A sobre trunfo", 20), SCREEN_HEIGHT - 30, 20, RAYWHITE);
                 }else{
                     sprintf(informacao_rodada, "%s - %s", atributo_nome, maior_menor ? "MAIOR" : "MENOR");
@@ -909,6 +909,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         } else {
                             player_joga = !player_joga;
                             rodada++; // NOVA RODADA
+                            ganhou_a=0;
                             tentou_carregarPlayer = false, carregouPlayer = false;
                             tentou_carregarCPU = false, carregouCPU = false;
                             if(player_joga) estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
@@ -929,7 +930,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                         estadoAtual = CPU_VENCEU;
                     } else {
                         player_joga = !player_joga;
-                        rodada++; // NOVA RODADA
+                        rodada++; // NOVA RODADA 
+                        ganhou_a=0;
                         tentou_carregarPlayer = false, carregouPlayer = false;
                         tentou_carregarCPU = false, carregouCPU = false;
                         if(player_joga) estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
