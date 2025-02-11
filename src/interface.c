@@ -1286,7 +1286,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
 
                 FILE *historico = fopen("assets/data/historico.dat", "rb");
                 if (historico == NULL) {
-                    DrawText("Erro ao abrir o arquivo de histórico.", 50, 150, 20, RED);
+                    DrawText("Não houveram partidas anteriores.",160, 480, 30, RED);//-----------------------
                 } else {
                     Historico historicos[100];
                     int aux = 0;

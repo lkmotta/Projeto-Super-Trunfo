@@ -26,9 +26,9 @@
 int main() {
     if (sistema()) {
         setlocale(LC_ALL, "portuguese");
-        //system("cls");   // limpando o prompt de comando -> Windows
+        system("cls");   // limpando o prompt de comando -> Windows
     } else {
-        //system("clear"); // limpando o terminal -> Linux
+        system("clear"); // limpando o terminal -> Linux
     }
 
     // Abrindo arquivos
