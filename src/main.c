@@ -40,8 +40,10 @@ int main() {
     if (arqbin == NULL) {
         printf("\033[1;93mBem-vindo!\033[1;30m Parece que é a primeira vez que você está rodando o jogo.\033[m\n");
 
-        fseek(arq_cartas, 0, SEEK_END);
-        size = ftell(arq_cartas) / sizeof(Cartas);
+        char buffer[1024];
+        while (fgets(buffer, sizeof(buffer), arq_cartas) != NULL) {
+            size++;
+        }
         fseek(arq_cartas, 0, SEEK_SET);
         
         for (int i = 0; i < size; i++) {
