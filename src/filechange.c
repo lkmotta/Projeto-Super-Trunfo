@@ -42,8 +42,25 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
     *carta = novo_carta;
 
     for (int i = 0; i < cartas_add; i++) {
-        printf("\nNome da carta: ");
-        burocracia((*carta)[(*size) + i].nome, TAM_NOME_CARTA);
+
+        char tentaNome[TAM_NOME_CARTA];
+        int nome_valido=0;
+        do
+        {
+            printf("\nNome da carta: ");
+            burocracia(tentaNome, TAM_NOME_CARTA);
+            for (int i = 0; i < *size; i++){
+                if(strcmp(tentaNome, (*carta)[i].nome)==0){
+                    printf("\n\033[1;31mNome já existente, insira outro nome.\033[m\n");
+                    break;
+                }else{
+                    nome_valido=1;
+                    strcpy((*carta)[(*size) + i].nome, tentaNome);
+                }
+            }
+            
+        } while (nome_valido==0);
+        
 
         char TentaLetra;
         int posi_procurada = 0;
@@ -70,7 +87,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
                     continue;
             }
 
-            // Calcula a pr�xima posi��o dispon�vel
+            // Calcula a próxima posi��o dispon�vel
             int aux = (*ptr_posicoes == NULL) ? 0 : (*size);
             for (int j = 0; j < aux; j++) {
                 if ((*ptr_posicoes)[j] != j + 1) {
@@ -83,7 +100,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
             // Realoca mem�ria para a nova posi��o
             int *novo_posicoes = realloc(*ptr_posicoes, posi_procurada * sizeof(int));
             if (novo_posicoes == NULL) {
-                perror("\033[1;31mErro ao alocar mem�ria para posi��es\033[m");
+                perror("\033[1;31mErro ao alocar memória para posições\033[m");
                 return;
             }
             *ptr_posicoes = novo_posicoes;
@@ -94,7 +111,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         (*carta)[(*size) + i].letra = TentaLetra;
         (*carta)[(*size) + i].num = posi_procurada;
 
-        printf("\nTemos a posi��o %i dispon�vel em %c\n", posi_procurada, TentaLetra);
+        printf("\nTemos a posição %i disponível em %c\n", posi_procurada, TentaLetra);
 
         int existenciaDoSuper = 0;
         for (int j = 0; j < (*size); j++) {
@@ -141,7 +158,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         int escolha_textura = get_int(1, 2, "\033[1;31mInsira um valor válido!\033[1;30m [1 ~ 2]:\033[m ");
         setbuf(stdin, NULL);
         if(escolha_textura){
-            printf("Primeiro coloque na sua textura na pasta assets/img/cartas\npor fim nos diga o nome da textura\n");
+            printf("\nPrimeiro coloque na sua textura na pasta assets/img/cartas\n\npor fim nos diga o nome da textura\n");
             printf("Nome textura: ");
             burocracia((*carta)[(*size) + i].textura, TAM_NOME_CARTA);
             //concatenando o caminho da textura das pastas
@@ -160,7 +177,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
                 }
             } while (escolha_formato != 1 && escolha_formato != 2);
             
-            char caminho[100] = "assets/img/cartas/";
+            char caminho[20] = "assets/img/cartas/";
             strcat(caminho, (*carta)[(*size) + i].textura);
             strcpy((*carta)[(*size) + i].textura, caminho);
 
@@ -359,7 +376,7 @@ void buscar_carta(Cartas carta[], int qnt_cartas) {
 void historico() {
     FILE* arq = fopen("assets/data/historico.dat", "rb");
     if (arq == NULL) {
-        printf("\nn�o houve outras partidas\n");
+        printf("\nnão houve outras partidas\n");
         return;
     }
 
