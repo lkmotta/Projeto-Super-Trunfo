@@ -498,6 +498,13 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
 
     char vencedor[10];
 
+    int pontuacao = (10 * ((100 * vitorias) / rodadas)) + 10 * empates;
+    Historico partidaHist;
+    strcpy(partidaHist.vencedor, vencedor);
+    partidaHist.rodadas = rodadas;
+    partidaHist.vitorias = vitorias;
+    partidaHist.empates = empates;
+    partidaHist.pontuacao = pontuacao;
     if (quant_cartas_cpu == 0)
     {
         printf("\n\n\033[7;32mVocê venceu o jogo!\033[m\n\n");
@@ -524,6 +531,27 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
             }
         }
 
+        FILE *historico = fopen("assets/data/historico.dat", "rb+");
+        if (historico == NULL)
+        {
+            FILE *arq = fopen("assets/data/historico.dat", "wb+");
+            printf("Salvando no historico...\n");
+            if (arq == NULL)
+            {
+                printf("Erro ao salvar no historico cod:01\n");
+                return;
+            }
+            fseek(arq, 0, SEEK_END);
+            fwrite(&partidaHist, sizeof(Historico), 1, arq);
+            fclose(arq);
+        }
+        else
+        {
+            fseek(historico, 0, SEEK_END);
+            fwrite(&partidaHist, sizeof(Historico), 1, historico);
+            fclose(historico);
+        }
+
         strcpy(vencedor, playerName);
     }
     else
@@ -532,44 +560,19 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
         strcpy(vencedor, "CPU");
     }
 
-    int pontuacao = (10 * ((100 * vitorias) / rodadas))+50*empates;
     printf("\n\n\033[7;32mPontua��o: %d\n\033[m", pontuacao);
 
-    Historico partidaHist;
-    strcpy(partidaHist.vencedor, vencedor);
-    partidaHist.rodadas = rodadas;
-    partidaHist.vitorias = vitorias;
-    partidaHist.empates = empates;
-    partidaHist.pontuacao = pontuacao;
-    //adicionando dia e mes no historico
+    // adicionando dia e mes no historico
 
-    //pegando a data atual usando time.h
+    // pegando a data atual usando time.h
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    partidaHist.dia=tm.tm_mday;
-    partidaHist.mes=tm.tm_mon+1;
+    partidaHist.dia = tm.tm_mday;
+    partidaHist.mes = tm.tm_mon + 1;
 
     printf("\n\033[1;32mEstatisticas da partida:\nRodadas: %i\nVit�rias: %i\nEmpates: %i\nSua pontua��o: %i pontos\n%02d/%02d\033[m",
            partidaHist.rodadas, partidaHist.vitorias, partidaHist.empates, partidaHist.pontuacao, partidaHist.dia, partidaHist.mes);
 
-    FILE *historico = fopen("assets/data/historico.dat", "rb+");
-    if (historico == NULL) {
-        FILE *arq = fopen("assets/data/historico.dat", "wb+");
-        printf("Salvando no historico...\n");
-        if (arq == NULL) {
-            printf("Erro ao salvar no historico cod:01\n");
-            return;
-        }
-        fseek(arq, 0, SEEK_END);
-        fwrite(&partidaHist, sizeof(Historico), 1, arq);    
-        fclose(arq);
-    }else{
-        fseek(historico, 0, SEEK_END);
-        fwrite(&partidaHist, sizeof(Historico), 1, historico);    
-        fclose(historico);
-    }
-
-    
     if (cartas_empate_jogador != NULL)
     {
         free(cartas_empate_jogador);

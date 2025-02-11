@@ -155,9 +155,19 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         (*carta)[(*size) + i].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 100]:\033[m ");
         //strcpy((*carta)[(*size) + i].textura, '\0');
         printf("Deseja inserir uma textura para a carta? [1 - Sim, 2 - Não]: \n");
-        int escolha_textura = get_int(1, 2, "\033[1;31mInsira um valor válido!\033[1;30m [1 ~ 2]:\033[m ");
+        int escolha_textura;
+        do
+        {
+            scanf("%d", &escolha_textura);
+            if (escolha_textura != 1 && escolha_textura != 2)
+            {
+                printf("\033[1;31mInsira um valor válido!\033[1;30m [1 ~ 2]:\033[m ");
+            }
+            
+        } while (escolha_textura != 1 && escolha_textura != 2);
+        
         setbuf(stdin, NULL);
-        if(escolha_textura){
+        if(escolha_textura==1){
             printf("\nPrimeiro coloque na sua textura na pasta assets/img/cartas\n\npor fim nos diga o nome da textura\n");
             printf("Nome textura: ");
             burocracia((*carta)[(*size) + i].textura, TAM_NOME_CARTA);
@@ -376,7 +386,7 @@ void buscar_carta(Cartas carta[], int qnt_cartas) {
 void historico() {
     FILE* arq = fopen("assets/data/historico.dat", "rb");
     if (arq == NULL) {
-        printf("\nnão houve outras partidas\n");
+        printf("\nnão houve outras partidas ou somente o CPU ganhou\n");
         return;
     }
 
@@ -400,10 +410,14 @@ void historico() {
     return;
 }
 
+/**
+ * @brief Função que mostra as maiores pontuações do historico
+ * 
+ */
 void ranking(){
     FILE* arq = fopen("assets/data/historico.dat", "rb");
     if (arq == NULL) {
-        printf("\nnão houve outras partidas\n");
+        printf("\nnão houve outras partidas ou somente o CPU ganhou\n");
         return;
     }
 
