@@ -507,6 +507,49 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     SetMusicVolume(musica_fundo1, volume);
                 }
 
+
+                //----------------------------- BOTÃO VOLTAR --------------------------
+                Rectangle retangulo_voltar = {690, 10, 100, 50};
+                DrawRectangleRounded(retangulo_voltar, 0.3, 10, GRAY);
+                DrawText("Voltar", 710, 25, 20, WHITE);
+                if(CheckCollisionPointRec(GetMousePosition(), retangulo_voltar)){
+                    DrawRectangleRounded(retangulo_voltar, 0.3, 10, DARKGRAY);
+                    DrawText("Voltar", 710, 25, 20, WHITE);
+                    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+                        PlaySound(som_tecla);
+                        estadoAtual = TEM_CERTEZA;
+                    }
+                }
+
+                break;
+            }
+
+            case TEM_CERTEZA: {
+                Rectangle retangulo_sim = {SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 50, 100, 50};
+                Rectangle retangulo_nao = {SCREEN_WIDTH / 2 + 10, SCREEN_HEIGHT / 2 - 50, 100, 50};
+                DrawText("Tem certeza que deseja voltar?", SCREEN_WIDTH / 2 - MeasureText("Tem certeza que deseja voltar?", 35) / 2, SCREEN_HEIGHT / 2 - 100, 35, RAYWHITE);
+                DrawRectangleRounded(retangulo_sim, 0.3, 10, GREEN);
+                DrawRectangleRounded(retangulo_nao, 0.3, 10, RED);
+                DrawText("Sim", retangulo_sim.x + 35, retangulo_sim.y + 15, 20, WHITE);
+                DrawText("Não", retangulo_nao.x + 30, retangulo_nao.y + 15, 20, WHITE);
+                if(CheckCollisionPointRec(GetMousePosition(), retangulo_sim)){
+                    DrawRectangleRounded(retangulo_sim, 0.3, 10, DARKGREEN);
+                    DrawText("Sim", retangulo_sim.x + 35, retangulo_sim.y + 15, 20, WHITE);
+                    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+                        PlaySound(som_tecla);
+                        estadoAtual = RESET;
+                    }
+                }
+                Color DARKRED = (Color){139, 0, 0, 255};
+                if (CheckCollisionPointRec(GetMousePosition(), retangulo_nao)){
+                    DrawRectangleRounded(retangulo_nao, 0.3, 10, DARKRED);
+                    DrawText("Não", retangulo_nao.x + 30, retangulo_nao.y + 15, 20, WHITE);
+                    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+                        PlaySound(som_tecla);
+                        estadoAtual = TELA_PLAYER_ESCOLHENDO_ATRIBUTO;
+                    }
+                }
+                
                 break;
             }
 
