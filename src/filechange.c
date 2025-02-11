@@ -1,3 +1,4 @@
+
 /**
  * @file filechange.c
  * @brief Funções para manipulação de arquivos e cartas
@@ -323,31 +324,52 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
 }
 
 /**
- * @brief Fun��o principal para gerenciamento de busca de cartas
+ * @brief Função principal para gerenciamento de busca de cartas
  * 
  * @param carta Vetor de cartas
- * @param qnt_cartas Quantidade de cartas dispon��veis
+ * @param qnt_cartas Quantidade de cartas disponiveis
  */
-void buscar_carta(Cartas carta[], int qnt_cartas) {
+void buscar_carta(Cartas *carta, int qnt_cartas) {
     int sair = 0;
     do {
-        printf("\nOp��es de pesquisa:\n");
+        printf("\nOpções de pesquisa:\n");
         printf("1 - Pesquisar por Atributo\n");
         printf("2 - Pesquisar por Letra\n");
-        printf("3 - Pesquisar por N�mero\n");
+        printf("3 - Pesquisar por Numero\n");
         printf("4 - Sair\n");
 
         printf("\nEscolha uma opção: ");
-        int escolha = get_int(1, 4, "\033[1;91mOp��es inv�lida!\033[1;30m Insira um n�mero de 1 a 4:\033[m ");
+        int escolha = get_int(1, 4, "\033[1;91mOpcao invalida!\033[1;30m Insira um numero de 1 a 4:\033[m ");
 
         switch (escolha) {
             case PESQ_ATRIBUTO: {
                 printf("\n=== Pesquisar por Atributo ===\n");
-                int escolha_atributo = get_int(1, 6, "Escolha um atributo (1 a 5, ou 6 para sair): ");
+                printf("\nEscolha um atributo (1 a 5, ou 6 para sair): ");
+                int escolha_atributo = get_int(1, 6, "\033[1;31mEscolha inválida!\033[1m (1 a 5, ou 6 para sair):\033[m ");
                 if (escolha_atributo == 6) break;
-
-                int valor_comparado = get_int(0, 100, "Digite o valor para compara��o: ");
-                int comparacao = get_int(1, 2, "1 - Maior que, 2 - Menor que: ");
+                
+                int valor_max;
+                switch (escolha_atributo){
+                case FORCA:
+                    valor_max = FORCA_MAX;
+                    break;
+                case HABILIDADE:
+                    valor_max = HABILIDADE_MAX;
+                    break;
+                case VELOCIDADE:
+                    valor_max = VELOCIDADE_MAX;
+                    break;
+                case PODERES:
+                    valor_max = PODERES_MAX;
+                    break;
+                case CURA:
+                    valor_max = CURA_MAX;
+                    break;
+                }
+                printf("\nDigite o valor para comparação[1~%d]: ", valor_max);
+                int valor_comparado = get_int(1, valor_max, "\033[1;31mEscolha inválida!\033[1m Insira um valor válido:\033[m ");
+                printf("\n1 - Maior que, 2 - Menor que: ");
+                int comparacao = get_int(1, 2, "\033[1;31mEscolha inválida!\033[1m Insira um valor válido:\033[m ");
                 buscar_por_atributo(carta, qnt_cartas, escolha_atributo, comparacao, valor_comparado);
                 break;
             }
@@ -359,15 +381,16 @@ void buscar_carta(Cartas carta[], int qnt_cartas) {
                     scanf(" %c", &letra);
                     letra = toupper(letra);
                     if (letra < 'A' || letra > 'Z') {
-                        printf("\033[1;91mEntrada inv�lida! Insira uma letra de A a Z.\033[m\n");
+                        printf("\033[1;91mEntrada invalida! Insira uma letra de A a Z.\033[m\n");
                     }
                 } while (letra < 'A' || letra > 'Z');
                 buscar_por_letra(carta, qnt_cartas, letra);
                 break;
             }
             case PESQ_NUMERO: {
-                printf("\n=== Pesquisar por N�mero ===\n");
-                int numero = get_int(1, 100, "Digite o n�mero: ");
+                printf("\n=== Pesquisar por Numero ===\n");
+                printf("\nDigite o numero: ");
+                int numero = get_int(1, 100, "\n\033[1;31mEscolha inválida!\033[1m Insira um valor válido:\033[m ");
                 buscar_por_numero(carta, qnt_cartas, numero);
                 break;
             }
