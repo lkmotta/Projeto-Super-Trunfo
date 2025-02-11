@@ -35,11 +35,16 @@ int main() {
     FILE *arqbin = fopen("assets/data/arqbin.dat", "rb+");
     FILE *arq_cartas = abrir_arquivo("assets/data/cartas.csv", "r");
     Cartas *cartas = NULL;
-    int size = 32;
+    int size = 0;
     int criadoBin = 0;
     if (arqbin == NULL) {
         printf("\033[1;93mBem-vindo!\033[1;30m Parece que é a primeira vez que você está rodando o jogo.\033[m\n");
-        for (int i = 0; i < 32; i++) {
+
+        fseek(arq_cartas, 0, SEEK_END);
+        size = ftell(arq_cartas) / sizeof(Cartas);
+        fseek(arq_cartas, 0, SEEK_SET);
+        
+        for (int i = 0; i < size; i++) {
             cartas = (Cartas*) realloc(cartas, (i + 1) * sizeof(Cartas));
             if (cartas == NULL) {
                 perror("\n\033[1;91mErro ao alocar memoria para cartas\033[m");
@@ -56,6 +61,7 @@ int main() {
                 &cartas[i].poderes, 
                 &cartas[i].poder_cura,
                 cartas[i].textura);
+            
         }
     } else {
         printf("\033[1;93mBem-vindo de volta!\033[m\n");
