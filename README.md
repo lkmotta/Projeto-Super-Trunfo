@@ -29,7 +29,7 @@ make reset      # limpar tudo
 ```
 
 ### Alertas
-- <b>Projeto ainda não finalizado!</b>
+- <b>Projeto finalizado!</b>
 - Se o comando `make` não funciona, tente `mingw32-make`.
 - Verifique se o `mingw-w64` está instalado e configurado corretamente no seu PATH.
 - Caso esteja usando o `MinGW` antigo, o projeto não irá compilar.
