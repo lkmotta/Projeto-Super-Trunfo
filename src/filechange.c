@@ -344,6 +344,7 @@ void buscar_carta(Cartas *carta, int qnt_cartas) {
         switch (escolha) {
             case PESQ_ATRIBUTO: {
                 printf("\n=== Pesquisar por Atributo ===\n");
+                printf("\n1 - Força\n2 - Habilidade\n3 - Velocidade\n4 - Poderes\n5 - Poder de Cura\n6 - Sair\n");
                 printf("\nEscolha um atributo (1 a 5, ou 6 para sair): ");
                 int escolha_atributo = get_int(1, 6, "\033[1;31mEscolha inválida!\033[1m (1 a 5, ou 6 para sair):\033[m ");
                 if (escolha_atributo == 6) break;
