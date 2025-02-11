@@ -1199,6 +1199,16 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     arrastando = false;
                 }
 
+                // Adiciona a funcionalidade de rolagem com a roda do mouse
+                float wheelMove = GetMouseWheelMove();
+                if (wheelMove != 0) {
+                    scrollOffset -= wheelMove * 20; // Ajuste a velocidade de rolagem conforme necessário
+
+                    // Limita o scrollOffset dentro dos limites do texto
+                    if (scrollOffset < 0) scrollOffset = 0;
+                    if (scrollOffset > texto_regras.height - area_texto.height) scrollOffset = texto_regras.height - area_texto.height;
+                }
+
 
                 if (arrastando) {
                     // Calcula o deslocamento da rolagem com base na posição da barra de rolagem
