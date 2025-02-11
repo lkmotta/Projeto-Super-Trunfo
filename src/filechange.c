@@ -291,11 +291,11 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
         }else break;
     } while (1);
     
-    printf("\n1 - forca: %i\n2 - Habilidade: %i\n3 - Velocidade: %i\n4 - Poderes: %i\n5 - Poder cura: %i\nQual deseja alterar: ",
+    printf("\n1 - forca: %i\n2 - Habilidade: %i\n3 - Velocidade: %i\n4 - Poderes: %i\n5 - Poder cura: \n6 - Textura %s\nQual deseja alterar: ",
         (*cartas)[posicao].forca, (*cartas)[posicao].habilidade, (*cartas)[posicao].velocidade,
-        (*cartas)[posicao].poderes, (*cartas)[posicao].poder_cura);
+        (*cartas)[posicao].poderes, (*cartas)[posicao].poder_cura, (*cartas)[posicao].textura);
 
-    atributo_alterar = get_int(1, 5, "\033[1;91mEntrada inv�lida!\033[1m[1 ~ 5]:\033[m ");
+    atributo_alterar = get_int(1, 6, "\033[1;91mEntrada inv�lida!\033[1m[1 ~ 5]:\033[m ");
 
     printf("\nInsira o novo valor do atributo: ");
     
@@ -316,9 +316,12 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
     case 5:
         (*cartas)[posicao].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1m[1 ~ 100]:\033[m ");
         break;
+    case 6:
+        //(*cartas)[posicao].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1m[1 ~ 100]:\033[m ");
+        break;
     }
     printf("\n\n\033[1;94mCarta atualizada:\033[m\n");
-    printf("Nome: %-21s \nFor�a: %-6d \nHabilidade: %-12d\nVelocidade:  %-12d\nPoderes: %-9d \nPoder cura:  %-12d\n",
+    printf("Nome: %-21s \nForça: %-6d \nHabilidade: %-12d\nVelocidade:  %-12d\nPoderes: %-9d \nPoder cura:  %-12d\n",
     (*cartas)[posicao].nome,(*cartas)[posicao].forca, (*cartas)[posicao].habilidade, (*cartas)[posicao].velocidade, (*cartas)[posicao].poderes, (*cartas)[posicao].poder_cura);        
     printf("\n\033[3;92mCarta alterada com sucesso!\033[m\n");
 }
