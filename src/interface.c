@@ -68,6 +68,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     
     bool ganhou_a=0;
     bool veio_tela_inicial = false;
+    static bool fundo_ranking_carregado = false;
+    static bool fundo_regras_carregado = false;
+    static bool texto_regras_carregado = false;
     char nickname[4] = "";
     char texto[10];
     int texto_largura, texto_altura, nome_largura;
@@ -80,6 +83,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     char informacao_rodada[30];
     Texture2D textura_fundo;
     Texture2D textura_carta_jogador, textura_carta_cpu;
+    static Texture2D fundo_regras;
+    static Texture2D texto_regras;
+    static Texture2D fundo_ranking;
     Rectangle retangulo_fundo_botoes;
     
     Color cor, cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
@@ -185,6 +191,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
            
             case RESET: {
                 // RESETANDO AS VARIAVEIS
+                fundo_regras_carregado = false;
+                texto_regras_carregado = false;
+                fundo_ranking_carregado = false;
                 veio_tela_inicial=false;
                 player_joga = true;
                 tentou_carregarPlayer = false, carregouPlayer = false;
@@ -1152,14 +1161,15 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
             
             case REGRAS: {
-                static Texture2D fundo_regras;
-                static Texture2D texto_regras;
-                static bool fundo_regras_carregado = false;
-                static bool texto_regras_carregado = false;
-
                 // Carregar as texturas apenas uma vez
                 if (!fundo_regras_carregado) {
-                    fundo_regras = LoadTexture("assets/img/telas/fundo_regras.png");
+                    if (qual_tela == 0) {
+                        fundo_regras = LoadTexture("assets/img/telas/fundo_regras_cpuwin.png");
+                    } else if (qual_tela == 1) {
+                        fundo_regras = LoadTexture("assets/img/telas/fundo_regras_playerwin.png");
+                    } else {
+                        fundo_regras = LoadTexture("assets/img/telas/fundo_regras.png");
+                    }
                     fundo_regras_carregado = true;
                 }
                 if (!texto_regras_carregado) {
@@ -1256,14 +1266,18 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
             }
 
             case RANKING: {
-                //carrega textura fundo ranking
-                static Texture2D fundo_ranking;
-                static bool fundo_ranking_carregado = false;
                 // Carrega textura fundo ranking apenas uma vez
                 if (!fundo_ranking_carregado) {
-                    fundo_ranking = LoadTexture("assets/img/telas/fundo_ranking.png");
+                    if (qual_tela == 0) {
+                        fundo_ranking = LoadTexture("assets/img/telas/fundo_ranking_cpuwin.png");
+                    } else if (qual_tela == 1) {
+                        fundo_ranking = LoadTexture("assets/img/telas/fundo_ranking_playerwin.png");
+                    } else {
+                        fundo_ranking = LoadTexture("assets/img/telas/fundo_ranking.png");
+                    }
                     fundo_ranking_carregado = true;
                 }
+
                 // Desenha fundo
                 DrawTexture(fundo_ranking, 0, 0, WHITE);
 
@@ -1340,8 +1354,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 break;
             }
             
-            case JOGAR_NOVAMENTE: {
-
+            case JOGAR_NOVAMENTE: {             
                 DrawText("Jogar Novamente?", SCREEN_WIDTH / 2 - MeasureText("Jogar Novamente?", 40) / 2, SCREEN_HEIGHT / 2 - 60, 40, WHITE);
 
                 // botao sim
