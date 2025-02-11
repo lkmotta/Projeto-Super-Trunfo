@@ -7,18 +7,6 @@
 #include "filechange.h" // necessaria para listar_cartas
 
 /**
- * @brief Retorna o modo de jogo escolhido pelo player.
- *
- * @return int
- */
-int modo()
-{
-    printf("\n\033[5mEscolha o modo de jogo:\n\033[1;93m1 - NORMAL\n\033[1;31m2 - DIF�CIL\033[m\n: ");
-
-    return get_int(1, 2, "\033[1;91mModo inv�lido!\033[1m Insira 1 ou 2:\033[m ");
-}
-
-/**
  * @brief Retorna um vetor de cartas(baralho) embaralhado.
  *
  * @param cartas // vetor das cartas do jogo
@@ -200,7 +188,7 @@ void adicionar_carta_vencedor(Cartas **baralho_vencedor, Cartas **baralho_perded
     *baralho_vencedor = (Cartas *)realloc(*baralho_vencedor, (*quant_cartas_vencedor + 1) * sizeof(Cartas));
     if (*baralho_vencedor == NULL)
     {
-        perror("\n\033[1;91mErro ao realocar mem�ria para baralho_vencedor\033[m");
+        perror("\n\033[1;91mErro ao realocar memoria para baralho_vencedor\033[m");
         exit(1);
     }
 
@@ -221,7 +209,7 @@ void adicionar_carta_vencedor(Cartas **baralho_vencedor, Cartas **baralho_perded
         Cartas *temp = realloc(*baralho_perdedor, (*quant_cartas_perdedor) * sizeof(Cartas));
         if (!temp)
         {
-            perror("\n\033[1;91mErro ao realocar mem�ria para baralho_perdedor\033[m");
+            perror("\n\033[1;91mErro ao realocar memoria para baralho_perdedor\033[m");
             exit(1);
         }
         *baralho_perdedor = temp;
@@ -261,7 +249,7 @@ void lidar_com_empate(Cartas **baralho_jogador, int *quant_cartas_jogador, Carta
     *cartas_empate_cpu = (Cartas *)realloc(*cartas_empate_cpu, (*quant_cartas_empate) * sizeof(Cartas));
     if (*cartas_empate_jogador == NULL || *cartas_empate_cpu == NULL)
     {
-        perror("\n\033[1;91mErro ao realocar mem�ria para cartas de empate\033[m");
+        perror("\n\033[1;91mErro ao realocar memoria para cartas de empate\033[m");
         exit(1);
     }
 
@@ -361,7 +349,7 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
 
     if (primeiro_player())
     {
-        printf("\n\033[1;32mVocê comeca!\033[m");
+        printf("\n\033[1;32mVoce comeca!\033[m");
         player_joga = 1;
     }
 
@@ -377,10 +365,10 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
         {
             printf("\nCarta atual:\n");
             listar_cartas(&carta_jogador, 1);
-            printf("\nEscolha um atributo:\n1 - For�a\n2 - Habilidade\n3 - Velocidade\n4 - Poderes\n5 - Cura\n: ");
+            printf("\nEscolha um atributo:\n1 - Forca\n2 - Habilidade\n3 - Velocidade\n4 - Poderes\n5 - Cura\n: ");
             atributo = get_int(1, 5, "\033[1;91mAtributo invalido!\033[m Insira um numero de 1 a 5:\033[m ");
             printf("\nAtributo maior ou menor?\n1 - Maior\n0 - Menor\n: ");
-            maior_menor = get_int(0, 1, "\033[1;91mEntrada inv�lida!\033[m Insira 0 ou 1:\033[m ");
+            maior_menor = get_int(0, 1, "\033[1;91mEntrada invalida!\033[m Insira 0 ou 1:\033[m ");
         }
         else
         {
@@ -392,7 +380,7 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
         switch (atributo)
         {
         case FORCA:
-            atributo_nome = "For�a";
+            atributo_nome = "Forca";
             break;
         case HABILIDADE:
             atributo_nome = "Habilidade";
@@ -434,7 +422,7 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
         }
         else if (quem_ganhou)
         {
-            printf("\n\033[1;32mVoc� venceu a rodada!\033[m");
+            printf("\n\033[1;32mVoce venceu a rodada!\033[m");
 
             vitorias++;
             rodadas++;
@@ -500,16 +488,16 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
 
     int pontuacao = (10 * ((100 * vitorias) / rodadas)) + 10 * empates;
     Historico partidaHist;
-    strcpy(partidaHist.vencedor, vencedor);
     partidaHist.rodadas = rodadas;
     partidaHist.vitorias = vitorias;
     partidaHist.empates = empates;
     partidaHist.pontuacao = pontuacao;
+    
+    int valid = 0;
     if (quant_cartas_cpu == 0)
     {
-        printf("\n\n\033[7;32mVocê venceu o jogo!\033[m\n\n");
+        printf("\n\n\033[7;32mVoce venceu o jogo!\033[m\n\n");
 
-        int valid = 0;
         char playerName[4];
         while (!valid)
         {
@@ -527,31 +515,10 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
             }
             else
             {
-                printf("Nome inválido. Deve conter exatamente 3 letras.\n");
+                printf("Nome invalido. Deve conter exatamente 3 letras.\n");
             }
         }
-
-        FILE *historico = fopen("assets/data/historico.dat", "rb+");
-        if (historico == NULL)
-        {
-            FILE *arq = fopen("assets/data/historico.dat", "wb+");
-            printf("Salvando no historico...\n");
-            if (arq == NULL)
-            {
-                printf("Erro ao salvar no historico cod:01\n");
-                return;
-            }
-            fseek(arq, 0, SEEK_END);
-            fwrite(&partidaHist, sizeof(Historico), 1, arq);
-            fclose(arq);
-        }
-        else
-        {
-            fseek(historico, 0, SEEK_END);
-            fwrite(&partidaHist, sizeof(Historico), 1, historico);
-            fclose(historico);
-        }
-
+        
         strcpy(vencedor, playerName);
     }
     else
@@ -559,6 +526,9 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
         printf("\n\n\033[7;91mCPU venceu o jogo!\033[m\n\n");
         strcpy(vencedor, "CPU");
     }
+    strcpy(partidaHist.vencedor, vencedor);
+
+    
 
     printf("\n\n\033[7;32mPontua��o: %d\n\033[m", pontuacao);
 
@@ -570,9 +540,26 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
     partidaHist.dia = tm.tm_mday;
     partidaHist.mes = tm.tm_mon + 1;
 
-    printf("\n\033[1;32mEstatisticas da partida:\nRodadas: %i\nVit�rias: %i\nEmpates: %i\nSua pontua��o: %i pontos\n%02d/%02d\033[m",
+    printf("\n\033[1;32mEstatisticas da partida:\nRodadas: %i\nVitorias: %i\nEmpates: %i\nSua pontuacao: %i pontos\n%02d/%02d\033[m",
            partidaHist.rodadas, partidaHist.vitorias, partidaHist.empates, partidaHist.pontuacao, partidaHist.dia, partidaHist.mes);
 
+    if (valid==1)
+    {   
+        FILE *historico = fopen("assets/data/historico.dat", "rb+");
+        if (historico == NULL)
+        {
+            FILE *historico = fopen("assets/data/historico.dat", "wb+");
+            printf("Salvando no historico...\n");
+            if (historico == NULL)
+            {
+                printf("Erro ao salvar no historico cod:01\n");
+                return;
+            }
+        }
+        fseek(historico, 0, SEEK_END);
+        fwrite(&partidaHist, sizeof(Historico), 1, historico);
+        fclose(historico);
+    }
     if (cartas_empate_jogador != NULL)
     {
         free(cartas_empate_jogador);

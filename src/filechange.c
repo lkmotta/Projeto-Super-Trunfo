@@ -112,7 +112,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         (*carta)[(*size) + i].letra = TentaLetra;
         (*carta)[(*size) + i].num = posi_procurada;
 
-        printf("\nTemos a posição %i disponível em %c\n", posi_procurada, TentaLetra);
+        printf("\nTemos a posicao %i disponivel em %c\n", posi_procurada, TentaLetra);
 
         int existenciaDoSuper = 0;
         for (int j = 0; j < (*size); j++) {
@@ -123,14 +123,14 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         }
 
         if (existenciaDoSuper) {
-            printf("\033[1mJ� existe um Super-Trunfo\033[m\n");
+            printf("\033[1mJa existe um Super-Trunfo\033[m\n");
             (*carta)[(*size) + i].super_trunfo = 0;
         } else {
             int escolhaTrunfo;
             do {
-                printf("Super Trunfo?\n1 - Sim\n2 - N�o\n: ");
+                printf("Super Trunfo?\n1 - Sim\n2 - Nao\n: ");
                 if (scanf("%d", &escolhaTrunfo) != 1) {
-                    printf("\033[1;31mEntrada inv�lida! Tente novamente.\033[m\n");
+                    printf("\033[1;31mEntrada invalida! Tente novamente.\033[m\n");
                     while (getchar() != '\n'); // Limpa o buffer
                     continue;
                 }
@@ -140,20 +140,20 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
 
         printf("\nInsira os atributos da carta:\n");
 
-        printf("Força [1 ~ 50]: ");
-        (*carta)[(*size) + i].forca = get_int(1, 50, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 50]:\033[m ");
+        printf("Forca [1 ~ 50]: ");
+        (*carta)[(*size) + i].forca = get_int(1, 50, "\033[1;31mInsira um valor valido!\033[1;30m [1 ~ 50]:\033[m ");
 
         printf("Habilidade [1 ~ 100]: ");
-        (*carta)[(*size) + i].habilidade = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 100]:\033[m ");
+        (*carta)[(*size) + i].habilidade = get_int(1, 100, "\033[1;31mInsira um valor valido!\033[1;30m [1 ~ 100]:\033[m ");
 
         printf("Velocidade [1 ~ 20]: ");
-        (*carta)[(*size) + i].velocidade = get_int(1, 20, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 20]:\033[m ");
+        (*carta)[(*size) + i].velocidade = get_int(1, 20, "\033[1;31mInsira um valor valido!\033[1;30m [1 ~ 20]:\033[m ");
 
         printf("Poderes [1 ~ 50]: ");
-        (*carta)[(*size) + i].poderes = get_int(1, 50, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 50]:\033[m ");
+        (*carta)[(*size) + i].poderes = get_int(1, 50, "\033[1;31mInsira um valor valido!\033[1;30m [1 ~ 50]:\033[m ");
 
         printf("Poder de cura [1 ~ 100]: ");
-        (*carta)[(*size) + i].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1;30m [1 ~ 100]:\033[m ");
+        (*carta)[(*size) + i].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor valido!\033[1;30m [1 ~ 100]:\033[m ");
         //strcpy((*carta)[(*size) + i].textura, '\0');
         printf("Deseja inserir uma textura para a carta? [1 - Sim, 2 - Não]: \n");
         int escolha_textura;
@@ -162,7 +162,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
             scanf("%d", &escolha_textura);
             if (escolha_textura != 1 && escolha_textura != 2)
             {
-                printf("\033[1;31mInsira um valor válido!\033[1;30m [1 ~ 2]:\033[m ");
+                printf("\033[1;31mInsira um valor valido!\033[1;30m [1 ~ 2]:\033[m ");
             }
             
         } while (escolha_textura != 1 && escolha_textura != 2);
@@ -250,11 +250,11 @@ void remover_carta(Cartas** cartas, int* quantd_cartas) {
         burocracia(nome_excluir, TAM_NOME_CARTA);
         posicao = get_pos_carta(cartas, *quantd_cartas, nome_excluir);
         if (posicao == -1) {
-            printf("\n\033[1m\033[3mCarta n�o encontrada.\033[m\n");
+            printf("\n\033[1m\033[3mCarta nao encontrada.\033[m\n");
             i--;
             continue;
         } else if (verify_int_in_vetor(pos_excluir, quant_excluir, posicao)) {
-            printf("\n\033[1m\033[3mCarta j� inserida.\033[m\n");
+            printf("\n\033[1m\033[3mCarta ja inserida.\033[m\n");
             i--;
             continue;
         } else pos_excluir[i] = posicao;
@@ -287,7 +287,7 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
         burocracia(nome_alterar,TAM_NOME_CARTA);
         posicao = get_pos_carta(cartas, quantd_cartas, nome_alterar);
         if (posicao == -1){
-            printf("\n\033[1m\033[3mCarta n�o encontrada.\033[1m Insira um nome v�lido: \n");
+            printf("\n\033[1m\033[3mCarta nao encontrada.\033[1m Insira um nome valido: \n");
         }else break;
     } while (1);
     
@@ -302,22 +302,44 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
     switch (atributo_alterar)
     {
     case 1:
-        (*cartas)[posicao].forca = get_int(1, 50, "\033[1;31mInsira um valor v�lido!\033[1m[1 ~ 50]:\033[m ");
+        (*cartas)[posicao].forca = get_int(1, 50, "\033[1;31mInsira um valor valido!\033[1m[1 ~ 50]:\033[m ");
         break;
     case 2:
-        (*cartas)[posicao].habilidade = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1m[1 ~ 100]:\033[m ");
+        (*cartas)[posicao].habilidade = get_int(1, 100, "\033[1;31mInsira um valor valido!\033[1m[1 ~ 100]:\033[m ");
         break;
     case 3:
-        (*cartas)[posicao].velocidade = get_int(1, 20, "\033[1;31mInsira um valor v�lido!\033[1m[1 ~ 20]:\033[m ");
+        (*cartas)[posicao].velocidade = get_int(1, 20, "\033[1;31mInsira um valor valido!\033[1m[1 ~ 20]:\033[m ");
         break;
     case 4:
-        (*cartas)[posicao].poderes = get_int(1, 50, "\033[1;31mInsira um valor v�lido!\033[1m[1 ~ 50]:\033[m ");
+        (*cartas)[posicao].poderes = get_int(1, 50, "\033[1;31mInsira um valor valido!\033[1m[1 ~ 50]:\033[m ");
         break;
     case 5:
-        (*cartas)[posicao].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1m[1 ~ 100]:\033[m ");
+        (*cartas)[posicao].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor válido!\033[1m[1 ~ 100]:\033[m ");
         break;
     case 6:
-        //(*cartas)[posicao].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor v�lido!\033[1m[1 ~ 100]:\033[m ");
+        printf("\nPrimeiro coloque na sua textura na pasta assets/img/cartas\n\npor fim nos diga o nome da nova textura\nNome atual %s\n", (*cartas)[posicao].textura);
+        printf("Novo nome textura: ");
+        burocracia((*cartas)[posicao].textura, TAM_NOME_CARTA);
+        //concatenando o caminho da textura das pastas
+        int escolha_formato;
+        do
+        {
+            printf("1 - png\n2 - jpg\n");
+            scanf("%d", &escolha_formato);
+            if (escolha_formato==1)
+            {
+                strcat((*cartas)[posicao].textura, ".png");
+            }else if(escolha_formato==2){
+                strcat((*cartas)[posicao].textura, ".jpg");
+            }else{
+                printf("\033[1;31mInsira um valor válido!\033[1;30m [1 ~ 2]:\033[m ");
+            }
+        } while (escolha_formato != 1 && escolha_formato != 2);
+
+        char caminho[20] = "assets/img/cartas/";
+        strcat(caminho, (*cartas)[posicao].textura);
+        strcpy((*cartas)[posicao].textura, caminho);
+
         break;
     }
     printf("\n\n\033[1;94mCarta atualizada:\033[m\n");
@@ -425,8 +447,8 @@ void historico() {
     fread(hist, sizeof(Historico), sizeHist, arq);
 
 
-    printf("\nHist�rico de partidas:\n");
-    printf("| %10s | %9s | %17s | %9s | %18s | %5s |\n","Vencedor", "Rodadas", "Vitórias player", "Empates", "Pontuação player","Data");
+    printf("\nHistorico de partidas:\n");
+    printf("| %10s | %9s | %17s | %9s | %18s | %5s |\n","Vencedor", "Rodadas", "Vitorias player", "Empates", "Pontuacao player","Data");
     for (int i = 0; i < sizeHist; i++)
     {
         printf("| %10s | %9d | %17d | %9d | %18i | %02d/%02d |\n", hist[i].vencedor, hist[i].rodadas, hist[i].vitorias,
@@ -467,7 +489,7 @@ void ranking(){
     sort_decrease(pontuacao, sizeHist);
 
     printf("\nRanking:\n");
-    printf("| %10s | %18s | %5s |\n","Jogador", "Pontuação player","Data");
+    printf("| %10s | %18s | %5s |\n","Jogador", "Pontuacao player","Data");
     int processed[sizeHist];
     for (int i = 0; i < sizeHist; i++) {
         processed[i] = 0;
