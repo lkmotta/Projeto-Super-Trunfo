@@ -35,6 +35,10 @@ typedef enum {
     FORCA = 1, HABILIDADE, VELOCIDADE, PODERES, CURA
 } Atributo;
 
+typedef enum {
+    FORCA_MAX = 50, HABILIDADE_MAX = 100, VELOCIDADE_MAX = 20, PODERES_MAX = 50, CURA_MAX = 100
+} Valor_atributos;
+
 enum MenuOpcoes { PESQ_ATRIBUTO = 1, PESQ_LETRA, PESQ_NUMERO, SAIR };
 
 int sistema();
