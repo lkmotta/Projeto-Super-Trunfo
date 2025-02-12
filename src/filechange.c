@@ -34,7 +34,6 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
 
     while (getchar() != '\n'); // Limpa o buffer
 
-    // Realloc para o vetor de cartas
     Cartas *novo_carta = realloc(*carta, ((*size) + cartas_add) * sizeof(Cartas));
     if (novo_carta == NULL) {
         perror("\033[1;31mErro ao alocar memória para cartas\033[m");
@@ -71,10 +70,10 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
         do {
             if (scanf(" %c", &TentaLetra) != 1) {
                 printf("\n\033[1;31mLetra inválida. Tente novamente:\033[m ");
-                while (getchar() != '\n'); // Limpa o buffer
+                while (getchar() != '\n'); 
                 continue;
             }
-            while (getchar() != '\n'); // Limpa o buffer
+            while (getchar() != '\n'); 
             TentaLetra = toupper(TentaLetra);
 
             int **ptr_posicoes;
@@ -88,7 +87,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
                     continue;
             }
 
-            // Calcula a próxima posi��o dispon�vel
+            // calcula a próxima posi��o dispon�vel
             int aux = (*ptr_posicoes == NULL) ? 0 : (*size);
             for (int j = 0; j < aux; j++) {
                 if ((*ptr_posicoes)[j] != j + 1) {
@@ -98,7 +97,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
             }
             if (posi_procurada == 0) posi_procurada = aux + 1;
 
-            // Realoca mem�ria para a nova posi��o
+            // realoca mem�ria para a nova posi��o
             int *novo_posicoes = realloc(*ptr_posicoes, posi_procurada * sizeof(int));
             if (novo_posicoes == NULL) {
                 perror("\033[1;31mErro ao alocar memória para posições\033[m");
@@ -131,7 +130,7 @@ void inserir_cartas(Cartas **carta, int **ptr_posicoesA, int **ptr_posicoesB, in
                 printf("Super Trunfo?\n1 - Sim\n2 - Nao\n: ");
                 if (scanf("%d", &escolhaTrunfo) != 1) {
                     printf("\033[1;31mEntrada invalida! Tente novamente.\033[m\n");
-                    while (getchar() != '\n'); // Limpa o buffer
+                    while (getchar() != '\n'); 
                     continue;
                 }
                 (*carta)[(*size) + i].super_trunfo = (escolhaTrunfo == 1) ? 1 : 0;
@@ -260,10 +259,10 @@ void remover_carta(Cartas** cartas, int* quantd_cartas) {
         } else pos_excluir[i] = posicao;
     }
 
-    // Ordenar os indices em ordem decrescente para evitar problemas ao remover
+    // ordenando os indices em ordem decrescente
     sort_decrease(pos_excluir, quant_excluir);
     
-    // Excluindo as cartas do vetor
+    
     remover_cartas_vetor(cartas, quantd_cartas, pos_excluir, quant_excluir);
 
     printf("\n\033[3;92mCarta(s) removida(s) com sucesso!\033[m\n");
@@ -282,6 +281,7 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
 
     setbuf(stdin, NULL);
     printf("\nQual o nome da carta que deseja alterar: ");
+
     do
     {
         burocracia(nome_alterar,TAM_NOME_CARTA);
@@ -291,10 +291,10 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
         }else break;
     } while (1);
     
-    printf("\n1 - forca: %i\n2 - Habilidade: %i\n3 - Velocidade: %i\n4 - Poderes: %i\n5 - Poder cura: \n6 - Textura %s\nQual deseja alterar: ",
+    printf("\n1 - forca: %i\n2 - Habilidade: %i\n3 - Velocidade: %i\n4 - Poderes: %i\n5 - Poder cura: %i\n6 - Textura %s\nQual deseja alterar: ",
         (*cartas)[posicao].forca, (*cartas)[posicao].habilidade, (*cartas)[posicao].velocidade,
         (*cartas)[posicao].poderes, (*cartas)[posicao].poder_cura, (*cartas)[posicao].textura);
-
+    setbuf(stdin, NULL);
     atributo_alterar = get_int(1, 6, "\033[1;91mEntrada inv�lida!\033[1m[1 ~ 5]:\033[m ");
 
     printf("\nInsira o novo valor do atributo: ");
@@ -317,6 +317,7 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
         (*cartas)[posicao].poder_cura = get_int(1, 100, "\033[1;31mInsira um valor válido!\033[1m[1 ~ 100]:\033[m ");
         break;
     case 6:
+        setbuf(stdin, NULL);
         printf("\nPrimeiro coloque na sua textura na pasta assets/img/cartas\n\npor fim nos diga o nome da nova textura\nNome atual %s\n", (*cartas)[posicao].textura);
         printf("Novo nome textura: ");
         burocracia((*cartas)[posicao].textura, TAM_NOME_CARTA);
@@ -339,6 +340,7 @@ void alterar_carta(Cartas** cartas, int quantd_cartas){
         char caminho[20] = "assets/img/cartas/";
         strcat(caminho, (*cartas)[posicao].textura);
         strcpy((*cartas)[posicao].textura, caminho);
+        setbuf(stdin, NULL);
 
         break;
     }
@@ -374,7 +376,7 @@ void buscar_carta(Cartas *carta, int qnt_cartas) {
                 int escolha_atributo = get_int(1, 6, "\033[1;31mEscolha inválida!\033[1m (1 a 5, ou 6 para sair):\033[m ");
                 if (escolha_atributo == 6) break;
                 
-                int valor_max;
+                int valor_max = 0;
                 switch (escolha_atributo){
                 case FORCA:
                     valor_max = FORCA_MAX;
@@ -490,17 +492,17 @@ void ranking(){
 
     printf("\nRanking:\n");
     printf("| %10s | %18s | %5s |\n","Jogador", "Pontuacao player","Data");
-    int processed[sizeHist];
+    int ja_foi[sizeHist];
     for (int i = 0; i < sizeHist; i++) {
-        processed[i] = 0;
+        ja_foi[i] = 0;
     }
 
     for (int i = 0; i < sizeHist; i++) {
-        if (processed[i]) continue;
+        if (ja_foi[i]) continue;
         for (int j = 0; j < sizeHist; j++) {
-            if (pontuacao[i] == hist[j].pontuacao && !processed[j]) {
+            if (pontuacao[i] == hist[j].pontuacao && !ja_foi[j]) {
                 printf("| %10s | %18i | %02d/%02d |\n", nomes[j], pontuacao[i], hist[j].dia, hist[j].mes);
-                processed[j] = 1;
+                ja_foi[j] = 1;
             }
         }
     }

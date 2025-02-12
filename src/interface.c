@@ -93,7 +93,6 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projeto Super-Trunfo"); // iniciando a janela
     SetWindowIcon(icon);                                             // definindo icone da janela
-    UnloadImage(icon);
     SetTargetFPS(FPS);                                               // definindo a taxa de quadros por segundo
 
     // carregando musica de fundo
@@ -1400,7 +1399,9 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     // parando e descarregando a musica
     StopMusicStream(musica_atual);
     UnloadMusicStream(musica_atual);
+    UnloadImage(icon);
     CloseAudioDevice(); 
+
 
     CloseWindow(); // fechando a janela
     return;
