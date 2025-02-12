@@ -37,7 +37,7 @@ int sistema() {
 FILE* abrir_arquivo(const char nome_arq[], const char mode[]) {
     FILE* arquivo = fopen(nome_arq, mode);
     if (arquivo == NULL) {
-        perror("\n\033[1;91mN�o foi poss�vel abrir o arquivo!\033[m");
+        perror("\n\033[1;91mNao foi possovel abrir o arquivo!\033[m");
         exit(EXIT_FAILURE);
     }
     return arquivo;
@@ -157,7 +157,7 @@ void buscar_por_atributo(Cartas carta[], int qnt_cartas, int atributo, int compa
     }
 
     if (contador == 0) {
-        printf("\n---> Nenhuma carta encontrada com esses crit�rios!\n");
+        printf("\n---> Nenhuma carta encontrada com esses criterios!\n");
     }
 }
 
@@ -199,7 +199,7 @@ void buscar_por_numero(Cartas carta[], int qnt_cartas, int numero) {
     }
 
     if (contador == 0) {
-        printf("\n---> Nenhuma carta encontrada com o n�mero %d!\n", numero);
+        printf("\n---> Nenhuma carta encontrada com o numero %d!\n", numero);
     }
 }
 

@@ -196,6 +196,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 fundo_ranking_carregado = false;
                 veio_tela_inicial=false;
                 player_joga = true;
+                strcpy(nickname, "");
                 tentou_carregarPlayer = false, carregouPlayer = false;
                 tentou_carregarCPU = false, carregouCPU = false;
                 quem_ganhou = -1, atributo = 0;
@@ -675,14 +676,18 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     if(carta_jogador.super_trunfo && carta_cpu.letra != 'A'){
                         quem_ganhou = 1; // jogador ganhou
                         vitorias++;
+                        rodada++;
                     }else if(carta_cpu.super_trunfo && carta_jogador.letra == 'A'){
                         quem_ganhou = 1; // jogador ganhou
                         vitorias++;
+                        rodada++;
                         ganhou_a = true;
                     }else if(carta_cpu.super_trunfo && carta_jogador.letra != 'A'){
                         quem_ganhou = 0; // CPU ganhou
+                        rodada++;
                     }else if(carta_jogador.super_trunfo && carta_cpu.letra == 'A'){
                         quem_ganhou = 0; // CPU ganhou
+                        rodada++;
                         ganhou_a = true;
                     }
                     
