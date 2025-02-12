@@ -325,7 +325,7 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
     int empates = 0;
 
     printf("\n\033[1;32mSEU BARALHO:\033[m");
-    listar_cartas(baralho_jogador, quant_cartas_baralho);
+    //listar_cartas(baralho_jogador, quant_cartas_baralho);
 
     if (primeiro_player())
     {
