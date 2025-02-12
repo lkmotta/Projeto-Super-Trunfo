@@ -58,29 +58,9 @@ Cartas *gerar_baralho(Cartas *cartas, int quantd_cartas, int quant_cartas_baralh
                     break;
             }
         }
-        *quant_cartas_usadas += quant_cartas_baralho;
-        *cartas_usadas = realloc(*cartas_usadas, *quant_cartas_usadas * sizeof(int));
-        if (*cartas_usadas == NULL)
-        {
-            perror("\n\033[1;91mErro ao realocar mem�ria para cartas_usadas\033[m");
-            exit(1);
-        }
-        for (int i = 0; i < quant_cartas_baralho; i++)
-        {
-            (*cartas_usadas)[*quant_cartas_usadas - quant_cartas_baralho + i] = i;
-        }
-        // futuramente caso aja modo multiplayer ou +de 2 jogadores
-        /* *quant_cartas_usadas += quant_cartas_baralho;
-        *cartas_usadas = realloc(*cartas_usadas, *quant_cartas_usadas * sizeof(int));
-        if(*cartas_usadas == NULL){
-            perror("\n\033[1;91mErro ao realocar mem�ria para cartas_usadas\033[m");
-            exit(1);
-        }
-        for (int i = 0; i < quant_cartas_baralho; i++) {
-            (*cartas_usadas)[*quant_cartas_usadas - quant_cartas_baralho + i] = i;
-        } */
+        
     }
-    // free ser� chamado na main em main.c
+
 
     return baralho;
 }
