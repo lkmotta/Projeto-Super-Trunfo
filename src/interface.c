@@ -87,6 +87,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     static Texture2D texto_regras;
     static Texture2D fundo_ranking;
     Rectangle retangulo_fundo_botoes;
+    bool voltar=false;
     
     Color cor, cor_destaque_telainicial = COR_DESTAQUE_TELAINICIAL;
     Image icon = LoadImage("assets/img/icons/windowicon.png");
@@ -113,6 +114,14 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
     SetSoundVolume(som_resto, 0.6);
     Sound som_tecla = LoadSound("assets/sounds/tecla.mp3");
 
+    //colando opções de tela cheia e redimensionamento entre 1920x1080 e 800x600
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_UNDECORATED | FLAG_WINDOW_TRANSPARENT | FLAG_WINDOW_ALWAYS_RUN);
+    SetWindowMinSize(800, 600);
+    SetWindowMaxSize(1920, 1080);
+    //mudar de tamanho com f11
+    ToggleFullscreen();
+
+
     while (!WindowShouldClose()){
         UpdateMusicStream(musica_atual);
         BeginDrawing();
@@ -134,7 +143,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 retangulo_fundo_botoes.x = (SCREEN_WIDTH - retangulo_fundo_botoes.width) / 2, retangulo_fundo_botoes.y = SCREEN_HEIGHT - retangulo_fundo_botoes.height - 20;
                 retangulo_fundo_botoes.width = 700, retangulo_fundo_botoes.height = 80;
                 
-                if(tela_inicial) estadoAtual = TELA_INICIAL;
+                if(tela_inicial || voltar) estadoAtual = TELA_INICIAL;
                 else estadoAtual = NOVO_BARALHO;
                 break;
             }
@@ -546,6 +555,7 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                     DrawText("Sim", retangulo_sim.x + 35, retangulo_sim.y + 15, 20, WHITE);
                     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
                         PlaySound(som_tecla);
+                        voltar = true;
                         estadoAtual = RESET;
                     }
                 }
@@ -933,6 +943,8 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 // INFORMACOES DA COMPARACAO
                 if((carta_cpu.super_trunfo || carta_jogador.super_trunfo) && ganhou_a){
                     DrawText("Classe A sobre Trunfo", SCREEN_WIDTH - 10 - MeasureText("Classe A sobre Trunfo", 20), SCREEN_HEIGHT - 30, 20, RAYWHITE);
+                }else if((carta_cpu.super_trunfo || carta_jogador.super_trunfo) && !ganhou_a){
+                    DrawText("Super-Trunfo", SCREEN_WIDTH - 10 - MeasureText("Super-Trunfo", 20), SCREEN_HEIGHT - 30, 20, RAYWHITE);
                 }else{
                     sprintf(informacao_rodada, "%s - %s", atributo_nome, maior_menor ? "MAIOR" : "MENOR");
                     DrawText(informacao_rodada, SCREEN_WIDTH - 10 - MeasureText(informacao_rodada, 20), SCREEN_HEIGHT - 30, 20, RAYWHITE); 
@@ -1342,10 +1354,10 @@ void interface(Cartas *cartas, int size_cartas, int quant_cartas_baralho)
                 if(CheckCollisionPointRec(GetMousePosition(), retangulo_sair)){
                     DrawRectangleRec(retangulo_sair, DARKGREEN);
 
-                    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)&&veio_tela_inicial){
+                    if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_ENTER)) && veio_tela_inicial){
                         PlaySound(som_resto);
                         estadoAtual = TELA_INICIAL;
-                    }else if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)&&!veio_tela_inicial){
+                    } else if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_ENTER)) && !veio_tela_inicial){
                         PlaySound(som_resto);
                         estadoAtual = JOGAR_NOVAMENTE;
                     }

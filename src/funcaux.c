@@ -240,8 +240,9 @@ void exportar_csv(Cartas* cartas, int quantd_cartas){
 void embaralhar(Cartas* cartas, int quantd_cartas) {
     srand(time(NULL));
     Cartas temp;
+    int j;
     for (int i = quantd_cartas - 1; i > 0; i--) {
-        int j = rand() % (i + 1);
+        j = rand() % (i + 1);
         temp = cartas[i];
         cartas[i] = cartas[j];
         cartas[j] = temp;
