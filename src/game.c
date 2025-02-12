@@ -473,13 +473,13 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
     partidaHist.empates = empates;
     partidaHist.pontuacao = pontuacao;
     
-    int valid = 0;
+    int valido = 0;
     if (quant_cartas_cpu == 0)
     {
         printf("\n\n\033[7;32mVoce venceu o jogo!\033[m\n\n");
 
         char playerName[4];
-        while (!valid)
+        while (!valido)
         {
             printf("Digite seu apelido para o ranking (exatamente 3 letras): ");
             scanf("%s", playerName);
@@ -491,7 +491,7 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
                 {
                     playerName[i] = toupper(playerName[i]);
                 }
-                valid = 1;
+                valido = 1;
             }
             else
             {
@@ -523,7 +523,7 @@ void partida(Cartas *baralho_jogador, Cartas *baralho_cpu, int quant_cartas_bara
     printf("\n\033[1;32mEstatisticas da partida:\nRodadas: %i\nVitorias: %i\nEmpates: %i\nSua pontuacao: %i pontos\n%02d/%02d\033[m",
            partidaHist.rodadas, partidaHist.vitorias, partidaHist.empates, partidaHist.pontuacao, partidaHist.dia, partidaHist.mes);
 
-    if (valid==1)
+    if (valido==1)
     {   
         FILE *historico = fopen("assets/data/historico.dat", "rb+");
         if (historico == NULL)
