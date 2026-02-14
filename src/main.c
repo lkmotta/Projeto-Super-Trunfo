@@ -22,7 +22,7 @@
 #include "filechange.h"
 #include "game.h"
 #include "interface.h"
-
+//alo
 int main() {
     if (sistema()) {
         setlocale(LC_ALL, "portuguese");
